@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<input type = "button" onclick="httpGet()">
+<script type="text/javascript">
+    function httpGet(){
+        var url = "http://localhost:8080/content/1";
+        var meth = "GET";
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open(meth, url, false); // false for synchronous request
+        xmlHttp.setRequestHeader("type", "text");
+        xmlHttp.send();
+
+        while(xmlHttp.getResponseHeader("ready") != "true"){
+            xmlHttp = new XMLHttpRequest();
+            xmlHttp.open(meth, url, false); // false for synchronous request
+            xmlHttp.setRequestHeader("handling","true");
+            xmlHttp.send();
+        }
+        alert(xmlHttp.responseText);
+    }
+</script>
+</body>
+</html>
