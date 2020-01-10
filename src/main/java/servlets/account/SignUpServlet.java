@@ -2,7 +2,7 @@ package servlets.account;
 
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.account.MessageRegister;
+import messageSystem.messages.account.toService.MessageRegister;
 import servlets.BaseServlet;
 import util.AddressService;
 

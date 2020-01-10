@@ -29,22 +29,17 @@ public enum MessageSystem {
     static {
         serviceMessages.put(AddressService.INSTANCE.getAccountServiceAddress(), new ConcurrentLinkedQueue<>());
         serviceMessages.put(AddressService.INSTANCE.getContentServiceAddress(), new ConcurrentLinkedQueue<>());
-//        serviceMessages.put(AddressService.INSTANCE.getRegistryService(), new ConcurrentLinkedQueue<>());
-//        serviceMessages.put(AddressService.INSTANCE.getContentService(), new ConcurrentLinkedQueue<>());
-//        serviceMessages.put(AddressService.INSTANCE.getDictionaryService(), new ConcurrentLinkedQueue<>());
-//        serviceMessages.put(AddressService.INSTANCE.getGrammarService(), new ConcurrentLinkedQueue<>());
-//        serviceMessages.put(AddressService.INSTANCE.getTrainingsService(), new ConcurrentLinkedQueue<>());
+        serviceMessages.put(AddressService.INSTANCE.getDictionaryService(), new ConcurrentLinkedQueue<>());
+
 
         servletMessages.put(AddressService.INSTANCE.getSignInServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getSignUpServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getContentServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getContentByIdServletAddress(), new ConcurrentHashMap<>());
-//        messages.put(AddressService.INSTANCE.getAuthRH(), new ConcurrentLinkedQueue<>());
-//        messages.put(AddressService.INSTANCE.getRegistryRH(), new ConcurrentLinkedQueue<>());
-//        messages.put(AddressService.INSTANCE.getContentRH(), new ConcurrentLinkedQueue<>());
-//        messages.put(AddressService.INSTANCE.getDictionaryRH(), new ConcurrentLinkedQueue<>());
-//        messages.put(AddressService.INSTANCE.getGrammarRH(), new ConcurrentLinkedQueue<>());
-//        messages.put(AddressService.INSTANCE.getTrainingsRH(), new ConcurrentLinkedQueue<>());
+        servletMessages.put(AddressService.INSTANCE.getGetWordServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getRemoveWordServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getAddWordForUserServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getAddWordToWordSetServletAddress(), new ConcurrentHashMap<>());
     }
 
     public void sendMessageForService(Message message){
@@ -55,11 +50,8 @@ public enum MessageSystem {
         servletMessages.get(message.getTo()).put(sessionId, message);
     }
 
-    /**
-     * У каждого сервиса ест ссылка на MessageSystem, каждый сервис можеты вызвать execForAbonent и передать себя в качестве абонента.
-     * Таким образом, для каждого сообщения, которое пришло к сервису, сервис передает себя в exec этого сообщения
-     */
-    public void execForAbonent(Abonent abonent){
+
+    public void execForService(Abonent abonent){
         Queue<Message> messageQueue = serviceMessages.get(abonent.getAddress());
 
         while(!messageQueue.isEmpty()){

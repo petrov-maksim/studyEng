@@ -20,21 +20,24 @@ public class DictionaryService extends AbstractDBService {
      * При первичном добавлении слова
      * Получаем word's id, если нет, addNewWord() и addNewTranslation()
      * Получаем translation's id, если нет addNewTranslation()
-     * Кладем запись в wordSet_word
+     * Узнаем main_wordSet's id для данного пользователя
+     * Для этого wordSet'а кладем запись в wordSet_word
      * Увеличиваем частоту использования translation
      */
-    public void addWordForUser(String word, String translation, String sessionId){
-
+    public int addWordForUser(String word, String translation, int userId){
+        return 1;
     }
 
     /**
-     * Для добавления слова в wordSet (из всех слов)
-     * Получаем word's id
-     * Получаем translation's id
-     * Кладем запись в wordSet_word
+     * Проверить, что для данного wordId и wordSetId уже нет записей в wordSet_word
+     *
+     * Узнаем main_wordSet's id для данного пользователя (в word_sets)
+     * Для полученного main_wordSet's id берем все данные (кроме wordSet_id и isLearned) из wordSet_word, где wordId == word_id
+     * Все эти данные кладем в wordSet_word с переданным wordSetId
+     * Должен получиться дубликат, в котором отличаются лишь wordSet_id и isLearned
      */
-    public void addWordToWordSet(String word, String translation, int wordSetId){
-
+    public void addWordToWordSet(Integer wordId[], int userId, int wordSetId){
+        System.out.println("adding words to wordSet: " + wordSetId);
     }
 
     /**
@@ -45,12 +48,33 @@ public class DictionaryService extends AbstractDBService {
     }
 
     /**
-     * Получаем user's id
      * Для данного user's id получаем wordSet's id, где main_wordSet == true
      * Для данного wordSetId получаем num слов, где индекс > index
      */
-    public Word[] getNWordsForUser(String sessionId, int num, int index){
+    public Word[] getNWordsForUser(int userId, int num, int index){
         return null;
+    }
+
+    /**
+     * Удаление из набора
+     * Получаем word's id
+     * Удаляем запись для данного wordSetId и word's id из wordSet_word
+     */
+    public boolean removeWordFromWordSet(Integer wordIds[], int wordSetId){
+        System.out.println("Remove from wordSet");
+        return false;
+    }
+
+    /**
+     * Удаление из всех слов
+     * Получаем user's id
+     * По user's id получаем список всех wordSet's id
+     * Получаем word's id
+     * В wordSet_word удаляем все записи для данного word's id
+     */
+    public boolean removeWordForUser(Integer wordIds[], int userId){
+        System.out.println("Remove for user");
+        return false;
     }
 
     /**
@@ -91,26 +115,6 @@ public class DictionaryService extends AbstractDBService {
 
     }
 
-
-    /**
-     * Удаление из набора
-     * Получаем word's id
-     * Удаляем запись для данного wordSetId и word's id из wordSet_word
-     */
-    public void removeWordFromWordSet(String word, int wordSetId){
-
-    }
-
-    /**
-     * Удаление из всех слов
-     * Получаем user's id
-     * По user's id получаем список всех wordSet's id
-     * Получаем word's id
-     * В wordSet_word удаляем все записи для данного word's id
-     */
-    public void removeWordForUser(String word, String sessionId){
-
-    }
 
     /**
      * При добавлении слова, пользователю предлагаются возможные переводы

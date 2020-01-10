@@ -5,4 +5,5 @@ public class Word {
     private String translations[];
     private String example;
     private int frequency;
+    private int id;
 }

@@ -2,7 +2,7 @@ package servlets.account;
 
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.account.MessageAuthenticate;
+import messageSystem.messages.account.toService.MessageAuthenticate;
 import servlets.BaseServlet;
 import util.AddressService;
 import util.SessionCache;
@@ -54,7 +54,7 @@ public class SignInServlet extends HttpServlet implements BaseServlet {
     public void userAuthorized(){
         response.setHeader("ready","true");
         try {
-            response.getWriter().write("Finally handled");
+            response.getWriter().write("Congo u're authorized");
             response.flushBuffer();
         } catch (IOException e) {
             e.printStackTrace();

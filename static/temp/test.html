@@ -5,14 +5,40 @@
     <title>Title</title>
 </head>
 <body>
-<input type = "button" onclick="httpGet()">
+<input type = "button" value ="testFunctional" onclick="test()">
+<input type = "button" value ="authorize" onclick="authorize()">
 <script type="text/javascript">
-    function httpGet(){
-        var url = "http://localhost:8080/content/1";
-        var meth = "GET";
+    function test(){
+        var url = "http://localhost:8080/dictionary/addwordtowordset?wordId=1,2,3&wordSetId=1";
+        var meth = "POST";
         var xmlHttp = new XMLHttpRequest();
         xmlHttp.open(meth, url, false); // false for synchronous request
-        xmlHttp.setRequestHeader("type", "text");
+        xmlHttp.send();
+
+        if(xmlHttp.status === 401 || xmlHttp.status === 400){
+            alert(xmlHttp.status);
+            return;
+        }
+
+        alert(xmlHttp.status);
+
+        // if(xmlHttp.status === 200){
+        //     xmlHttp = new XMLHttpRequest();
+        //     xmlHttp.open(meth, url, false); // false for synchronous request
+        //     xmlHttp.setRequestHeader("handling","true");
+        //     xmlHttp.send();
+            
+        //     alert(xmlHttp.status);
+        //     alert(xmlHttp.getResponseHeader("wordId"));
+        // }
+
+    }
+
+    function authorize(){
+        var url = "http://localhost:8080/signin";
+        var meth = "POST";
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open(meth, url, false); // false for synchronous request
         xmlHttp.send();
 
         while(xmlHttp.getResponseHeader("ready") != "true"){

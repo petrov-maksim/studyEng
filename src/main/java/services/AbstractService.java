@@ -27,7 +27,7 @@ public abstract class AbstractService implements Abonent {
             Thread t = new Thread(() -> {
                 while(true){
                     try{
-                        MessageSystem.INSTANCE.execForAbonent(this);
+                        MessageSystem.INSTANCE.execForService(this);
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();

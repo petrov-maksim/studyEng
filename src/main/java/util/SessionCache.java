@@ -18,4 +18,8 @@ public enum SessionCache {
     public void deauthorize(String sessionId){
         authorizedUsers.remove(sessionId);
     }
+
+    public int getUserIdBySessionId(String sessionId){
+        return authorizedUsers.get(sessionId);
+    }
 }

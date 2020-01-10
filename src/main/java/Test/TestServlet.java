@@ -3,7 +3,7 @@ package Test;
 import messageSystem.Abonent;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.account.MessageAuthenticate;
+import messageSystem.messages.account.toService.MessageAuthenticate;
 import util.AddressService;
 
 import javax.servlet.ServletException;

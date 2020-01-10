@@ -2,7 +2,7 @@ package servlets.content;
 
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.content.MessageGetContent;
+import messageSystem.messages.content.toService.MessageGetContent;
 import servlets.BaseServlet;
 import util.AddressService;
 
