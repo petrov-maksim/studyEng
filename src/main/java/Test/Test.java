@@ -11,10 +11,11 @@ import servlets.account.SignOutServlet;
 import servlets.account.SignUpServlet;
 import servlets.content.ContentByIdServlet;
 import servlets.content.ContentServlet;
-import servlets.dictionary.user.AddWordsForUserServlet;
-import servlets.dictionary.wordSet.AddWordsToWordSetServlet;
-import servlets.dictionary.user.GetWordForUserServlet;
-import servlets.dictionary.user.RemoveWordForUserServlet;
+import servlets.dictionary.*;
+import servlets.dictionary.user.AddWordForUserServlet;
+import servlets.dictionary.wordSet.*;
+import servlets.dictionary.user.GetWordsForUserServlet;
+import servlets.dictionary.user.RemoveWordsForUserServlet;
 import servlets.grammar.GrammarServlet;
 
 public class Test {
@@ -42,13 +43,32 @@ public class Test {
         servletHandler.addServlet(SignInServlet.class, "/signin");
         servletHandler.addServlet(SignUpServlet.class, "/signup");
         servletHandler.addServlet(SignOutServlet.class, "/signout");
+
         servletHandler.addServlet(GrammarServlet.class, "/grammar/*");
+
         servletHandler.addServlet(ContentServlet.class, "/content");
         servletHandler.addServlet(ContentByIdServlet.class, "/content/*");
-        servletHandler.addServlet(GetWordForUserServlet.class, "/dictionary/getword");
-        servletHandler.addServlet(RemoveWordForUserServlet.class, "/dictionary/removeword");
-        servletHandler.addServlet(AddWordsForUserServlet.class, "/dictionary/addwordforuser");
+
+        servletHandler.addServlet(GetWordsForUserServlet.class, "/dictionary/getwordforuser");
+        servletHandler.addServlet(GetWordsFromWordSet.class, "/dictionary/getwordfromwordset");
+
+        servletHandler.addServlet(RemoveWordsForUserServlet.class, "/dictionary/removewordforuser");
+        servletHandler.addServlet(RemoveWordFromWordSetServlet.class, "/dictionary/removewordfromwordset");
+
+        servletHandler.addServlet(AddWordForUserServlet.class, "/dictionary/addwordforuser");
         servletHandler.addServlet(AddWordsToWordSetServlet.class, "/dictionary/addwordtowordset");
+
+        servletHandler.addServlet(GetWordSetsServlet.class, "/dictionary/getwordsets");
+        servletHandler.addServlet(RemoveWordSetServlet.class, "/dictionary/removewordset");
+        servletHandler.addServlet(UpdateWordSetServlet.class, "/dictionary/updatewordset");
+        servletHandler.addServlet(AddWordSetServlet.class, "/dictionary/addWordSet");
+
+        servletHandler.addServlet(AddTranslationServlet.class, "/dictionary/addTranslation");
+        servletHandler.addServlet(RemoveTranslationServlet.class, "/dictionary/removeTranslation");
+        servletHandler.addServlet(UpdateTranslationServlet.class, "/dictionary/updateTranslation");
+        servletHandler.addServlet(GetTranslationsForWordServlet.class, "/dictionary/getTranslationsForWord");
+
+        servletHandler.addServlet(AddExampleServlet.class, "/dictionary/addExample");
 
         servletHandler.setSessionHandler(new SessionHandler());
     }

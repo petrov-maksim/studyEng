@@ -4,6 +4,8 @@ import entities.Word;
 import entities.WordSet;
 import util.QueryExecutor;
 
+import java.util.Map;
+
 public class DictionaryService extends AbstractDBService {
     public DictionaryService(int threadsNum, QueryExecutor queryExecutor) {
         super(threadsNum, queryExecutor);
@@ -83,16 +85,10 @@ public class DictionaryService extends AbstractDBService {
      * Получаем user's id
      * По user's id получаем список всех wordSet'ов
      * Для всех wordSet'ов и word's id добавляем translation's id
+     * @return id добавленного перевода или -1, если не смог добавить
      */
-    public void addTranslation(String word, String translation, String sessionId){
-
-    }
-
-    /**
-     * В случае, если для данного слова нет перевода в базе
-     */
-    private void addNewTranslation(String word, String translation){
-
+    public int addTranslation(int word, String translation, int userId){
+        return -1;
     }
 
     /**
@@ -102,19 +98,13 @@ public class DictionaryService extends AbstractDBService {
      * По user's id получаем список всех wordSet'ов
      * Для всех wordSet'ов и word's id удаляем translation's id из переводов
      */
-    public void removeTranslationForUser(String word, String translation, String sessionId){
+    public void removeTranslation(int userId, int wordId, int translationId){
 
     }
 
-    /**
-     * Получаем user's id
-     * По user's id получаем список всех wordSet's id
-     * Для всех wordSet'ов, для данного word's id добавляем, изменяем example
-     */
-    public void addExample(String word, String example, String sessionId){
+    public void updateTranslation(int userId, int wordId, int oldTranslationId, String newTranslation){
 
     }
-
 
     /**
      * При добавлении слова, пользователю предлагаются возможные переводы
@@ -122,31 +112,40 @@ public class DictionaryService extends AbstractDBService {
      * По word's id получаем переводы, если есть
      * Отправляем с учетом частотности
      */
-    public String[] getTranslationsForWord(String word){
-        return new String[4];
+    public Map<Integer, String> getTranslationsForWord(int wordId){
+        return null;
+    }
+
+    /**
+     * Логика работы = затирание текущего примера и запись пеерданного
+     * По user's id получаем список всех wordSet's id
+     * Для всех wordSet'ов, для данного word's id добавляем, изменяем example
+     */
+    public void addExample(int userId, int wordId, String example){
+
     }
 
     /**
      * Добавляем запись в word_sets
-     * @return id нового wordSet'a
+     * @return id нового wordSet'a или -1 если ошибка
      */
-    public int addWordSet(String name){
-        return 1;
+    public int addWordSet(String name, int userId){
+        return -1;
     }
 
     /**
      * Удаляем запись из wordSets
      * Удаляем все записи для данного wordSetId из wordSet_word
      */
-    public void removeWordSet(int wordSetId){
-
+    public boolean removeWordSet(int userId, int wordSetId){
+        return true;
     }
 
     /**
      * Изменяем название wordSet'a в word_sets
      */
-    public void changeWordSetName(String name, int wordSetId){
-
+    public boolean updateWordSetName(String newName, int userId, int wordSetId){
+        return true;
     }
 
     /**
@@ -154,7 +153,16 @@ public class DictionaryService extends AbstractDBService {
      * Для user's id получаем список всех wordSet'ов
      * И возвращаем
      */
-    public WordSet[] getWordSetsForUser(String sessionId){
+    public WordSet[] getWordSetsForUser(int userId){
         return null;
+    }
+
+
+
+    /**
+     * В случае, если для данного слова нет перевода в базе
+     */
+    private void addNewTranslation(String word, String translation){
+
     }
 }

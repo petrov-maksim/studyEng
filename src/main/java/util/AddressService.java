@@ -8,10 +8,12 @@ import servlets.account.SignInServlet;
 import servlets.account.SignUpServlet;
 import servlets.content.ContentByIdServlet;
 import servlets.content.ContentServlet;
-import servlets.dictionary.user.AddWordsForUserServlet;
-import servlets.dictionary.wordSet.AddWordsToWordSetServlet;
-import servlets.dictionary.user.GetWordForUserServlet;
-import servlets.dictionary.user.RemoveWordForUserServlet;
+import servlets.dictionary.AddTranslationServlet;
+import servlets.dictionary.GetTranslationsForWordServlet;
+import servlets.dictionary.user.AddWordForUserServlet;
+import servlets.dictionary.wordSet.*;
+import servlets.dictionary.user.GetWordsForUserServlet;
+import servlets.dictionary.user.RemoveWordsForUserServlet;
 
 public enum AddressService {
     INSTANCE();
@@ -20,8 +22,6 @@ public enum AddressService {
      */
     private static final Address accountService = new AccountService(1, null).getAddress();
     private static final Address dictionaryService = new DictionaryService(1, null).getAddress();
-//    private static final Abonent grammarService = new GrammarService(1, null);
-//    private static final Abonent trainingsService = new TrainingsService(1, null);
     private static final Address contentService = new ContentService(1, null).getAddress();
 
     /**
@@ -30,11 +30,27 @@ public enum AddressService {
 
     private static final Address signInServlet = SignInServlet.getAdr();
     private static final Address signUpServlet = SignUpServlet.getAdr();
+
     private static final Address contentServlet = ContentServlet.getAdr();
-    private static final Address getWordServlet = GetWordForUserServlet.getAdr();
-    private static final Address removeWordServlet = RemoveWordForUserServlet.getAdr();
-    private static final Address addWordForUserServlet = AddWordsForUserServlet.getAdr();
+
+    private static final Address getWordForUserServlet = GetWordsForUserServlet.getAdr();
+    private static final Address getWordFromWordSetServlet = GetWordsFromWordSet.getAdr();
+
+    private static final Address removeWordForUserServlet = RemoveWordsForUserServlet.getAdr();
+    private static final Address removeWordFromWordSetServlet = RemoveWordFromWordSetServlet.getAdr();
+
+    private static final Address addWordForUserServlet = AddWordForUserServlet.getAdr();
     private static final Address addWordToWordSetServlet = AddWordsToWordSetServlet.getAdr();
+
+    private static final Address getWordSetsServlet = GetWordSetsServlet.getAdr();
+    private static final Address removeWordSetServlet = RemoveWordSetServlet.getAdr();
+    private static final Address updateWordSetServlet = UpdateWordSetServlet.getAdr();
+    private static final Address addWordSetServlet = AddWordSetServlet.getAdr();
+
+    private static final Address addTranslationServlet = AddTranslationServlet.getAdr();
+    private static final Address getTranslationsForWordServlet = GetTranslationsForWordServlet.getAdr();
+
+
 
 
     private static final Address contentByIdServlet = ContentByIdServlet.getAdr();
@@ -48,50 +64,6 @@ public enum AddressService {
     public Address getDictionaryService() {
         return dictionaryService;
     }
-
-//    public Address getRegistryService() {
-//        return registryService.getAddress();
-//    }
-//
-//    public Address getDictionaryService() {
-//        return dictionaryService.getAddress();
-//    }
-//
-//    public Address getGrammarService() {
-//        return grammarService.getAddress();
-//    }
-//
-//    public Address getTrainingsService() {
-//        return trainingsService.getAddress();
-//    }
-//
-//    public Address getContentService() {
-//        return contentService.getAddress();
-//    }
-//
-//    public Address getAuthRH() {
-//        return authRH.getAddress();
-//    }
-//
-//    public Address getRegistryRH() {
-//        return registryRH.getAddress();
-//    }
-//
-//    public Address getContentRH() {
-//        return contentRH.getAddress();
-//    }
-//
-//    public Address getDictionaryRH() {
-//        return dictionaryRH.getAddress();
-//    }
-//
-//    public Address getGrammarRH() {
-//        return grammarRH.getAddress();
-//    }
-//
-//    public Address getTrainingsRH() {
-//        return trainingsRH.getAddress();
-//    }
 
     public Address getSignInServletAddress(){
         return signInServlet;
@@ -109,12 +81,20 @@ public enum AddressService {
         return contentByIdServlet;
     }
 
-    public Address getGetWordServletAddress() {
-        return getWordServlet;
+    public Address getGetWordForUserServletAddress() {
+        return getWordForUserServlet;
     }
 
-    public Address getRemoveWordServletAddress() {
-        return removeWordServlet;
+    public Address getGetWordFromWordSetServletAddress() {
+        return getWordFromWordSetServlet;
+    }
+
+    public Address getRemoveWordForUserServletAddress() {
+        return removeWordForUserServlet;
+    }
+
+    public Address getRemoveWordFromWordSetServletAddress() {
+        return removeWordFromWordSetServlet;
     }
 
     public Address getAddWordForUserServletAddress() {
@@ -123,5 +103,29 @@ public enum AddressService {
 
     public Address getAddWordToWordSetServletAddress() {
         return addWordToWordSetServlet;
+    }
+
+    public Address getGetWordSetsServletAddress() {
+        return getWordSetsServlet;
+    }
+
+    public Address getRemoveWordSetServletAddress() {
+        return removeWordSetServlet;
+    }
+
+    public Address getUpdateWordSetServletAddress() {
+        return updateWordSetServlet;
+    }
+
+    public Address getAddTranslationServletAddress() {
+        return addTranslationServlet;
+    }
+
+    public Address getAddWordSetServletAddress() {
+        return addWordSetServlet;
+    }
+
+    public Address getGetTranslationsForWordServletAddress() {
+        return getTranslationsForWordServlet;
     }
 }

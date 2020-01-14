@@ -34,12 +34,27 @@ public enum MessageSystem {
 
         servletMessages.put(AddressService.INSTANCE.getSignInServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getSignUpServletAddress(), new ConcurrentHashMap<>());
+
         servletMessages.put(AddressService.INSTANCE.getContentServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getContentByIdServletAddress(), new ConcurrentHashMap<>());
-        servletMessages.put(AddressService.INSTANCE.getGetWordServletAddress(), new ConcurrentHashMap<>());
-        servletMessages.put(AddressService.INSTANCE.getRemoveWordServletAddress(), new ConcurrentHashMap<>());
+
+        servletMessages.put(AddressService.INSTANCE.getGetWordForUserServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getGetWordFromWordSetServletAddress(), new ConcurrentHashMap<>());
+
+        servletMessages.put(AddressService.INSTANCE.getRemoveWordForUserServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getRemoveWordFromWordSetServletAddress(), new ConcurrentHashMap<>());
+
+
         servletMessages.put(AddressService.INSTANCE.getAddWordForUserServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getAddWordToWordSetServletAddress(), new ConcurrentHashMap<>());
+
+        servletMessages.put(AddressService.INSTANCE.getGetWordSetsServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getRemoveWordSetServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getUpdateWordSetServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getAddWordSetServletAddress(), new ConcurrentHashMap<>());
+
+        servletMessages.put(AddressService.INSTANCE.getAddTranslationServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getGetTranslationsForWordServletAddress(), new ConcurrentHashMap<>());
     }
 
     public void sendMessageForService(Message message){

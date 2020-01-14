@@ -60,10 +60,6 @@ public class AddWordsToWordSetServlet extends HttpServlet implements BaseServlet
                  userId, wordIds, wordSetId));
     }
 
-    @Override
-    public void checkServiceResult() {
-        MessageSystem.INSTANCE.execForServlet(this);
-    }
 
     public void handle(int wordId){
         int sc = wordId == -1 ? HttpServletResponse.SC_INTERNAL_SERVER_ERROR : HttpServletResponse.SC_OK;

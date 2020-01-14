@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class GetWordFromWordSet extends HttpServlet implements BaseServlet {
+public class GetWordsFromWordSet extends HttpServlet implements BaseServlet {
     private static final Address address = new Address();
     private static final int N_WORDS = 30; //максимальное количество слов в response
     private String sessionId;
@@ -59,10 +59,6 @@ public class GetWordFromWordSet extends HttpServlet implements BaseServlet {
                 wordSetId, index, N_WORDS, sessionId));
     }
 
-    @Override
-    public void checkServiceResult() {
-        MessageSystem.INSTANCE.execForServlet(this);
-    }
 
     public void handle(Word[] words) {
         response.setHeader("ready", "true");
@@ -86,12 +82,7 @@ public class GetWordFromWordSet extends HttpServlet implements BaseServlet {
     public static Address getAdr(){return address;}
 
     private void initParams(HttpServletRequest request){
-        try{
-            index = Integer.parseInt(request.getHeader("index"));
-            wordSetId = Integer.parseInt(request.getHeader("wordSetId"));
-        }catch (Exception e){
-            // Logging
-            e.printStackTrace();
-        }
+        index = Integer.parseInt(request.getParameter("index"));
+        wordSetId = Integer.parseInt(request.getParameter("wordSetId"));
     }
 }

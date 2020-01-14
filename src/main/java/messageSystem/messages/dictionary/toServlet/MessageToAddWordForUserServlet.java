@@ -3,7 +3,7 @@ package messageSystem.messages.dictionary.toServlet;
 import messageSystem.Abonent;
 import messageSystem.Address;
 import messageSystem.Message;
-import servlets.dictionary.user.AddWordsForUserServlet;
+import servlets.dictionary.user.AddWordForUserServlet;
 
 public class MessageToAddWordForUserServlet extends Message {
     private int wordId;
@@ -14,13 +14,13 @@ public class MessageToAddWordForUserServlet extends Message {
 
     @Override
     public void exec(Abonent abonent) {
-        if (abonent instanceof AddWordsForUserServlet)
-            exec((AddWordsForUserServlet) abonent);
+        if (abonent instanceof AddWordForUserServlet)
+            exec((AddWordForUserServlet) abonent);
         else
             System.out.println("wrong abonent in MessageToAddWordServlet");
     }
 
-    private void exec(AddWordsForUserServlet servlet){
+    private void exec(AddWordForUserServlet servlet){
         servlet.handle(wordId);
     }
 }

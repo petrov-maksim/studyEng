@@ -3,7 +3,7 @@ package messageSystem.messages.dictionary.toServlet;
 import messageSystem.Abonent;
 import messageSystem.Address;
 import messageSystem.Message;
-import servlets.dictionary.user.RemoveWordForUserServlet;
+import servlets.dictionary.user.RemoveWordsForUserServlet;
 
 public class MessageToRemoveWordServlet extends Message {
     private boolean status;
@@ -14,14 +14,14 @@ public class MessageToRemoveWordServlet extends Message {
 
     @Override
     public void exec(Abonent abonent) {
-        if (abonent instanceof RemoveWordForUserServlet)
-            exec((RemoveWordForUserServlet) abonent);
+        if (abonent instanceof RemoveWordsForUserServlet)
+            exec((RemoveWordsForUserServlet) abonent);
         else
             //logging
-            System.out.println("Wrong abonent in MessageToRemoveServlet");
+            System.out.println("Wrong abonent in MessageToRemoveWordServlet");
     }
 
-    private void exec(RemoveWordForUserServlet servlet){
+    private void exec(RemoveWordsForUserServlet servlet){
         servlet.handle(status);
     }
 }

@@ -59,7 +59,6 @@ public class RemoveWordFromWordSetServlet extends HttpServlet implements BaseSer
         //Not the first request
         else
             checkServiceResult();
-
     }
 
     @Override
@@ -68,10 +67,6 @@ public class RemoveWordFromWordSetServlet extends HttpServlet implements BaseSer
                 wordIds,wordSetId, sessionId));
     }
 
-    @Override
-    public void checkServiceResult() {
-        MessageSystem.INSTANCE.execForServlet(this);
-    }
 
     public void handle(boolean status){
         int sc = status ? HttpServletResponse.SC_OK : HttpServletResponse.SC_INTERNAL_SERVER_ERROR;

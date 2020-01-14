@@ -16,7 +16,7 @@ import java.io.IOException;
 /**
  * Для первичного добавления слова пользователю (во все слова)
  */
-public class AddWordsForUserServlet extends HttpServlet implements BaseServlet {
+public class AddWordForUserServlet extends HttpServlet implements BaseServlet {
     private static final Address address = new Address();
     private HttpServletResponse response;
     private String word;
@@ -61,10 +61,6 @@ public class AddWordsForUserServlet extends HttpServlet implements BaseServlet {
                 word, translation, userId, sessionId));
     }
 
-    @Override
-    public void checkServiceResult() {
-        MessageSystem.INSTANCE.execForServlet(this);
-    }
 
     public void handle(int wordId){
         int sc = wordId == -1 ? HttpServletResponse.SC_INTERNAL_SERVER_ERROR : HttpServletResponse.SC_OK;

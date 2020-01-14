@@ -4,7 +4,7 @@ import entities.Word;
 import messageSystem.Abonent;
 import messageSystem.Address;
 import messageSystem.Message;
-import servlets.dictionary.user.GetWordForUserServlet;
+import servlets.dictionary.user.GetWordsForUserServlet;
 
 public class MessageToGetWordServlet extends Message {
     private final Word[] words;
@@ -15,11 +15,11 @@ public class MessageToGetWordServlet extends Message {
 
     @Override
     public void exec(Abonent abonent) {
-        if (abonent instanceof GetWordForUserServlet)
-            exec((GetWordForUserServlet) abonent);
+        if (abonent instanceof GetWordsForUserServlet)
+            exec((GetWordsForUserServlet) abonent);
     }
 
-    private void exec(GetWordForUserServlet servlet){
+    private void exec(GetWordsForUserServlet servlet){
         servlet.handle(words);
     }
 }

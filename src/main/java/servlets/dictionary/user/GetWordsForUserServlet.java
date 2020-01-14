@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class GetWordForUserServlet extends HttpServlet implements BaseServlet {
+public class GetWordsForUserServlet extends HttpServlet implements BaseServlet {
     private static final Address address = new Address();
     private static final int N_WORDS = 30; //максимальное количество слов в response
     private String sessionId;
@@ -59,11 +59,6 @@ public class GetWordForUserServlet extends HttpServlet implements BaseServlet {
                 sessionId, userId, index, N_WORDS));
     }
 
-    @Override
-    public void checkServiceResult() {
-        MessageSystem.INSTANCE.execForServlet(this);
-    }
-
     public void handle(Word[] words) {
         response.setHeader("ready", "true");
         try {
@@ -96,7 +91,7 @@ public class GetWordForUserServlet extends HttpServlet implements BaseServlet {
             userId = SessionCache.INSTANCE.getUserIdBySessionId(sessionId);
         }catch (Exception e){
             // Logging
-            e.printStackTrace();
+            System.out.println("wrong index in GetWordForUserServlet");
         }
     }
 }

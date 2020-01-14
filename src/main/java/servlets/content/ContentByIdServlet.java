@@ -36,7 +36,6 @@ public class ContentByIdServlet extends HttpServlet implements BaseServlet {
 
     public void handleRequest(String payload) {
         response.setHeader("ready", "true");
-        System.out.println(response);
         try {
             response.getWriter().write(payload);
         } catch (IOException e) {
