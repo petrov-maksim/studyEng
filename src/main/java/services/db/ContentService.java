@@ -1,12 +1,15 @@
 package services.db;
 
+import services.AbstractService;
 import util.QueryExecutor;
 
 
 
-public class ContentService extends AbstractDBService{
-    public ContentService(int threadsNum, QueryExecutor queryExecutor) {
-        super(threadsNum, queryExecutor);
+public class ContentService extends AbstractService {
+    private final QueryExecutor queryExecutor;
+    public ContentService(int threadsNum,  QueryExecutor queryExecutor) {
+        super(threadsNum);
+        this.queryExecutor = queryExecutor;
     }
 
     public String[] getNVideos(int num){

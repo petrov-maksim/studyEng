@@ -4,6 +4,7 @@ import messageSystem.Address;
 import messageSystem.MessageSystem;
 import messageSystem.messages.dictionary.toService.MessageRemoveWordsForUser;
 import servlets.BaseServlet;
+import servlets.NonAbonentServlet;
 import util.AddressService;
 import util.SessionCache;
 
@@ -20,9 +21,7 @@ import java.util.Arrays;
  * wordId: 1,2,3,4,5
  */
 
-public class RemoveWordsForUserServlet extends HttpServlet implements BaseServlet {
-    private static final Address address = new Address();
-    private HttpServletResponse response;
+public class RemoveWordsForUserServlet extends HttpServlet implements NonAbonentServlet {
     private String sessionId;
     private Integer wordIds[];
     private int userId;
@@ -30,7 +29,6 @@ public class RemoveWordsForUserServlet extends HttpServlet implements BaseServle
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        response = resp;
         sessionId = req.getSession().getId();
 
         if (!SessionCache.INSTANCE.isAuthorized(sessionId)) {
@@ -54,26 +52,12 @@ public class RemoveWordsForUserServlet extends HttpServlet implements BaseServle
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.flushBuffer();
         }
-        //Not the first request
-        else
-            checkServiceResult();
     }
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageRemoveWordsForUser(getAdr(), AddressService.INSTANCE.getDictionaryService(),
+        MessageSystem.INSTANCE.sendMessageForService(new MessageRemoveWordsForUser(null, AddressService.INSTANCE.getDictionaryService(),
                 wordIds, userId, sessionId));
-    }
-
-    public void handle(boolean status){
-        int sc = status ? HttpServletResponse.SC_OK : HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-        try{
-            response.setStatus(sc);
-            response.setHeader("ready", "true");
-            response.flushBuffer();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
     }
 
     private void initParams(HttpServletRequest request){
@@ -81,16 +65,4 @@ public class RemoveWordsForUserServlet extends HttpServlet implements BaseServle
         wordIds = Arrays.stream(request.getParameter("wordId").split(",")).
                 map(Integer::parseInt).toArray(Integer[]::new);
     }
-
-    @Override
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    @Override
-    public Address getAddress() {
-        return getAdr();
-    }
-
-    public static Address getAdr(){return address;}
 }

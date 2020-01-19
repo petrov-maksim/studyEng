@@ -7,6 +7,11 @@ import messageSystem.MessageSystem;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * У каждого сервиса-типа имеется один уникальный адрес и несколько тредов
+ * У каждого потока дата-базного сервиса, имеется один уникальный QueryExecutor, у которого уникальное сединение к базе
+ * Сервисы выполняют строго свои задачи, работа по валидации данных, будет проходить в сервлетах
+ */
 public abstract class AbstractService implements Abonent {
     private final Address address;
     private final List<Thread> threads;

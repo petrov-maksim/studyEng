@@ -6,9 +6,11 @@ import messageSystem.Address;
 import messageSystem.Message;
 import servlets.dictionary.wordSet.GetWordSetsServlet;
 
+import java.util.List;
+
 public class MessageToGetWordSetsServlet extends Message {
-    private WordSet wordSets [];
-    public MessageToGetWordSetsServlet(Address from, Address to, WordSet[] wordSets) {
+    private List<WordSet> wordSets ;
+    public MessageToGetWordSetsServlet(Address from, Address to, List<WordSet> wordSets) {
         super(from, to);
         this.wordSets = wordSets;
     }

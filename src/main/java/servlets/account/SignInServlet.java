@@ -8,13 +8,14 @@ import util.AddressService;
 import util.SessionCache;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet({"/signin"})
+/**
+ * TODO: Добавить проверку передаваемых данных на валидность:
+ */
 public class SignInServlet extends HttpServlet implements BaseServlet {
     private static final Address address = new Address();
     private HttpServletResponse response;
@@ -24,16 +25,28 @@ public class SignInServlet extends HttpServlet implements BaseServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        response = resp;
         sessionId = req.getSession().getId();
-        mail = req.getParameter("mail");
-        password = req.getParameter("password");
+        response = resp;
 
-        if (SessionCache.INSTANCE.isAuthorized(sessionId))
-            userAuthorized();
+        if (SessionCache.INSTANCE.isAuthorized(sessionId)) {
+            handle(true);
+            return;
+        }
+
         //First request
-        if (req.getHeader("handling") == null)
+        if (req.getHeader("handling") == null) {
+            try {
+                initParams(req);
+            } catch (Exception e) {
+                System.out.println("Wrong parameters in SignInServlet");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.flushBuffer();
+                return;
+            }
             createMessage();
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.flushBuffer();
+        }
         //Not the first request
         else
             checkServiceResult();
@@ -41,39 +54,27 @@ public class SignInServlet extends HttpServlet implements BaseServlet {
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageAuthenticate(this.getAddress(), AddressService.INSTANCE.getAccountServiceAddress(),
+        MessageSystem.INSTANCE.sendMessageForService(new MessageAuthenticate(getAdr(), AddressService.INSTANCE.getAccountServiceAddress(),
                 mail, password, sessionId));
+    }
+
+
+    public void handle(boolean isAuthorized){
         try {
+            response.setHeader("ready","true");
+            response.getWriter().write("User authorized: " + isAuthorized);
             response.flushBuffer();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    private void initParams(HttpServletRequest request) throws Exception {
+        mail = request.getParameter("mail");
+        password = request.getParameter("password");
 
-    public void userAuthorized(){
-        response.setHeader("ready","true");
-        try {
-            response.getWriter().write("Congo u're authorized");
-            response.flushBuffer();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void userNotAuthorized(){
-        response.setHeader("ready","true");
-        try {
-            response.getWriter().write("Unauthorized testing");
-            response.flushBuffer();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void checkServiceResult() {
-        MessageSystem.INSTANCE.execForServlet(this);
+        if (mail == null || mail.isBlank() || password == null || password.isBlank())
+            throw new Exception();
     }
 
     @Override

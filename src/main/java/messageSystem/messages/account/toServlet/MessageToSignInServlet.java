@@ -6,8 +6,10 @@ import messageSystem.Message;
 import servlets.account.SignInServlet;
 
 public class MessageToSignInServlet extends Message {
-    public MessageToSignInServlet(Address from, Address to) {
+    private boolean isAuthorized;
+    public MessageToSignInServlet(Address from, Address to, boolean isAuthorized) {
         super(from, to);
+        this.isAuthorized = isAuthorized;
     }
 
     @Override
@@ -17,6 +19,6 @@ public class MessageToSignInServlet extends Message {
     }
 
     private void exec(SignInServlet servlet){
-        servlet.userNotAuthorized();
+        servlet.handle(isAuthorized);
     }
 }

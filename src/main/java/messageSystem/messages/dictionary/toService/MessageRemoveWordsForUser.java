@@ -2,7 +2,6 @@ package messageSystem.messages.dictionary.toService;
 
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toServlet.MessageToRemoveWordServlet;
 import services.db.DictionaryService;
 
 public class MessageRemoveWordsForUser extends MessageToDictionaryService {
@@ -18,7 +17,6 @@ public class MessageRemoveWordsForUser extends MessageToDictionaryService {
 
     @Override
     protected void exec(DictionaryService service) {
-        MessageSystem.INSTANCE.sendMessageForServlet(new MessageToRemoveWordServlet(getTo(), getFrom(),
-                service.removeWordForUser(wordIds, userId)), sessionId);
+        service.removeWordsForUser(wordIds, userId);
     }
 }

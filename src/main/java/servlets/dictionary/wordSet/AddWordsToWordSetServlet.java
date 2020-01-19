@@ -2,7 +2,7 @@ package servlets.dictionary.wordSet;
 
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toService.MessageAddWordToWordSet;
+import messageSystem.messages.dictionary.toService.MessageAddWordsToWordSet;
 import servlets.BaseServlet;
 import util.AddressService;
 import util.SessionCache;
@@ -24,7 +24,6 @@ public class AddWordsToWordSetServlet extends HttpServlet implements BaseServlet
     private static final Address address = new Address();
     private HttpServletResponse response;
     private String sessionId;
-    private int userId;
     private Integer wordIds[];
     private int wordSetId;
 
@@ -56,8 +55,8 @@ public class AddWordsToWordSetServlet extends HttpServlet implements BaseServlet
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageAddWordToWordSet(getAdr(), AddressService.INSTANCE.getDictionaryService(),
-                 userId, wordIds, wordSetId));
+        MessageSystem.INSTANCE.sendMessageForService(new MessageAddWordsToWordSet(getAdr(), AddressService.INSTANCE.getDictionaryService(),
+                 wordIds, wordSetId));
     }
 
 
@@ -74,7 +73,6 @@ public class AddWordsToWordSetServlet extends HttpServlet implements BaseServlet
     }
 
     private void initParams(HttpServletRequest request) {
-        userId = SessionCache.INSTANCE.getUserIdBySessionId(sessionId);
         wordIds = Arrays.stream(request.getParameter("wordId").split(",")).
                 map(Integer::parseInt).toArray(Integer[]::new);
         wordSetId = Integer.parseInt(request.getParameter("wordSetId"));

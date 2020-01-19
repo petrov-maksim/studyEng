@@ -2,14 +2,14 @@ package messageSystem.messages.account.toServlet;
 
 import messageSystem.Abonent;
 import messageSystem.Address;
-import messageSystem.messages.account.toService.MessageToAccountService;
+import messageSystem.Message;
 import servlets.account.SignUpServlet;
 
-public class MessageToSignUpServlet extends MessageToAccountService {
-    private final boolean status;
-    public MessageToSignUpServlet(Address from, Address to, boolean status) {
+public class MessageToSignUpServlet extends Message {
+    private final boolean isRegistered;
+    public MessageToSignUpServlet(Address from, Address to, boolean isRegistered) {
         super(from, to);
-        this.status = status;
+        this.isRegistered = isRegistered;
     }
 
     @Override
@@ -19,9 +19,6 @@ public class MessageToSignUpServlet extends MessageToAccountService {
     }
 
     private void exec(SignUpServlet servlet){
-        if (status)
-            servlet.userRegistered();
-        else
-            servlet.userNotRegistered();
+        servlet.handle(isRegistered);
     }
 }

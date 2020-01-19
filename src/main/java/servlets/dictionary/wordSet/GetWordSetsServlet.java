@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public class GetWordSetsServlet extends HttpServlet implements BaseServlet {
     private static final Address address = new Address();
@@ -51,7 +52,7 @@ public class GetWordSetsServlet extends HttpServlet implements BaseServlet {
                 userId, sessionId));
     }
 
-    public void handle(WordSet wordSets[]){
+    public void handle(List<WordSet> wordSets){
         try {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().write("handled");

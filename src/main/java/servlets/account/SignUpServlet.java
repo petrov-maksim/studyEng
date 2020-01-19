@@ -5,6 +5,7 @@ import messageSystem.MessageSystem;
 import messageSystem.messages.account.toService.MessageRegister;
 import servlets.BaseServlet;
 import util.AddressService;
+import util.SessionCache;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,7 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet({"/signup"})
+/**
+ * TODO: Добавить проверку передаваемых данных на валидность
+ * Длина имени, не >= 26
+ * regex на email
+ */
 public class SignUpServlet extends HttpServlet implements BaseServlet {
     private static final Address address = new Address();
     private HttpServletResponse response;
@@ -22,15 +27,25 @@ public class SignUpServlet extends HttpServlet implements BaseServlet {
     private String name;
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        response = resp;
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         sessionId = req.getSession().getId();
-        mail = req.getParameter("mail");
-        password = req.getParameter("password");
-        name = req.getParameter("name");
+        response = resp;
 
-        if(req.getHeader("handling") == null)
+        //First request
+        if (req.getHeader("handling") == null) {
+            try {
+                initParams(req);
+            } catch (Exception e) {
+                System.out.println("Wrong parameters in SignInServlet");
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.flushBuffer();
+                return;
+            }
             createMessage();
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.flushBuffer();
+        }
+        //Not the first request
         else
             checkServiceResult();
     }
@@ -41,29 +56,20 @@ public class SignUpServlet extends HttpServlet implements BaseServlet {
                 mail, password, name, sessionId));
     }
 
-    @Override
-    public void checkServiceResult() {
-        MessageSystem.INSTANCE.execForServlet(this);
-    }
-
-    public void userNotRegistered(){
+    public void handle(boolean isRegistered){
         response.setHeader("ready","true");
         try {
-            response.getWriter().write("Can't register");
+            response.getWriter().write("U're registered: " + isRegistered);
             response.flushBuffer();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void userRegistered(){
-        response.setHeader("ready","true");
-        try {
-            response.getWriter().write("registered");
-            response.flushBuffer();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void initParams(HttpServletRequest request){
+        mail = request.getParameter("mail");
+        password = request.getParameter("password");
+        name = request.getParameter("name");
     }
 
     @Override

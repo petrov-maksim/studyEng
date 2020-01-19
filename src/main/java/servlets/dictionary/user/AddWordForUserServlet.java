@@ -52,7 +52,6 @@ public class AddWordForUserServlet extends HttpServlet implements BaseServlet {
         //Not the first request
         else
             checkServiceResult();
-
     }
 
     @Override

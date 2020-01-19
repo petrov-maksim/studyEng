@@ -5,6 +5,7 @@ import messageSystem.MessageSystem;
 import messageSystem.messages.dictionary.toService.MessageRemoveWordsForUser;
 import messageSystem.messages.dictionary.toService.MessageRemoveWordsFromWordSet;
 import servlets.BaseServlet;
+import servlets.NonAbonentServlet;
 import util.AddressService;
 import util.SessionCache;
 
@@ -22,9 +23,7 @@ import java.util.Arrays;
  * Если wordSetId не был передан, удаляем для user'a, иначе только из wordSet'a
  */
 
-public class RemoveWordFromWordSetServlet extends HttpServlet implements BaseServlet {
-    private static final Address address = new Address();
-    private HttpServletResponse response;
+public class RemoveWordFromWordSetServlet extends HttpServlet implements NonAbonentServlet {
     private String sessionId;
     private Integer wordIds[];
     private int wordSetId = -1;
@@ -32,7 +31,6 @@ public class RemoveWordFromWordSetServlet extends HttpServlet implements BaseSer
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        response = resp;
         sessionId = req.getSession().getId();
 
         if (!SessionCache.INSTANCE.isAuthorized(sessionId)) {
@@ -56,28 +54,15 @@ public class RemoveWordFromWordSetServlet extends HttpServlet implements BaseSer
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.flushBuffer();
         }
-        //Not the first request
-        else
-            checkServiceResult();
     }
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageRemoveWordsFromWordSet(getAdr(), AddressService.INSTANCE.getDictionaryService(),
+        MessageSystem.INSTANCE.sendMessageForService(new MessageRemoveWordsFromWordSet(null, AddressService.INSTANCE.getDictionaryService(),
                 wordIds,wordSetId, sessionId));
     }
 
 
-    public void handle(boolean status){
-        int sc = status ? HttpServletResponse.SC_OK : HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-        try{
-            response.setStatus(sc);
-            response.setHeader("ready", "true");
-            response.flushBuffer();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
 
     private void initParams(HttpServletRequest request){
         wordSetId = Integer.parseInt(request.getParameter("wordSetId"));
@@ -85,15 +70,4 @@ public class RemoveWordFromWordSetServlet extends HttpServlet implements BaseSer
                 map(Integer::parseInt).toArray(Integer[]::new);
     }
 
-    @Override
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    @Override
-    public Address getAddress() {
-        return getAdr();
-    }
-
-    public static Address getAdr(){return address;}
 }

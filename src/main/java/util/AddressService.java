@@ -8,11 +8,11 @@ import servlets.account.SignInServlet;
 import servlets.account.SignUpServlet;
 import servlets.content.ContentByIdServlet;
 import servlets.content.ContentServlet;
-import servlets.dictionary.AddTranslationServlet;
 import servlets.dictionary.GetTranslationsForWordServlet;
+import servlets.dictionary.GetWordsFromWordSetServlet;
 import servlets.dictionary.user.AddWordForUserServlet;
-import servlets.dictionary.wordSet.*;
 import servlets.dictionary.user.GetWordsForUserServlet;
+import servlets.dictionary.wordSet.*;
 import servlets.dictionary.user.RemoveWordsForUserServlet;
 
 public enum AddressService {
@@ -34,20 +34,14 @@ public enum AddressService {
     private static final Address contentServlet = ContentServlet.getAdr();
 
     private static final Address getWordForUserServlet = GetWordsForUserServlet.getAdr();
-    private static final Address getWordFromWordSetServlet = GetWordsFromWordSet.getAdr();
-
-    private static final Address removeWordForUserServlet = RemoveWordsForUserServlet.getAdr();
-    private static final Address removeWordFromWordSetServlet = RemoveWordFromWordSetServlet.getAdr();
+    private static final Address getWordFromWordSetServlet = GetWordsFromWordSetServlet.getAdr();
 
     private static final Address addWordForUserServlet = AddWordForUserServlet.getAdr();
     private static final Address addWordToWordSetServlet = AddWordsToWordSetServlet.getAdr();
 
     private static final Address getWordSetsServlet = GetWordSetsServlet.getAdr();
-    private static final Address removeWordSetServlet = RemoveWordSetServlet.getAdr();
-    private static final Address updateWordSetServlet = UpdateWordSetServlet.getAdr();
     private static final Address addWordSetServlet = AddWordSetServlet.getAdr();
 
-    private static final Address addTranslationServlet = AddTranslationServlet.getAdr();
     private static final Address getTranslationsForWordServlet = GetTranslationsForWordServlet.getAdr();
 
 
@@ -89,14 +83,6 @@ public enum AddressService {
         return getWordFromWordSetServlet;
     }
 
-    public Address getRemoveWordForUserServletAddress() {
-        return removeWordForUserServlet;
-    }
-
-    public Address getRemoveWordFromWordSetServletAddress() {
-        return removeWordFromWordSetServlet;
-    }
-
     public Address getAddWordForUserServletAddress() {
         return addWordForUserServlet;
     }
@@ -107,18 +93,6 @@ public enum AddressService {
 
     public Address getGetWordSetsServletAddress() {
         return getWordSetsServlet;
-    }
-
-    public Address getRemoveWordSetServletAddress() {
-        return removeWordSetServlet;
-    }
-
-    public Address getUpdateWordSetServletAddress() {
-        return updateWordSetServlet;
-    }
-
-    public Address getAddTranslationServletAddress() {
-        return addTranslationServlet;
     }
 
     public Address getAddWordSetServletAddress() {

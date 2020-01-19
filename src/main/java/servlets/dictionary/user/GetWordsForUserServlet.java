@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collection;
 
 public class GetWordsForUserServlet extends HttpServlet implements BaseServlet {
     private static final Address address = new Address();
@@ -59,7 +60,7 @@ public class GetWordsForUserServlet extends HttpServlet implements BaseServlet {
                 sessionId, userId, index, N_WORDS));
     }
 
-    public void handle(Word[] words) {
+    public void handle(Collection<Word> words) {
         response.setHeader("ready", "true");
         try {
             response.getWriter().write("All done");

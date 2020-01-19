@@ -19,7 +19,7 @@ public class RemoveTranslationServlet extends HttpServlet implements NonAbonentS
     private String sessionId;
     private int userId;
     private int wordId;
-    private int translationId;
+    private String translation;
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -47,12 +47,14 @@ public class RemoveTranslationServlet extends HttpServlet implements NonAbonentS
     @Override
     public void createMessage() {
         MessageSystem.INSTANCE.sendMessageForService(new MessageRemoveTranslation(null, AddressService.INSTANCE.getDictionaryService(),
-                userId, wordId, translationId));
+                userId, wordId, translation));
     }
 
-    private void initParams(HttpServletRequest request){
+    private void initParams(HttpServletRequest request) throws Exception{
         userId = SessionCache.INSTANCE.getUserIdBySessionId(sessionId);
         wordId = Integer.parseInt(request.getParameter("wordId"));
-        translationId = Integer.parseInt(request.getParameter("translationId"));
+        translation = request.getParameter("translationId");
+        if (translation == null || translation.isBlank())
+            throw new Exception();
     }
 }

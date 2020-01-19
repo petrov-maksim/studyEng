@@ -6,9 +6,11 @@ import messageSystem.Address;
 import messageSystem.Message;
 import servlets.dictionary.user.GetWordsForUserServlet;
 
+import java.util.Collection;
+
 public class MessageToGetWordServlet extends Message {
-    private final Word[] words;
-    public MessageToGetWordServlet(Address from, Address to, Word[] words) {
+    private final Collection<Word> words;
+    public MessageToGetWordServlet(Address from, Address to, Collection<Word> words) {
         super(from, to);
         this.words = words;
     }

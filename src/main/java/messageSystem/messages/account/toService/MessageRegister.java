@@ -1,6 +1,5 @@
 package messageSystem.messages.account.toService;
 
-import messageSystem.Abonent;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
 import messageSystem.messages.account.toServlet.MessageToSignUpServlet;
@@ -21,15 +20,8 @@ public class MessageRegister extends MessageToAccountService {
     }
 
     @Override
-    public void exec(Abonent abonent) {
-        if (abonent instanceof AccountService)
-            exec((AccountService) abonent);
-        else
-            System.out.println("Wrong Abonent in MessageRegister");
-    }
-
-    private void exec(AccountService service){
-        boolean status = service.register(mail, password, name, sessionId);
-        MessageSystem.INSTANCE.sendMessageForServlet(new MessageToSignUpServlet(getTo(), getFrom(), status), sessionId);
+    public void exec(AccountService service){
+        MessageSystem.INSTANCE.sendMessageForServlet(new MessageToSignUpServlet(getTo(), getFrom(),
+                service.signUp(mail, password, name, sessionId)), sessionId);
     }
 }

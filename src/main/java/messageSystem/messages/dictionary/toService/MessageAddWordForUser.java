@@ -9,7 +9,9 @@ public class MessageAddWordForUser extends MessageToDictionaryService {
     private String word;
     private String translation;
     private int userId;
+    private int wordSetId;
     private String sessionId;
+
     public MessageAddWordForUser(Address from, Address to, String word, String translation, int userId, String sessionId) {
         super(from, to);
         this.word = word;

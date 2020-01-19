@@ -1,9 +1,8 @@
-package servlets.dictionary.wordSet;
+package servlets.dictionary;
 
 import entities.Word;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toService.MessageGetWordsForUser;
 import messageSystem.messages.dictionary.toService.MessageGetWordsFromWordSet;
 import servlets.BaseServlet;
 import util.AddressService;
@@ -14,14 +13,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collection;
 
-public class GetWordsFromWordSet extends HttpServlet implements BaseServlet {
+public class GetWordsFromWordSetServlet extends HttpServlet implements BaseServlet {
     private static final Address address = new Address();
     private static final int N_WORDS = 30; //максимальное количество слов в response
     private String sessionId;
     private HttpServletResponse response;
     private int index;                      //С какого индекса необходимо формировать слова для response, соответствует заголовку request'a
     private int wordSetId;                  // Из какого набора требуются слова, соответствует заголовку request'a
+    private int userId;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -56,11 +57,11 @@ public class GetWordsFromWordSet extends HttpServlet implements BaseServlet {
     @Override
     public void createMessage() {
         MessageSystem.INSTANCE.sendMessageForService(new MessageGetWordsFromWordSet(getAddress(), AddressService.INSTANCE.getDictionaryService(),
-                wordSetId, index, N_WORDS, sessionId));
+                userId, wordSetId, index, N_WORDS, sessionId));
     }
 
 
-    public void handle(Word[] words) {
+    public void handle(Collection<Word> words) {
         response.setHeader("ready", "true");
         try {
             response.getWriter().write("All done");
@@ -82,7 +83,8 @@ public class GetWordsFromWordSet extends HttpServlet implements BaseServlet {
     public static Address getAdr(){return address;}
 
     private void initParams(HttpServletRequest request){
-        index = Integer.parseInt(request.getParameter("index"));
+        index = request.getParameter("index") != null ? Integer.parseInt(request.getParameter("index")) : 0;
         wordSetId = Integer.parseInt(request.getParameter("wordSetId"));
+        userId = SessionCache.INSTANCE.getUserIdBySessionId(sessionId);
     }
 }

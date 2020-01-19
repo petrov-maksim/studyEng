@@ -14,7 +14,6 @@ import servlets.content.ContentServlet;
 import servlets.dictionary.*;
 import servlets.dictionary.user.AddWordForUserServlet;
 import servlets.dictionary.wordSet.*;
-import servlets.dictionary.user.GetWordsForUserServlet;
 import servlets.dictionary.user.RemoveWordsForUserServlet;
 import servlets.grammar.GrammarServlet;
 
@@ -40,17 +39,18 @@ public class Test {
 
     private static void initServlets(){
         servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        servletHandler.addServlet(SignInServlet.class, "/signin");
-        servletHandler.addServlet(SignUpServlet.class, "/signup");
-        servletHandler.addServlet(SignOutServlet.class, "/signout");
+
+        servletHandler.addServlet(SignUpServlet.class, "/signUp");
+        servletHandler.addServlet(SignInServlet.class, "/signIn");
+        servletHandler.addServlet(SignOutServlet.class, "/signOut");
 
         servletHandler.addServlet(GrammarServlet.class, "/grammar/*");
 
         servletHandler.addServlet(ContentServlet.class, "/content");
         servletHandler.addServlet(ContentByIdServlet.class, "/content/*");
 
-        servletHandler.addServlet(GetWordsForUserServlet.class, "/dictionary/getwordforuser");
-        servletHandler.addServlet(GetWordsFromWordSet.class, "/dictionary/getwordfromwordset");
+        servletHandler.addServlet(GetWordsFromWordSetServlet.class, "/dictionary/getWordsForUser");
+        servletHandler.addServlet(GetWordsFromWordSetServlet.class, "/dictionary/getWordsFromWordSet");
 
         servletHandler.addServlet(RemoveWordsForUserServlet.class, "/dictionary/removewordforuser");
         servletHandler.addServlet(RemoveWordFromWordSetServlet.class, "/dictionary/removewordfromwordset");
@@ -65,7 +65,6 @@ public class Test {
 
         servletHandler.addServlet(AddTranslationServlet.class, "/dictionary/addTranslation");
         servletHandler.addServlet(RemoveTranslationServlet.class, "/dictionary/removeTranslation");
-        servletHandler.addServlet(UpdateTranslationServlet.class, "/dictionary/updateTranslation");
         servletHandler.addServlet(GetTranslationsForWordServlet.class, "/dictionary/getTranslationsForWord");
 
         servletHandler.addServlet(AddExampleServlet.class, "/dictionary/addExample");

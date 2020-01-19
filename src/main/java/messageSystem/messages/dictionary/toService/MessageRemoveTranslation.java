@@ -6,16 +6,16 @@ import services.db.DictionaryService;
 public class MessageRemoveTranslation extends MessageToDictionaryService {
     private int userId;
     private int wordId;
-    private int translationId;
-    public MessageRemoveTranslation(Address from, Address to, int userId, int wordId, int translationId) {
+    private String translation;
+    public MessageRemoveTranslation(Address from, Address to, int userId, int wordId, String translation) {
         super(from, to);
         this.userId = userId;
         this.wordId = wordId;
-        this.translationId = translationId;
+        this.translation = translation;
     }
 
     @Override
     protected void exec(DictionaryService service) {
-        service.removeTranslation(userId, wordId, translationId);
+        service.removeTranslationForUser(userId, wordId, translation);
     }
 }

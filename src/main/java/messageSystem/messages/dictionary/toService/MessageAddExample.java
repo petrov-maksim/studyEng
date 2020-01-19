@@ -16,6 +16,6 @@ public class MessageAddExample extends MessageToDictionaryService {
 
     @Override
     protected void exec(DictionaryService service) {
-        service.addExample(userId, wordId, example);
+        service.addExampleForUser(userId, wordId, example);
     }
 }

@@ -8,8 +8,8 @@ import servlets.dictionary.GetTranslationsForWordServlet;
 import java.util.Map;
 
 public class MessageToGetTranslationsForWordServlet extends Message {
-    private Map<Integer, String> translations;
-    public MessageToGetTranslationsForWordServlet(Address from, Address to, Map<Integer, String> translations) {
+    private String translations[];
+    public MessageToGetTranslationsForWordServlet(Address from, Address to, String translations[]) {
         super(from, to);
         this.translations = translations;
     }

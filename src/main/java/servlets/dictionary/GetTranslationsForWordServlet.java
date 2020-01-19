@@ -62,7 +62,7 @@ public class GetTranslationsForWordServlet extends HttpServlet implements BaseSe
                  wordId, sessionId));
     }
 
-    public void handle(Map<Integer, String> translations){
+    public void handle(String translations []){
         int sc = translations == null ? HttpServletResponse.SC_INTERNAL_SERVER_ERROR : HttpServletResponse.SC_OK;
         try {
             response.getWriter().write("Anyway handled get");

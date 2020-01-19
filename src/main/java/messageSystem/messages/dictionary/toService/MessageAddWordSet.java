@@ -2,7 +2,6 @@ package messageSystem.messages.dictionary.toService;
 
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toServlet.MessageToAddTranslationServlet;
 import messageSystem.messages.dictionary.toServlet.MessageToAddWordSetServlet;
 import services.db.DictionaryService;
 
@@ -20,6 +19,6 @@ public class MessageAddWordSet extends MessageToDictionaryService {
     @Override
     protected void exec(DictionaryService service) {
         MessageSystem.INSTANCE.sendMessageForServlet(new MessageToAddWordSetServlet(getTo(),getFrom(),
-                service.addWordSet(name, userId)), sessionId);
+                service.addWordSetForUser(name, userId)), sessionId);
     }
 }
