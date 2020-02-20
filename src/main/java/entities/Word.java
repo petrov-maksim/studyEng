@@ -8,6 +8,7 @@ public class Word {
     private List<String> translations = new ArrayList<>();
     private String example;
     private int id;
+    private int index;
 
     public String getWord() {
         return word;
@@ -35,6 +36,14 @@ public class Word {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     @Override

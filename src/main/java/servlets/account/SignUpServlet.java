@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 /**
  * TODO: Добавить проверку передаваемых данных на валидность
@@ -26,6 +27,9 @@ public class SignUpServlet extends HttpServlet implements BaseServlet {
     private String password;
     private String name;
 
+//    private static final Pattern MAIL_PATTERN = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         sessionId = req.getSession().getId();
@@ -33,10 +37,18 @@ public class SignUpServlet extends HttpServlet implements BaseServlet {
 
         //First request
         if (req.getHeader("handling") == null) {
+            if (SessionCache.INSTANCE.isAuthorized(sessionId)) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.setHeader(ALREADY_AUTHORIZED, "true");
+                resp.flushBuffer();
+                return;
+            }
+
             try {
                 initParams(req);
-            } catch (Exception e) {
-                System.out.println("Wrong parameters in SignInServlet");
+            }
+            catch (Exception e) {
+                System.out.println("Wrong parameters in SignUpServlet"  + e);
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.flushBuffer();
                 return;
@@ -57,19 +69,32 @@ public class SignUpServlet extends HttpServlet implements BaseServlet {
     }
 
     public void handle(boolean isRegistered){
-        response.setHeader("ready","true");
+        int sc = isRegistered ? HttpServletResponse.SC_OK : HttpServletResponse.SC_BAD_REQUEST;
         try {
-            response.getWriter().write("U're registered: " + isRegistered);
+            response.setStatus(sc);
+            response.setHeader(READY, "true");
             response.flushBuffer();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void initParams(HttpServletRequest request){
-        mail = request.getParameter("mail");
-        password = request.getParameter("password");
-        name = request.getParameter("name");
+    @Override
+    public void notReady() {
+        try {
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setHeader(READY, "false");
+            response.flushBuffer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void initParams(HttpServletRequest request) throws Exception {
+        mail = request.getHeader("mail").trim();
+        name = request.getHeader("name").trim();
+        password = request.getHeader("password").trim();
+//        validate();
     }
 
     @Override
@@ -85,4 +110,14 @@ public class SignUpServlet extends HttpServlet implements BaseServlet {
     public static Address getAdr(){
         return address;
     }
+
+//    private void validate() throws Exception {
+//        if (mail == null || mail.isBlank() || name  == null ||  name.isBlank() || password == null ||  password.isBlank())
+//            throw new Exception("Smt empty");
+//
+//        if(!MAIL_PATTERN.matcher(mail).matches())
+//            throw new Exception("Invalid mail");
+//        if (name.length() > 26 || password.length() > 30)
+//            throw new Exception("Too long name or password");
+//    }
 }

@@ -13,6 +13,5 @@ public class SignOutServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         SessionCache.INSTANCE.deauthorize(req.getSession().getId());
         resp.setStatus(HttpServletResponse.SC_OK);
-        resp.getWriter().write("Handled");
     }
 }

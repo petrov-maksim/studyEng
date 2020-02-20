@@ -6,23 +6,24 @@ import services.db.ContentService;
 import services.db.DictionaryService;
 import servlets.account.SignInServlet;
 import servlets.account.SignUpServlet;
-import servlets.content.ContentByIdServlet;
-import servlets.content.ContentServlet;
+import servlets.content.GetContentByIdServlet;
+import servlets.content.GetAllContentVideosServlet;
 import servlets.dictionary.GetTranslationsForWordServlet;
-import servlets.dictionary.GetWordsFromWordSetServlet;
+import servlets.dictionary.wordSet.GetWordsFromWordSetServlet;
 import servlets.dictionary.user.AddWordForUserServlet;
 import servlets.dictionary.user.GetWordsForUserServlet;
 import servlets.dictionary.wordSet.*;
-import servlets.dictionary.user.RemoveWordsForUserServlet;
 
 public enum AddressService {
     INSTANCE();
     /**
      * All services
      */
-    private static final Address accountService = new AccountService(1, null).getAddress();
-    private static final Address dictionaryService = new DictionaryService(1, null).getAddress();
-    private static final Address contentService = new ContentService(1, null).getAddress();
+
+    private static final Address accountService = AccountService.getAdr();
+    private static final Address dictionaryService = DictionaryService.getAdr();
+    private static final Address contentService = ContentService.getAdr();
+
 
     /**
      * All Servlets
@@ -31,13 +32,12 @@ public enum AddressService {
     private static final Address signInServlet = SignInServlet.getAdr();
     private static final Address signUpServlet = SignUpServlet.getAdr();
 
-    private static final Address contentServlet = ContentServlet.getAdr();
+    private static final Address allContentVideosServlet = GetAllContentVideosServlet.getAdr();
 
     private static final Address getWordForUserServlet = GetWordsForUserServlet.getAdr();
     private static final Address getWordFromWordSetServlet = GetWordsFromWordSetServlet.getAdr();
 
     private static final Address addWordForUserServlet = AddWordForUserServlet.getAdr();
-    private static final Address addWordToWordSetServlet = AddWordsToWordSetServlet.getAdr();
 
     private static final Address getWordSetsServlet = GetWordSetsServlet.getAdr();
     private static final Address addWordSetServlet = AddWordSetServlet.getAdr();
@@ -47,7 +47,7 @@ public enum AddressService {
 
 
 
-    private static final Address contentByIdServlet = ContentByIdServlet.getAdr();
+    private static final Address contentByIdServlet = GetContentByIdServlet.getAdr();
 
     public Address getAccountServiceAddress() {
         return accountService;
@@ -55,7 +55,7 @@ public enum AddressService {
 
     public Address getContentServiceAddress(){return contentService;}
 
-    public Address getDictionaryService() {
+    public Address getDictionaryServiceAddress() {
         return dictionaryService;
     }
 
@@ -67,8 +67,8 @@ public enum AddressService {
         return signUpServlet;
     }
 
-    public Address getContentServletAddress() {
-        return contentServlet;
+    public Address getAllContentVideosServletAddress() {
+        return allContentVideosServlet;
     }
 
     public Address getContentByIdServletAddress() {
@@ -85,10 +85,6 @@ public enum AddressService {
 
     public Address getAddWordForUserServletAddress() {
         return addWordForUserServlet;
-    }
-
-    public Address getAddWordToWordSetServletAddress() {
-        return addWordToWordSetServlet;
     }
 
     public Address getGetWordSetsServletAddress() {

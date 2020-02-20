@@ -2,7 +2,7 @@ package messageSystem.messages.dictionary.toService;
 
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toServlet.MessageToGetWordServlet;
+import messageSystem.messages.dictionary.toServlet.MessageToGetWordsForUserServlet;
 import services.db.DictionaryService;
 
 public class MessageGetWordsForUser extends MessageToDictionaryService {
@@ -21,7 +21,7 @@ public class MessageGetWordsForUser extends MessageToDictionaryService {
 
     @Override
     protected void exec(DictionaryService service) {
-        MessageSystem.INSTANCE.sendMessageForServlet(new MessageToGetWordServlet(getTo(), getFrom(),
+        MessageSystem.INSTANCE.sendMessageForServlet(new MessageToGetWordsForUserServlet(getTo(), getFrom(),
                 service.getNWordsForUser(userId, num, index)), sessionId);
     }
 }

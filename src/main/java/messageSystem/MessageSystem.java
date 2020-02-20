@@ -19,7 +19,7 @@ public enum MessageSystem {
     /**
      * Message container
      * Сама мапа заполняется до запуска потоков, поэтому можно использовать не потокобузопасную.
-     * Создаем объекты отоков, берем у них адрес, складываем их в эту карту и только после этого запускаем
+     * Создаем объекты потоков, берем у них адрес, складываем их в эту карту и только после этого запускаем
      * и только после этого, они начинают обмениваться сообщениями, это будет происходить в main
      */
     private static final Map<Address, ConcurrentLinkedQueue<Message>> serviceMessages = new HashMap<>();
@@ -29,20 +29,19 @@ public enum MessageSystem {
     static {
         serviceMessages.put(AddressService.INSTANCE.getAccountServiceAddress(), new ConcurrentLinkedQueue<>());
         serviceMessages.put(AddressService.INSTANCE.getContentServiceAddress(), new ConcurrentLinkedQueue<>());
-        serviceMessages.put(AddressService.INSTANCE.getDictionaryService(), new ConcurrentLinkedQueue<>());
+        serviceMessages.put(AddressService.INSTANCE.getDictionaryServiceAddress(), new ConcurrentLinkedQueue<>());
 
 
         servletMessages.put(AddressService.INSTANCE.getSignInServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getSignUpServletAddress(), new ConcurrentHashMap<>());
 
-        servletMessages.put(AddressService.INSTANCE.getContentServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getAllContentVideosServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getContentByIdServletAddress(), new ConcurrentHashMap<>());
 
         servletMessages.put(AddressService.INSTANCE.getGetWordForUserServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getGetWordFromWordSetServletAddress(), new ConcurrentHashMap<>());
 
         servletMessages.put(AddressService.INSTANCE.getAddWordForUserServletAddress(), new ConcurrentHashMap<>());
-        servletMessages.put(AddressService.INSTANCE.getAddWordToWordSetServletAddress(), new ConcurrentHashMap<>());
 
         servletMessages.put(AddressService.INSTANCE.getGetWordSetsServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getAddWordSetServletAddress(), new ConcurrentHashMap<>());
@@ -74,5 +73,7 @@ public enum MessageSystem {
 
         if(messages.containsKey(servlet.getSessionId()))
             messages.remove(servlet.getSessionId()).exec(abonent);
+        else
+            servlet.notReady();
     }
 }

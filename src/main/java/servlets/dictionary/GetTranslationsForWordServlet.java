@@ -1,9 +1,7 @@
 package servlets.dictionary;
 
-import entities.Word;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toService.MessageAddTranslation;
 import messageSystem.messages.dictionary.toService.MessageGetTranslationsForWord;
 import servlets.BaseServlet;
 import util.AddressService;
@@ -14,7 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * При добавлении слова
@@ -58,7 +55,7 @@ public class GetTranslationsForWordServlet extends HttpServlet implements BaseSe
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageGetTranslationsForWord(getAdr(), AddressService.INSTANCE.getDictionaryService(),
+        MessageSystem.INSTANCE.sendMessageForService(new MessageGetTranslationsForWord(getAdr(), AddressService.INSTANCE.getDictionaryServiceAddress(),
                  wordId, sessionId));
     }
 

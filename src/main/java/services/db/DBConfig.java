@@ -2,7 +2,7 @@ package services.db;
 
 public enum DBConfig {
     DB_DRIVER("org.postgresql.Driver"),
-    DB_URL("jdbc:postgresql://localhost:5432/v1"),
+    DB_URL("jdbc:postgresql://localhost:5432/v2"),
     DB_LOGIN("postgres"),
     DB_PASSWORD("0000");
 

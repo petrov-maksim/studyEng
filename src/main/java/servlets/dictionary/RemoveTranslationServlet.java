@@ -1,5 +1,7 @@
 package servlets.dictionary;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import entities.Word;
 import messageSystem.MessageSystem;
 import messageSystem.messages.dictionary.toService.MessageRemoveTranslation;
 import servlets.NonAbonentServlet;
@@ -46,15 +48,19 @@ public class RemoveTranslationServlet extends HttpServlet implements NonAbonentS
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageRemoveTranslation(null, AddressService.INSTANCE.getDictionaryService(),
+        MessageSystem.INSTANCE.sendMessageForService(new MessageRemoveTranslation(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
                 userId, wordId, translation));
     }
 
     private void initParams(HttpServletRequest request) throws Exception{
         userId = SessionCache.INSTANCE.getUserIdBySessionId(sessionId);
-        wordId = Integer.parseInt(request.getParameter("wordId"));
-        translation = request.getParameter("translationId");
-        if (translation == null || translation.isBlank())
+        ObjectMapper mapper = new ObjectMapper();
+        Word obj = mapper.readValue(request.getReader().readLine(), Word.class);
+
+        wordId = obj.getId();
+        translation = obj.getTranslations().get(0);
+
+        if (translation == null || translation.isBlank() || wordId <= 0)
             throw new Exception();
     }
 }

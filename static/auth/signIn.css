@@ -1,0 +1,137 @@
+body{
+    background-color: #2D2E2F;
+}
+.sign-in-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 7%;
+    align-items: center;
+}
+
+.si-form{
+    width: 500px;
+    background-color: white;
+    border-radius: 24px;
+}
+
+.sign-in{
+    background-color: #2D3742;
+    border-radius: 20px 20px 0 0;
+}
+
+.sign-in > span{
+    font-family: JosefinSans-Bold;
+    font-size: 30px;
+    color: chocolate;
+    line-height: 1.2;
+    text-align: center;
+    display: block;
+    width: 100%;
+
+    padding-top: 30px;
+    padding-bottom: 29px;
+}
+.si-input {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.si-input > *{
+    margin: 7px;
+}
+.si-input > input {
+    display: block;
+    background-color: #BED2E6;
+    align-self: center;
+    width: 70%;
+    height: 50px;
+
+    font-family: JosefinSans-Bold;
+    font-size: 18px;
+    outline:none;
+    padding: 0 35px 0 35px;
+
+    border-radius: 27px;
+    border: none;
+}
+
+.si-input > input::placeholder{
+    color: #2D2E2F;
+}
+
+.si-input > input:focus{
+    width: 72%;
+    transition: 0.1s;
+}
+
+.si-input > button{
+    width: 20%;
+    height: 30px;
+    background-color: #BED2E6;
+    border: none;
+    border-radius: 20px;
+    font-size: 17px;
+    margin-bottom: 20px;
+}
+
+.si-input > button:hover{
+    cursor: pointer;
+}
+
+.si-input > button:active{
+    outline: none;
+    background-color: #9FC3E8;
+    width: 20.5%;
+}
+
+.si-input > span{
+    margin-bottom: 0;
+}
+
+.sign-up{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #2D3742;
+    border-radius: 0 0 20px 20px ;
+}
+
+.sign-up > span{
+    font-family: JosefinSans-Bold;
+    font-size: 23px;
+    color: chocolate;
+    line-height: 1.2;
+    text-align: center;
+    display: block;
+    width: 100%;
+
+    padding-top: 29px;
+    padding-bottom: 9px;
+}
+.sign-up > button{
+    width: 40%;
+    height: 30px;
+    background-color: #BED2E6;
+    border: none;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+.sign-up > button > a{
+    font-family: JosefinSans-Bold;
+    outline: none;
+    text-decoration: none;
+    text-align: center;
+    color: #2D2E2F;
+    font-size: 20px;
+}
+
+
+
+
+

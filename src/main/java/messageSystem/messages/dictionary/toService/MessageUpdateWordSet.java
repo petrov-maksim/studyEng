@@ -1,22 +1,24 @@
 package messageSystem.messages.dictionary.toService;
 
 import messageSystem.Address;
-import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toServlet.MessageToUpdateWordSetServlet;
+import org.apache.commons.fileupload.FileItem;
 import services.db.DictionaryService;
 
 public class MessageUpdateWordSet extends MessageToDictionaryService {
-    private String newName;
-    private int wordSetId;
+    private final int wordSetId;
+    private final FileItem img;
+    private final String name;
 
-    public MessageUpdateWordSet(Address from, Address to, String newName, int wordSetId) {
+
+    public MessageUpdateWordSet(Address from, Address to, int wordSetId, FileItem img, String name) {
         super(from, to);
-        this.newName = newName;
         this.wordSetId = wordSetId;
+        this.img = img;
+        this.name = name;
     }
 
     @Override
     protected void exec(DictionaryService service) {
-        service.updateWordSetName(newName,  wordSetId);
+        service.updateWordSet(wordSetId, img, name);
     }
 }

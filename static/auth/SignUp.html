@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="..\common\dropDef.css">
+    <link rel="stylesheet" href="..\common\header.css">
+    <link rel="stylesheet" href="signUp.css">
+<!--    <script src="SignUp.js"></script>-->
+</head>
+<body>
+<header>
+    <div class="header">
+        <ul class="header-ul">
+            <a class="header-a" href="grammar.html"><li>Грамматика</li></a>
+            <a class="header-a" href="grammar.html"><li>Словарь</li></a>
+            <a class="header-a" href="grammar.html"><li>Тренировки</li></a>
+            <a class="header-a" href="grammar.html"><li>Контент</li></a>
+        </ul>
+
+        <img class="profile-pic" src="..\images\user_pic.png" >
+    </div>
+</header>
+
+<div class="sign-up-container">
+    <div class="su-form">
+        <div class="sign-up">
+                <span>
+                    Регистрация
+                </span>
+        </div>
+        <div class="su-input">
+            <input id="mail" type="text" name="mail" placeholder="email" autofocus required>
+            <input id="name" type="text" name="name" placeholder="имя" required>
+            <input id="pass" type="password" name="password" placeholder="пароль" required>
+            <button onclick="asyncSignUp()">
+                Зарегистрироваться
+            </button>
+        </div>
+
+
+        <div class="sign-in">
+            <span>
+                Уже есть аккаунта?
+            </span>
+            <button>
+                <a href="SignIn.html">Войти</a>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function asyncSignUp() {
+        const URL = "http://localhost:8080/signUp";
+        let mail = document.getElementById("mail").value;
+        let name = document.getElementById("name").value;
+        let pass = document.getElementById("pass").value;
+
+        // if (!isValid(mail, name, pass)){
+        //     alert("Invalid data");
+        //     return ;
+        // }
+
+        let response = await fetch(URL,{
+            method: 'POST',
+            headers:{
+                'mail': mail,
+                'name': name,
+                'password': pass
+            }
+        });
+
+        //По идее не должно произойти, т.к. данные перед отправкой проверяются
+        if (!response.ok){
+            alert("Smt wrong");
+            return ;
+        }
+
+        do{
+            console.log("ready " + response.headers.get("ready"));
+            await new Promise(resolve => setTimeout(resolve, 10));
+            response = await fetch(URL,{
+                method: 'POST',
+                headers:{
+                    'handling':'true'
+                }
+            });
+        }while(response.headers.get("ready") === "false");
+
+        if (response.status === 400)
+            alert("This email already in use");
+
+        if (response.ok) {
+            alert("Congo");
+            console.log("requesting " + response.status);
+            window.location.href = "http://localhost:8080/dictionary/dictionary.html";
+        }
+    }
+
+    // function isValid(mail, name, pass) {
+    //     if (pass.left === 0 || pass.length > 30)
+    //         return false;
+    //
+    //     if(mail.length === 0 || mail.length > 64)
+    //         return false;
+    //
+    //     if (name.length === 0 || name.length > 26)
+    //         return false;
+    //
+    //     let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    //     return re.test(String(mail).toLowerCase());
+    // }
+</script>
+</body>
+</html>

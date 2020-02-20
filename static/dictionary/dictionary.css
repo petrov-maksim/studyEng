@@ -1,0 +1,145 @@
+body{
+    background-color: #2D2E2F;
+}
+
+img{
+    cursor: pointer;
+    height: 30px;
+}
+
+.dic-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+#aw-form{
+    display: flex;
+    width: 50%;
+    min-width: 442px;
+    justify-content: flex-start;
+}
+
+
+.aw-input{
+    width: 80%;
+    min-width: 180px;
+    background-color: #2D3742;
+    height: 35px;
+    border: none;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+
+    font-family: JosefinSans-Bold;
+    font-size:20px;
+    font-weight: 300;
+    color:#BED2E6;
+
+    padding-left: 10px;
+    outline:none;
+
+    margin-right: 10px;
+}
+
+#aw-btn{
+    width: 160px;
+    height: 35px;
+    background-color: #BED2E6;
+
+    border: none;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+
+    font-size: 17px;
+}
+
+#aw-btn:hover{
+    cursor: pointer;
+}
+
+#aw-btn:active{
+    background-color: #7097D5;
+    transition: 0.1s;
+}
+
+#aw-btn:active, #aw-btn:focus{
+    outline: none;
+}
+
+/*
+----------------------------------------WORDSETS----------------------------------------------
+*/
+.wordSets-container{
+    display: flex;
+
+    width: 100%;
+    justify-content: center;
+}
+
+.wordSet-pic{
+    width: 200px;
+    height: 230px;
+    margin: 15px;
+}
+
+/*
+----------------------------------------TABLE-------------------------------------------------
+ */
+#words-table {
+    width: 65%;
+}
+
+.words-table-row {
+    border-bottom: #919191 solid 1px;
+    text-align: left;
+}
+
+.words-table-row > td {
+    padding: 15px 7px;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.word {
+    color: #7298C9;
+}
+
+.translation {
+    color: #72C981;
+}
+
+.cursor-pointer:hover{
+    cursor: pointer;
+}
+
+.index{
+    color: chocolate;
+}
+
+.index:hover{
+    cursor: default;
+}
+
+.select-word-checkbox{
+    width: 20px;
+    height: 20px;
+}
+
+.select-word-checkbox:hover{
+    cursor: pointer;
+}
+
+.show-more{
+    display: inline-block;
+    width: 60%;
+    padding-left: 40%;
+    cursor: pointer;
+    margin-top: 30px;
+    color: #5CA10C;
+    font-size: 150%;
+}

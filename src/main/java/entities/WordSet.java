@@ -4,6 +4,8 @@ public class WordSet {
     private int wordSetId;
     private String name;
     private int size;
+    private boolean isMain;
+    private byte [] image;
 
     public int getWordSetId() {
         return wordSetId;
@@ -29,12 +31,29 @@ public class WordSet {
         this.size = size;
     }
 
+    public boolean isMain() {
+        return isMain;
+    }
+
+    public void setMain(boolean main) {
+        isMain = main;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
     @Override
     public String toString() {
         return "WordSet{" +
                 "wordSetId=" + wordSetId +
                 ", name='" + name + '\'' +
                 ", size=" + size +
+                ", isMain=" + isMain +
                 '}';
     }
 }

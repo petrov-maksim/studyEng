@@ -22,19 +22,23 @@ public class SignInServlet extends HttpServlet implements BaseServlet {
     private String mail;
     private String password;
     private String sessionId;
+    private static int index = 0;
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         sessionId = req.getSession().getId();
         response = resp;
 
-        if (SessionCache.INSTANCE.isAuthorized(sessionId)) {
-            handle(true);
-            return;
-        }
-
         //First request
         if (req.getHeader("handling") == null) {
+            if (SessionCache.INSTANCE.isAuthorized(sessionId)) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                resp.setHeader(ALREADY_AUTHORIZED, "true");
+                resp.flushBuffer();
+                return;
+            }
+
             try {
                 initParams(req);
             } catch (Exception e) {
@@ -43,6 +47,7 @@ public class SignInServlet extends HttpServlet implements BaseServlet {
                 resp.flushBuffer();
                 return;
             }
+
             createMessage();
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.flushBuffer();
@@ -50,6 +55,7 @@ public class SignInServlet extends HttpServlet implements BaseServlet {
         //Not the first request
         else
             checkServiceResult();
+
     }
 
     @Override
@@ -60,9 +66,21 @@ public class SignInServlet extends HttpServlet implements BaseServlet {
 
 
     public void handle(boolean isAuthorized){
+        int sc = isAuthorized? HttpServletResponse.SC_OK : HttpServletResponse.SC_BAD_REQUEST;
         try {
-            response.setHeader("ready","true");
-            response.getWriter().write("User authorized: " + isAuthorized);
+            response.setStatus(sc);
+            response.setHeader(READY, "true");
+            response.flushBuffer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void notReady() {
+        try {
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setHeader(READY, "false");
             response.flushBuffer();
         } catch (IOException e) {
             e.printStackTrace();
@@ -70,8 +88,8 @@ public class SignInServlet extends HttpServlet implements BaseServlet {
     }
 
     private void initParams(HttpServletRequest request) throws Exception {
-        mail = request.getParameter("mail");
-        password = request.getParameter("password");
+        mail = request.getHeader("mail");
+        password = request.getHeader("password");
 
         if (mail == null || mail.isBlank() || password == null || password.isBlank())
             throw new Exception();

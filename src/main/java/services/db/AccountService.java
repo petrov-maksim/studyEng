@@ -1,22 +1,22 @@
 package services.db;
 
-import services.AbstractService;
+import messageSystem.Abonent;
+import messageSystem.Address;
+import messageSystem.MessageSystem;
 import util.QueryExecutor;
 import util.SessionCache;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 
-public class AccountService extends AbstractService {
+public class AccountService implements Abonent, Runnable {
+    private static final Address address = new Address();
     private SessionCache sessionCache = SessionCache.INSTANCE;
     private final QueryExecutor queryExecutor;
     private static  final String SELECT_ID = "SELECT id FROM users WHERE email = '%s' AND password = '%s';";
     private static final String REGISTER_USER = "INSERT INTO users (name, email, password) VALUES ('%s', '%s', '%s') RETURNING id;";
 
-    public AccountService(int threadsNum, QueryExecutor queryExecutor) {
-        super(threadsNum);
+    public AccountService(QueryExecutor queryExecutor) {
         this.queryExecutor = queryExecutor;
     }
 
@@ -25,15 +25,21 @@ public class AccountService extends AbstractService {
      * @return true if successfully, false otherwise
      */
     public boolean signUp(String mail, String password, String name, String sessionId){
-        Integer id = queryExecutor.execQuery(String.format(REGISTER_USER, name, mail, password), (resultSet -> {
-            if (resultSet.next())
-                return resultSet.getInt("id");
-            return -1;
-        }));
+        Integer id = null;
+        try {
+            id = queryExecutor.execQuery(String.format(REGISTER_USER, name, mail, password), (resultSet -> {
+                if (resultSet.next())
+                    return resultSet.getInt("id");
+                return -1;
+            }));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         if (id == null || id == -1)
             return false;
 
-        createMainWordSet(id);
+        if (createMainWordSet(id) == -1)
+            return false;
 
         SessionCache.INSTANCE.authorizeUser(sessionId, id);
         return true;
@@ -58,18 +64,53 @@ public class AccountService extends AbstractService {
      * @return user's id or -1
      */
     private int getId(String mail, String password){
-        return queryExecutor.execQuery(String.format(SELECT_ID, mail, password), (rs) ->{
-            if (rs.next())
-                return rs.getInt("id");
-            else return -1;
-        });
+        try {
+            return queryExecutor.execQuery(String.format(SELECT_ID, mail, password), (rs) ->{
+                if (rs.next())
+                    return rs.getInt("id");
+                else return -1;
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     /**
      * У каждого пользователя при регистрации создается главдый wordSet
      */
-    private void createMainWordSet(int userId) {
-        queryExecutor.execUpdate(String.format("INSERT INTO wordSets (user_id, name, isMain) VALUES ('%d', '%s', '%b');",
-                userId, "All Words", true));
+    private int createMainWordSet(int userId) {
+        try {
+            return queryExecutor.execQuery(String.format("INSERT INTO wordSets (user_id, name, isMain) VALUES ('%d', '%s', '%b') RETURNING id;",
+                    userId, "All Words", true), resultSet -> {
+                if (resultSet.next())
+                    return resultSet.getInt("id");
+                return -1;
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    @Override
+    public Address getAddress() {
+        return getAdr();
+    }
+
+    public static Address getAdr(){
+        return address;
+    }
+
+    @Override
+    public void run() {
+        while(true){
+            try{
+                MessageSystem.INSTANCE.execForService(this);
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

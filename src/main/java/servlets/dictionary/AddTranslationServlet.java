@@ -1,9 +1,9 @@
 package servlets.dictionary;
 
-import messageSystem.Address;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import entities.Word;
 import messageSystem.MessageSystem;
 import messageSystem.messages.dictionary.toService.MessageAddTranslation;
-import servlets.BaseServlet;
 import servlets.NonAbonentServlet;
 import util.AddressService;
 import util.SessionCache;
@@ -39,6 +39,7 @@ public class AddTranslationServlet extends HttpServlet implements NonAbonentServ
             initParams(req);
         }catch (Exception e){
             System.out.println("Wrong parameters in AddTranslationServlet");
+            e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.flushBuffer();
             return;
@@ -51,14 +52,19 @@ public class AddTranslationServlet extends HttpServlet implements NonAbonentServ
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageAddTranslation(null, AddressService.INSTANCE.getDictionaryService(),
+        MessageSystem.INSTANCE.sendMessageForService(new MessageAddTranslation(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
                 translation, wordId, userId));
     }
 
     private void initParams(HttpServletRequest request) throws Exception {
-        if ((translation = request.getParameter("translation")) == null)
-            throw new Exception();
-        wordId = Integer.parseInt(request.getParameter("wordId"));
         userId = SessionCache.INSTANCE.getUserIdBySessionId(sessionId);
+        ObjectMapper mapper = new ObjectMapper();
+        Word obj = mapper.readValue(request.getReader().readLine(), Word.class);
+
+        wordId = obj.getId();
+        translation = obj.getTranslations().get(0);
+
+        if (translation == null || translation.isBlank() || wordId <= 0)
+            throw new Exception();
     }
 }

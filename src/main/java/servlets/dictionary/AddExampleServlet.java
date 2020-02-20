@@ -1,5 +1,7 @@
 package servlets.dictionary;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import entities.Word;
 import messageSystem.MessageSystem;
 import messageSystem.messages.dictionary.toService.MessageAddExample;
 import servlets.NonAbonentServlet;
@@ -47,15 +49,21 @@ public class AddExampleServlet extends HttpServlet implements NonAbonentServlet 
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageAddExample(null, AddressService.INSTANCE.getDictionaryService(),
+        MessageSystem.INSTANCE.sendMessageForService(new MessageAddExample(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
                 example, userId, wordId));
     }
 
     private void initParams(HttpServletRequest request) throws Exception {
-        if ((example = request.getParameter("example")) == null)
-            throw new Exception();
-        wordId = Integer.parseInt(request.getParameter("wordId"));
         userId = SessionCache.INSTANCE.getUserIdBySessionId(sessionId);
-        System.out.println(wordId + example + userId);
+        ObjectMapper mapper = new ObjectMapper();
+        Word obj = mapper.readValue(request.getReader().readLine(), Word.class);
+
+        wordId = obj.getId();
+        example = obj.getExample();
+
+        System.out.println(wordId + " " + example);
+
+        if (example == null || wordId <= 0)
+            throw new Exception();
     }
 }

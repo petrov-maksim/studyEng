@@ -1,9 +1,9 @@
 package servlets.dictionary.wordSet;
 
-import messageSystem.Address;
+
 import messageSystem.MessageSystem;
 import messageSystem.messages.dictionary.toService.MessageAddWordsToWordSet;
-import servlets.BaseServlet;
+import servlets.NonAbonentServlet;
 import util.AddressService;
 import util.SessionCache;
 
@@ -20,8 +20,7 @@ import java.util.Arrays;
  * На данный момент, word's ids лежат в заголовке:
  * wordId: 1,2,3,4,5
  */
-public class AddWordsToWordSetServlet extends HttpServlet implements BaseServlet {
-    private static final Address address = new Address();
+public class AddWordsToWordSetServlet extends HttpServlet implements NonAbonentServlet {
     private HttpServletResponse response;
     private String sessionId;
     private Integer wordIds[];
@@ -41,7 +40,7 @@ public class AddWordsToWordSetServlet extends HttpServlet implements BaseServlet
         try{
             initParams(req);
         }catch (Exception e){
-            System.out.println("Wrong parameters in AddWordToWordSetServlet");
+            System.out.println("Wrong parameters in AddWordsToWordSetServlet");
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.flushBuffer();
             return;
@@ -55,7 +54,7 @@ public class AddWordsToWordSetServlet extends HttpServlet implements BaseServlet
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageAddWordsToWordSet(getAdr(), AddressService.INSTANCE.getDictionaryService(),
+        MessageSystem.INSTANCE.sendMessageForService(new MessageAddWordsToWordSet(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
                  wordIds, wordSetId));
     }
 
@@ -76,17 +75,7 @@ public class AddWordsToWordSetServlet extends HttpServlet implements BaseServlet
         wordIds = Arrays.stream(request.getParameter("wordId").split(",")).
                 map(Integer::parseInt).toArray(Integer[]::new);
         wordSetId = Integer.parseInt(request.getParameter("wordSetId"));
+        System.out.println(Arrays.toString(wordIds));
+        System.out.println(wordSetId);
     }
-
-    @Override
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    @Override
-    public Address getAddress() {
-        return getAdr();
-    }
-
-    public static Address getAdr(){return address;}
 }

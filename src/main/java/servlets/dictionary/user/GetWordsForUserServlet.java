@@ -1,10 +1,10 @@
 package servlets.dictionary.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.Word;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
 import messageSystem.messages.dictionary.toService.MessageGetWordsForUser;
-import messageSystem.messages.dictionary.toService.MessageGetWordsFromWordSet;
 import servlets.BaseServlet;
 import util.AddressService;
 import util.SessionCache;
@@ -18,7 +18,7 @@ import java.util.Collection;
 
 public class GetWordsForUserServlet extends HttpServlet implements BaseServlet {
     private static final Address address = new Address();
-    private static final int N_WORDS = 30; //максимальное количество слов в response
+    private static final int N_WORDS = 15; //максимальное количество слов в response
     private String sessionId;
     private int userId;
     private HttpServletResponse response;
@@ -56,22 +56,39 @@ public class GetWordsForUserServlet extends HttpServlet implements BaseServlet {
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageGetWordsForUser(getAddress(), AddressService.INSTANCE.getDictionaryService(),
+        MessageSystem.INSTANCE.sendMessageForService(new MessageGetWordsForUser(getAddress(), AddressService.INSTANCE.getDictionaryServiceAddress(),
                 sessionId, userId, index, N_WORDS));
     }
 
     public void handle(Collection<Word> words) {
-        response.setHeader("ready", "true");
-        try {
-            response.getWriter().write("All done");
-        } catch (IOException e) {
+        System.out.println(words);
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setHeader(READY, "true");
+
+        try{
+            if (words == null || words.isEmpty())
+                response.flushBuffer();
+            else {
+                ObjectMapper objectMapper = new ObjectMapper();
+                response.setContentType("application/json");
+                response.setCharacterEncoding("utf-8");
+                response.getWriter().write(objectMapper.writeValueAsString(words));
+            }
+        }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    private void userNotAuthorized() throws IOException {
-        response.setHeader("ready", "true");
-        response.getWriter().write("U are not authorized");
+    @Override
+    public void notReady() {
+        try {
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setHeader(READY, "false");
+            response.flushBuffer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -87,12 +104,7 @@ public class GetWordsForUserServlet extends HttpServlet implements BaseServlet {
     public static Address getAdr(){return address;}
 
     private void initParams(HttpServletRequest request){
-        try{
-            index = Integer.parseInt(request.getHeader("index"));
-            userId = SessionCache.INSTANCE.getUserIdBySessionId(sessionId);
-        }catch (Exception e){
-            // Logging
-            System.out.println("wrong index in GetWordForUserServlet");
-        }
+        index = Integer.parseInt(request.getParameter("index"));
+        userId = SessionCache.INSTANCE.getUserIdBySessionId(sessionId);
     }
 }

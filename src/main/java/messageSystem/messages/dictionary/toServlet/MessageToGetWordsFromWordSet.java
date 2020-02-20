@@ -4,7 +4,7 @@ import entities.Word;
 import messageSystem.Abonent;
 import messageSystem.Address;
 import messageSystem.Message;
-import servlets.dictionary.GetWordsFromWordSetServlet;
+import servlets.dictionary.wordSet.GetWordsFromWordSetServlet;
 
 import java.util.Collection;
 

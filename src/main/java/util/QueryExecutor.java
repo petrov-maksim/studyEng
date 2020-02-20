@@ -12,15 +12,13 @@ public class QueryExecutor {
         this.connection = connection;
     }
 
-    public void execUpdate(String query) {
+    public void execUpdate(String query) throws SQLException {
         try(Statement stmt = connection.createStatement()){
             stmt.execute(query);
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
-    public <T> T execQuery(String query, QueryResultHandler<T> resultHandler)  {
+    public <T> T execQuery(String query, QueryResultHandler<T> resultHandler) throws SQLException {
         T value = null;
         try(Statement stmt = connection.createStatement()){
             stmt.executeQuery(query);
@@ -28,8 +26,6 @@ public class QueryExecutor {
             try(ResultSet resultSet = stmt.getResultSet()){
                 value = resultHandler.handle(resultSet);
             }
-        }catch (SQLException e) {
-            e.printStackTrace();
         }
         return value;
     }

@@ -1,5 +1,7 @@
 package servlets.dictionary.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import entities.Word;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
 import messageSystem.messages.dictionary.toService.MessageAddWordForUser;
@@ -37,8 +39,10 @@ public class AddWordForUserServlet extends HttpServlet implements BaseServlet {
 
         //First request
         if (req.getHeader("handling") == null) {
-            if (!initParams(req)){
-                System.out.println("Wrong parameters in RemoveWordServlet");
+            try{
+                initParams(req);
+            }catch (Exception e){
+                System.out.println("Wrong parameters in AddWordForUserServlet");
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.flushBuffer();
                 return;
@@ -56,31 +60,47 @@ public class AddWordForUserServlet extends HttpServlet implements BaseServlet {
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageAddWordForUser(getAdr(), AddressService.INSTANCE.getDictionaryService(),
+        MessageSystem.INSTANCE.sendMessageForService(new MessageAddWordForUser(getAdr(), AddressService.INSTANCE.getDictionaryServiceAddress(),
                 word, translation, userId, sessionId));
     }
 
-
     public void handle(int wordId){
-        int sc = wordId == -1 ? HttpServletResponse.SC_INTERNAL_SERVER_ERROR : HttpServletResponse.SC_OK;
+        int sc =
+                wordId == -1 ? HttpServletResponse.SC_INTERNAL_SERVER_ERROR :
+                wordId == 0 ? HttpServletResponse.SC_BAD_REQUEST :
+                        HttpServletResponse.SC_OK;
         try{
             response.setStatus(sc);
-            response.setHeader("ready", "true");
-            response.setHeader("wordId", String.valueOf(wordId));
+            response.setHeader(READY, "true");
+            if (wordId != 0 && wordId != -1)
+                response.getWriter().write(String.valueOf(wordId));
             response.flushBuffer();
         }catch (IOException e){
             e.printStackTrace();
         }
     }
 
-    private boolean initParams(HttpServletRequest request) {
-        userId = SessionCache.INSTANCE.getUserIdBySessionId(sessionId);
-        word = request.getParameter("word");
-        translation = request.getParameter("translation");
+    @Override
+    public void notReady() {
+        try {
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setHeader(READY, "false");
+            response.flushBuffer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-        if (word == null || translation == null)
-            return false;
-        return true;
+    private void initParams(HttpServletRequest request) throws Exception {
+        userId = SessionCache.INSTANCE.getUserIdBySessionId(sessionId);
+        ObjectMapper mapper = new ObjectMapper();
+        Word obj = mapper.readValue(request.getReader().readLine(), Word.class);
+        word = obj.getWord();
+        translation = obj.getTranslations().get(0);
+        System.out.println(word + "\n" + translation);
+
+        if (word == null || word.isBlank() || translation == null || translation.isBlank())
+            throw new Exception();
     }
 
     @Override
