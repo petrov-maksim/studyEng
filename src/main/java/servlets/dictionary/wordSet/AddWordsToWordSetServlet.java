@@ -12,7 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Не возвращает ничего
@@ -23,7 +27,7 @@ import java.util.Arrays;
 public class AddWordsToWordSetServlet extends HttpServlet implements NonAbonentServlet {
     private HttpServletResponse response;
     private String sessionId;
-    private Integer wordIds[];
+    private List<Integer> wordIds;
     private int wordSetId;
 
     @Override
@@ -72,10 +76,8 @@ public class AddWordsToWordSetServlet extends HttpServlet implements NonAbonentS
     }
 
     private void initParams(HttpServletRequest request) {
-        wordIds = Arrays.stream(request.getParameter("wordId").split(",")).
-                map(Integer::parseInt).toArray(Integer[]::new);
+        wordIds = Arrays.stream(request.getParameter("wordId").split(","))
+                .map(Integer::parseInt).collect(Collectors.toList());
         wordSetId = Integer.parseInt(request.getParameter("wordSetId"));
-        System.out.println(Arrays.toString(wordIds));
-        System.out.println(wordSetId);
     }
 }

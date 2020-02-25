@@ -1,0 +1,294 @@
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="..\common\dropDef.css">
+	<link rel="stylesheet" type="text/css" href="..\common\header.css">
+	<title>trainings</title>
+	<title>trainings</title>
+
+	<style>
+		body{
+			background-color: #2D2E2F;
+		}
+
+		img{
+			cursor: pointer;
+			height: 30px;
+		}
+
+		.training-container {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+
+			width: 100%;
+			height: 100%;
+		}
+
+		.training-wrapper {
+			display: flex;
+
+			position: absolute;
+			top: 21%;
+
+			width: 70%;
+			max-width: 850px;
+			min-width: 600px;
+
+			max-height: 600px;
+			min-height: 350px;
+
+		}
+
+		#word {
+			width: 65%;
+			background-color:#1b2b37;
+
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+
+			font-family: JosefinSans-Bold;
+			font-size: 30px;
+			color: chocolate;
+			line-height: 1.2;
+		}
+
+		.translations {
+			width: 35%;
+			background-color: rgba(160,230,256,.1);
+			/*background-color: #BED2E6;*/
+
+		}
+
+		.translations-ul{
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			align-items: end;
+
+			width: 100%;
+			height: 100%;
+
+			font-family: JosefinSans-Bold;
+			font-size: 21px;
+			color: black;
+			line-height: 1.2;
+		}
+
+		.translations-ul > li{
+			background-color: #BED2E6;
+
+			text-align: center;
+
+			width: 100%;
+			min-height: 30px;
+			height: 11%;
+		}
+
+		.translations-ul > li:hover{
+			cursor: pointer;
+		}
+
+	</style>
+	<script>
+		const PATH = "http://localhost:8080/";
+		const TRAINING_URL = PATH + "trainings/trainings.html";
+		const TRAINING_ID = 1;
+		const learnedWordIds = [];
+		let currentWord;
+		let isFirstClick;
+		let words;
+		let randomWords;
+		let rightWordIndex;
+
+		async function init(){
+			isFirstClick = true;
+			learnedWordIds.length = 0;
+			words = await getUnlearnedWords();
+			if (words === null || words.length === 0) {
+				noUnlearnedWords();
+				return;
+			}
+			randomWords = await getRandomWords();
+
+			setListeners();
+			setWordAndTranslations();
+		}
+
+		async function getUnlearnedWords() {
+			let response = await fetch(PATH + "trainings/getUnlearnedWords?trainingId=" + TRAINING_ID);
+
+			if (response.status === 401 || response.status === 400){
+				alert("U're not authorized or smt wrong");
+				return;
+			}
+
+
+			do{
+				response = await fetch(PATH + "trainings/getUnlearnedWords",{
+					method: 'GET',
+					headers:{
+						'handling':"true"
+					}
+				});
+
+				if (response.headers.get("ready") === "false")
+					await new Promise(resolve => setTimeout(resolve, 10));
+			}while (response.headers.get("ready") === "false");
+
+			if (response.ok){
+				try{
+					return await response.json();
+				}catch (e) {}
+			}
+			else
+				alert("Smt wrong");
+			return null;
+		}
+
+		async function getRandomWords() {
+			let response = await fetch(PATH + "trainings/getRandomWords");
+
+			if (response.status === 401){
+				alert("U're not authorized");
+				return;
+			}
+
+			do{
+				response = await fetch(PATH + "trainings/getRandomWords",{
+					method: 'GET',
+					headers:{
+						'handling':"true"
+					}
+				});
+
+				if (response.headers.get("ready") === "false")
+					await new Promise(resolve => setTimeout(resolve, 10));
+			}while (response.headers.get("ready") === "false");
+
+			if (response.ok){
+				try{
+					return await response.json();
+				}catch (e) {}
+			}
+			else
+				alert("Smt wrong");
+			return null;
+		}
+		
+		async function moveWordsToLearned() {
+			await fetch(PATH + "trainings/moveWordsToLearned?trainingId=" + TRAINING_ID + "&wordId=" + learnedWordIds.join(","),{
+				method: "POST"
+			});
+		}
+
+		//Set current word
+		function setWordAndTranslations() {
+			dropPaint();
+
+			if (words === null || words.length === 0) {
+				onWordsEnd();
+				return;
+			}
+
+			currentWord = words.pop();
+			rightWordIndex = getRandomNumber();
+
+			document.getElementById("word").textContent = currentWord["translations"].join(", ");
+			document.querySelectorAll(".translation").forEach(function (translation){
+				if (Number.parseInt(translation.getAttribute("index")) !== rightWordIndex)
+					translation.textContent = randomWords.pop();
+			});
+
+			document.querySelectorAll(".translation")[rightWordIndex].textContent = currentWord["word"];
+		}
+		
+		function setListeners() {
+			document.querySelectorAll(".translations-ul > li").forEach(translation => translation.addEventListener("click", checkTranslation));
+		}
+
+		function checkTranslation(event) {
+			if (isFirstClick){
+				let target = event.currentTarget;
+				isFirstClick = false;
+
+				if (Number.parseInt(target.getAttribute("index")) === rightWordIndex){
+					learnedWordIds.push(currentWord["id"]);
+					paintTranslation();
+				}
+				else if (target.getAttribute("id") === "enter")
+					paintTranslation();
+				else
+					paintTranslation(target.getAttribute("index"));
+			}else {
+				setWordAndTranslations();
+				isFirstClick = true;
+			}
+		}
+
+		async function onWordsEnd() {
+			if (learnedWordIds.length > 0)
+				await moveWordsToLearned();
+
+			if (confirm("Продолжить тренировку?"))
+				init();
+			else
+				window.location.href = TRAINING_URL;
+		}
+
+		function noUnlearnedWords() {
+			alert("Поздравляем, вы изучили все слова!");
+			window.location.href = TRAINING_URL;
+		}
+
+		function getRandomNumber() {
+			return Math.floor(Math.random() * 4);
+		}
+
+		function paintTranslation(index) {
+			if (index)
+				document.querySelectorAll(".translation")[index].style.backgroundColor = "red";
+			document.querySelectorAll(".translation")[rightWordIndex].style.backgroundColor = "green";
+		}
+
+		function dropPaint() {
+			document.querySelectorAll(".translation").forEach(elem => elem.style.backgroundColor = "#BED2E6");
+		}
+	</script>
+
+</head>
+<body onload="init();">
+<header>
+	<div class="header">
+		<ul class="header-ul">
+			<a class="header-a" href="#"><li>Грамматика</li></a>
+			<a class="header-a" href="../dictionary/dictionary.html"><li>Словарь</li></a>
+			<a class="header-a" href="../trainings/trainings.html"><li>Тренировки</li></a>
+			<a class="header-a" href="#"><li>Контент</li></a>
+		</ul>
+
+		<img class="profile-pic" src="..\images\user_pic.png">
+	</div>
+</header>
+
+<div class = "training-container" >
+	<div class="training-wrapper">
+		<span id = "word"></span>
+		<div class="translations">
+			<ul class="translations-ul">
+				<li index = "0"><span class="translation"></span></li>
+				<li index = "1"><span class="translation"></span></li>
+				<li index = "2"><span class="translation"></span></li>
+				<li index = "3"><span class="translation"></span></li>
+				<li index = "4"><span class="translation"></span></li>
+
+				<li><span id="enter">Проверить</span></li>
+			</ul>
+		</div>
+	</div>
+</div>
+</body>
+</html>

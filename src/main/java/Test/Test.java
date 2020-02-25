@@ -6,10 +6,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import services.db.AccountService;
-import services.db.ContentService;
-import services.db.DBConfig;
-import services.db.DictionaryService;
+import services.db.*;
 import servlets.account.SignInServlet;
 import servlets.account.SignOutServlet;
 import servlets.account.SignUpServlet;
@@ -21,6 +18,7 @@ import servlets.dictionary.user.GetWordsForUserServlet;
 import servlets.dictionary.wordSet.*;
 import servlets.dictionary.user.RemoveWordsForUserServlet;
 import servlets.grammar.GrammarServlet;
+import servlets.trainings.*;
 import util.QueryExecutor;
 
 import java.sql.DriverManager;
@@ -33,6 +31,10 @@ public class Test {
     private static DictionaryService dictionaryServiceThread1;
     private static DictionaryService dictionaryServiceThread2;
     private static DictionaryService dictionaryServiceThread3;
+
+    private static TrainingService trainingServiceThread1;
+    private static TrainingService trainingServiceThread2;
+    private static TrainingService trainingServiceThread3;
 
     private static ContentService contentServiceThread1;
     private static ContentService contentServiceThread2;
@@ -84,9 +86,15 @@ public class Test {
 
         servletHandler.addServlet(AddTranslationServlet.class, "/dictionary/addTranslation");
         servletHandler.addServlet(RemoveTranslationServlet.class, "/dictionary/removeTranslation");
-//        servletHandler.addServlet(GetTranslationsForWordServlet.class, "/dictionary/getTranslationsForWord");
 
         servletHandler.addServlet(AddExampleServlet.class, "/dictionary/addExample");
+
+        servletHandler.addServlet(GetAmountOfUnlearnedWordsServlet.class, "/trainings/getAmountOfUnlearnedWords");
+        servletHandler.addServlet(GetRandomTranslationsServlet.class, "/trainings/getRandomTranslations");
+        servletHandler.addServlet(GetRandomWordsServlet.class, "/trainings/getRandomWords");
+        servletHandler.addServlet(GetUnlearnedWordsServlet.class, "/trainings/getUnlearnedWords");
+        servletHandler.addServlet(MoveWordsToLearnedServlet.class, "/trainings/moveWordsToLearned");
+        servletHandler.addServlet(MoveWordsToLearningServlet.class, "/trainings/moveWordsToLearning");
 
         servletHandler.setSessionHandler(new SessionHandler());
     }
@@ -99,14 +107,24 @@ public class Test {
         dictionaryServiceThread2 = new DictionaryService(new QueryExecutor(DriverManager.getConnection(DBConfig.DB_URL.getValue(), DBConfig.DB_LOGIN.getValue(), DBConfig.DB_PASSWORD.getValue())));
         dictionaryServiceThread3 = new DictionaryService(new QueryExecutor(DriverManager.getConnection(DBConfig.DB_URL.getValue(), DBConfig.DB_LOGIN.getValue(), DBConfig.DB_PASSWORD.getValue())));
 
-        contentServiceThread1 = new ContentService(new QueryExecutor(DriverManager.getConnection(DBConfig.DB_URL.getValue(), DBConfig.DB_LOGIN.getValue(), DBConfig.DB_PASSWORD.getValue())));
-        contentServiceThread2 = new ContentService(new QueryExecutor(DriverManager.getConnection(DBConfig.DB_URL.getValue(), DBConfig.DB_LOGIN.getValue(), DBConfig.DB_PASSWORD.getValue())));
-        contentServiceThread3 = new ContentService(new QueryExecutor(DriverManager.getConnection(DBConfig.DB_URL.getValue(), DBConfig.DB_LOGIN.getValue(), DBConfig.DB_PASSWORD.getValue())));
+        trainingServiceThread1 = new TrainingService(new QueryExecutor(DriverManager.getConnection(DBConfig.DB_URL.getValue(), DBConfig.DB_LOGIN.getValue(), DBConfig.DB_PASSWORD.getValue())));
+        trainingServiceThread2 = new TrainingService(new QueryExecutor(DriverManager.getConnection(DBConfig.DB_URL.getValue(), DBConfig.DB_LOGIN.getValue(), DBConfig.DB_PASSWORD.getValue())));
+        trainingServiceThread3 = new TrainingService(new QueryExecutor(DriverManager.getConnection(DBConfig.DB_URL.getValue(), DBConfig.DB_LOGIN.getValue(), DBConfig.DB_PASSWORD.getValue())));
+
+//        contentServiceThread1 = new ContentService(new QueryExecutor(DriverManager.getConnection(DBConfig.DB_URL.getValue(), DBConfig.DB_LOGIN.getValue(), DBConfig.DB_PASSWORD.getValue())));
+//        contentServiceThread2 = new ContentService(new QueryExecutor(DriverManager.getConnection(DBConfig.DB_URL.getValue(), DBConfig.DB_LOGIN.getValue(), DBConfig.DB_PASSWORD.getValue())));
+//        contentServiceThread3 = new ContentService(new QueryExecutor(DriverManager.getConnection(DBConfig.DB_URL.getValue(), DBConfig.DB_LOGIN.getValue(), DBConfig.DB_PASSWORD.getValue())));
 
         new Thread(accountService).start();
+
         new Thread(dictionaryServiceThread1).start();
         new Thread(dictionaryServiceThread2).start();
         new Thread(dictionaryServiceThread3).start();
+
+        new Thread(trainingServiceThread1).start();
+        new Thread(trainingServiceThread2).start();
+        new Thread(trainingServiceThread3).start();
+
         new Thread(contentServiceThread1).start();
         new Thread(contentServiceThread2).start();
         new Thread(contentServiceThread3).start();

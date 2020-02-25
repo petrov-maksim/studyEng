@@ -1,14 +1,13 @@
-<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="..\common\dropDef.css">
     <link rel="stylesheet" type="text/css" href="..\common\header.css">
-<!--    <link rel="stylesheet" type="text/css" href="dictionary.css">-->
-<!--    <script src ="dictionary.js"></script>-->
+    <!--    <link rel="stylesheet" type="text/css" href="dictionary.css">-->
+    <!--    <script src ="dictionary.js"></script>-->
     <title>dictionary</title>
 
-<!---------------------------------Main-------------------------->
+    <!---------------------------------Main-------------------------->
     <style>
         body{
             background-color: #2D2E2F;
@@ -27,7 +26,7 @@
             width: 100%;
         }
 
-        .aw-show{
+        .add-word-show{
             display: flex;
             width: 50%;
             min-width: 442px;
@@ -36,7 +35,7 @@
             margin-bottom: 10px;
         }
 
-        .aw-hide{
+        .add-word-hide{
             display: none;
         }
 
@@ -88,7 +87,7 @@
         }
     </style>
 
-<!---------------------------------Table-------------------------->
+    <!---------------------------------Table-------------------------->
     <style>
         #words-table {
             width: 65%;
@@ -146,11 +145,12 @@
         }
     </style>
 
-<!---------------------------------Slider------------------------->
+    <!---------------------------------Slider------------------------->
     <style>
         .slider {
             /*width: 50%;*/
-            width: 750px;
+            max-width: 750px;
+            min-width: 500px;
             position: relative;
             overflow: hidden;
             margin-top: 5px;
@@ -235,7 +235,7 @@
             margin-right: 10px;
         }
 
-        .selectedWS{
+        .shadowWS_onSelection{
             position: absolute;
             background-color: #081439;
             z-index: 2; opacity: 0.4;
@@ -278,11 +278,9 @@
         .si-num-name-hide, .si-edit-delete-hide {
             visibility: hidden;
         }
-
-
     </style>
 
-<!------------------------------Word Popup------------------------>
+    <!------------------------------Word Popup------------------------>
     <style>
         .shadow{
             position: fixed;
@@ -290,7 +288,7 @@
             height: 100%;
             background-color: grey;
             opacity: 0.3;
-            z-index: 3;
+            z-index: 4;
         }
 
         .popup-container {
@@ -301,7 +299,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 4;
+            z-index: 5;
         }
 
         .popup-container:hover {
@@ -466,13 +464,13 @@
         }
     </style>
 
- <!----------------------------WordSet Popup---------------------->
+    <!----------------------------WordSet Popup---------------------->
     <style>
         .ws-popup-container{
             width: 100%;
             height: 100%;
             position: fixed;
-            z-index: 4;
+            z-index: 5;
 
             display: flex;
             flex-direction: column;
@@ -603,7 +601,7 @@
 
     </style>
 
-<!-------------------------------On Select------------------------>
+    <!-------------------------------On Select------------------------>
     <style>
         .options-show {
             display: flex;
@@ -674,12 +672,12 @@
             background-color: #ee204e;
         }
 
-        .main-ul > li {
-            z-index: 4;
+        .options-main-ul > li {
+            z-index: 3;
         }
     </style>
 
-<!---------------------------------Loader-------------------------->
+    <!---------------------------------Loader-------------------------->
     <style>
         @import url(https://fonts.googleapis.com/css?family=Raleway+Dots);
 
@@ -699,7 +697,7 @@
             position: fixed;
             top: 45%;
             left: 45%;
-            z-index: 4;
+            z-index: 5;
 
             display: flex;
             flex-direction: column;
@@ -723,10 +721,10 @@
 <header>
     <div class="header">
         <ul class="header-ul">
-            <a class="header-a" href="grammar.html"><li>Грамматика</li></a>
-            <a class="header-a" href="grammar.html"><li>Словарь</li></a>
-            <a class="header-a" href="grammar.html"><li>Тренировки</li></a>
-            <a class="header-a" href="grammar.html"><li>Контент</li></a>
+            <a class="header-a" href="#"><li>Грамматика</li></a>
+            <a class="header-a" href="../dictionary/dictionary.html"><li>Словарь</li></a>
+            <a class="header-a" href="../trainings/trainings.html"><li>Тренировки</li></a>
+            <a class="header-a" href="#"><li>Контент</li></a>
         </ul>
 
         <img class="profile-pic" src="..\images\user_pic.png">
@@ -735,21 +733,21 @@
 
 <div class="dic-container">
     <div id="options-container" class="options-hide">
-        <ul class="main-ul">
+        <ul class="options-main-ul">
             <li>Отправить на тренировку
                 <ul>
-                    <li trainingId="1" onclick="onMoveToTrainings(event)">Слово - перевод</li>
-                    <li trainingId="2" onclick="onMoveToTrainings(event)">Перевод - слово</li>
-                    <li trainingId="3" onclick="onMoveToTrainings(event)">Python Programming</li>
-                    <li trainingId="4" onclick="onMoveToTrainings(event)">PHP Programming</li>
+                    <li trainingId="1" onclick="onMoveToTrainings(event)">Русский - Английский</li>
+                    <li trainingId="2" onclick="onMoveToTrainings(event)">Английский - Русский</li>
+                    <li trainingId="4" onclick="onMoveToTrainings(event)">Знаю - Не знаю</li>
+                    <li trainingId="3" onclick="onMoveToTrainings(event)">Правописание</li>
                 </ul>
             </li>
-            <li class="ws-list">Отправить в набор</li>
+            <li class="options-ws-list">Отправить в набор</li>
             <li onclick="onRemoveWordsFromWS()">Удалить</li>
         </ul>
     </div>
 
-    <form id="aw-form" class="aw-show">
+    <form id="add-word-form" class="add-word-show">
         <input id="word-input" class="aw-input" type="text" placeholder="Слово" required/>
         <input id="translation-input" class="aw-input" type="text" placeholder="Перевод" required/>
         <input type="button" value="Добавить" id="aw-btn" onclick="addWord()">
@@ -758,10 +756,10 @@
     <div class="slider">
         <div class="slider__wrapper">
             <div id="addWsDiv" class="slider__item">
-                <div class="ws__item" style="justify-content: center; align-items: center;background-color: #2D3742;" onclick="addWSHandler()">
+                <div class="ws__item" style="justify-content: center; align-items: center; background-color: rgba(160,230,256,.1);" onclick="addWSListener()">
                     <img src="../images/plus-sign.png" style = "height: 125px; width: 125px;">
-<!--                    <div style='background-image: url("../images/plus-sign.png"); background-repeat: no-repeat'>-->
-<!--                    </div>-->
+                    <!--                    <div style='background-image: url("../images/plus-sign.png"); background-repeat: no-repeat'>-->
+                    <!--                    </div>-->
                 </div>
             </div>
         </div>
@@ -770,16 +768,7 @@
     </div>
 
     <table id="words-table">
-<!--        <tr class="words-table-row" word-id = "1">-->
-<!--            <td><input type = "checkbox" class="select-word-checkbox"></td>-->
-<!--            <td class="index">1</td>-->
-<!--            <td class = "cursor-pointer"><strong class = "cursor-pointer word">some very long word</strong> </td>-->
-<!--            <td> <strong class = "cursor-pointer translation">some very long translation </strong> </td>-->
-<!--            <td><img height="30px" src="../images/delete-sign.png"></td>-->
-<!--        </tr>-->
-        <tbody>
-
-        </tbody>
+        <tbody></tbody>
     </table>
 
     <div id="show">
@@ -793,15 +782,19 @@
     Exit
 </button>
 
-<!--On checkbox selection JS (Options)-->
+<!--Options-->
 <script>
     let checkBoxes;
 
-    function addWSToOptions() {
-        let wsList = document.querySelector(".ws-list");
+    /**
+     * Добавляет актуальные WS в options
+     */
+    function updateWSOptions() {
+        let wsList = document.querySelector(".options-ws-list");
+        wsList.style.display ="";
 
-        if (document.querySelector(".ws-list > ul") !== null)
-            document.querySelector(".ws-list > ul").remove();
+        if (document.querySelector(".options-ws-list > ul") !== null)
+            document.querySelector(".options-ws-list > ul").remove();
 
         if (wordSets_idMap.size === 1) {
             wsList.style.display = "none";
@@ -811,6 +804,8 @@
         let ul = document.createElement("ul");
 
         for (let ws of wordSets_idMap.values()){
+            if (ws["main"] === true)
+                continue;
             let li = document.createElement("li");
             li.textContent = ws["name"];
             li.setAttribute("wordSetId", ws["wordSetId"]);
@@ -821,9 +816,16 @@
         wsList.append(ul);
     }
 
-    //TODO: Когда тренировки будут готовы
     function onMoveToTrainings(event) {
+        let trainingId = event.currentTarget.getAttribute("trainingId");
+        let wordIds = getSelectedRows().map(item => item.getAttribute("word-id"));
 
+        fetch(PATH + "trainings/moveWordsToLearning?trainingId=" + trainingId + "&wordId=" + wordIds.join(","),{
+            method: "POST"
+        });
+
+        dropSelection();
+        toggleAwFormAndOptions();
     }
     function onMoveWordsToWS(wordSetId){
         let wordIds = [];
@@ -836,7 +838,6 @@
         });
 
 
-        document.querySelector(".ws-list > ul").style.display = "none";
         dropSelection();
         toggleAwFormAndOptions();
     }
@@ -869,15 +870,15 @@
         document.getElementById("options-container").classList.remove("options-hide");
         document.getElementById("options-container").classList.add("options-show");
 
-        document.getElementById("aw-form").classList.remove("aw-show");
-        document.getElementById("aw-form").classList.add("aw-hide");
+        document.getElementById("add-word-form").classList.remove("add-word-show");
+        document.getElementById("add-word-form").classList.add("add-word-hide");
     }
     function hideOptions() {
         document.getElementById("options-container").classList.add("options-hide");
         document.getElementById("options-container").classList.remove("options-show");
 
-        document.getElementById("aw-form").classList.add("aw-show");
-        document.getElementById("aw-form").classList.remove("aw-hide");
+        document.getElementById("add-word-form").classList.add("add-word-show");
+        document.getElementById("add-word-form").classList.remove("add-word-hide");
     }
 
     function getSelectedCheckBoxes() {
@@ -896,92 +897,88 @@
 
 <!--Slider-->
 <script>
-    'use strict';
-    let multiItemSlider = (function () {
-        return function (selector, config) {
-            let
-                _mainElement = document.querySelector(selector), // основный элемент блока
-                _sliderWrapper = _mainElement.querySelector('.slider__wrapper'), // обертка для .slider-item
-                _sliderItems = _mainElement.querySelectorAll('.slider__item'), // элементы (.slider-item)
-                _sliderControls = _mainElement.querySelectorAll('.slider__control'), // элементы управления
-                _sliderControlLeft = _mainElement.querySelector('.slider__control_left'), // кнопка "LEFT"
-                _sliderControlRight = _mainElement.querySelector('.slider__control_right'), // кнопка "RIGHT"
-                _wrapperWidth = parseFloat(getComputedStyle(_sliderWrapper).width), // ширина обёртки
-                _itemWidth = parseFloat(getComputedStyle(_sliderItems[0]).width), // ширина одного элемента
-                _positionLeftItem = 0, // позиция левого активного элемента
-                _transform = 0, // значение транфсофрмации .slider_wrapper
-                _step = _itemWidth / _wrapperWidth * 100, // величина шага (для трансформации)
-                _items = []; // массив элементов
-            // наполнение массива _items
-            _sliderItems.forEach(function (item, index) {
-                _items.push({ item: item, position: index, transform: 0 });
-            });
+    function createSlider() {
+        let
+            _mainElement = document.querySelector(".slider"), // основный элемент блока
+            _sliderWrapper = _mainElement.querySelector('.slider__wrapper'), // обертка для .slider-item
+            _sliderItems = _mainElement.querySelectorAll('.slider__item'), // элементы (.slider-item)
+            _sliderControls = _mainElement.querySelectorAll('.slider__control'), // элементы управления
+            _sliderControlLeft = _mainElement.querySelector('.slider__control_left'), // кнопка "LEFT"
+            _sliderControlRight = _mainElement.querySelector('.slider__control_right'), // кнопка "RIGHT"
+            _wrapperWidth = parseFloat(getComputedStyle(_sliderWrapper).width), // ширина обёртки
+            _itemWidth = parseFloat(getComputedStyle(_sliderItems[0]).width), // ширина одного элемента
+            _positionLeftItem = 0, // позиция левого активного элемента
+            _transform = 0, // значение транфсофрмации .slider_wrapper
+            _step = _itemWidth / _wrapperWidth * 100, // величина шага (для трансформации)
+            _items = []; // массив элементов
+        // наполнение массива _items
+        _sliderItems.forEach(function (item, index) {
+            _items.push({ item: item, position: index, transform: 0 });
+        });
 
-            let position = {
-                getMin: 0,
-                getMax: _items.length - 1,
-            };
+        let position = {
+            getMin: 0,
+            getMax: _items.length - 1,
+        };
 
-            let _transformItem = function (direction) {
-                if (direction === 'right') {
-                    if ((_positionLeftItem + _wrapperWidth / _itemWidth - 1) >= position.getMax) {
-                        return;
-                    }
-                    if (!_sliderControlLeft.classList.contains('slider__control_show')) {
-                        _sliderControlLeft.classList.add('slider__control_show');
-                    }
-                    if (_sliderControlRight.classList.contains('slider__control_show') && (_positionLeftItem + _wrapperWidth / _itemWidth) >= position.getMax) {
-                        _sliderControlRight.classList.remove('slider__control_show');
-                    }
-                    _positionLeftItem++;
-                    _transform -= _step;
+        let _transformItem = function (direction) {
+            if (direction === 'right') {
+                if ((_positionLeftItem + _wrapperWidth / _itemWidth - 1) >= position.getMax) {
+                    return;
                 }
-                if (direction === 'left') {
-                    if (_positionLeftItem <= position.getMin) {
-                        return;
-                    }
-                    if (!_sliderControlRight.classList.contains('slider__control_show')) {
-                        _sliderControlRight.classList.add('slider__control_show');
-                    }
-                    if (_sliderControlLeft.classList.contains('slider__control_show') && _positionLeftItem - 1 <= position.getMin) {
-                        _sliderControlLeft.classList.remove('slider__control_show');
-                    }
-                    _positionLeftItem--;
-                    _transform += _step;
-                }
-                _sliderWrapper.style.transform = 'translateX(' + _transform + '%)';
-            };
+                if (!_sliderControlLeft.classList.contains('slider__control_show'))
+                    _sliderControlLeft.classList.add('slider__control_show');
 
-            // обработчик события click для кнопок "назад" и "вперед"
-            let _controlClick = function (e) {
-                if (e.target.classList.contains('slider__control')) {
-                    e.preventDefault();
-                    let direction = e.target.classList.contains('slider__control_right') ? 'right' : 'left';
-                    _transformItem(direction);
-                }
-            };
+                if (_sliderControlRight.classList.contains('slider__control_show') && (_positionLeftItem + _wrapperWidth / _itemWidth) >= position.getMax)
+                    _sliderControlRight.classList.remove('slider__control_show');
 
-            let _setUpListeners = function () {
-                // добавление к кнопкам "назад" и "вперед" обрботчика _controlClick для событя click
-                _sliderControls.forEach(function (item) {
-                    item.addEventListener('click', _controlClick);
-                });
-            };
-
-            // инициализация
-            _setUpListeners();
-
-            return {
-                right: function () { // метод right
-                    _transformItem('right');
-                },
-                left: function () { // метод left
-                    _transformItem('left');
-                }
+                _positionLeftItem++;
+                _transform -= _step;
             }
+            if (direction === 'left') {
+                if (_positionLeftItem <= position.getMin) {
+                    return;
+                }
+                if (!_sliderControlRight.classList.contains('slider__control_show')) {
+                    _sliderControlRight.classList.add('slider__control_show');
+                }
+                if (_sliderControlLeft.classList.contains('slider__control_show') && _positionLeftItem - 1 <= position.getMin) {
+                    _sliderControlLeft.classList.remove('slider__control_show');
+                }
+                _positionLeftItem--;
+                _transform += _step;
+            }
+            _sliderWrapper.style.transform = 'translateX(' + _transform + '%)';
+        };
 
+        // обработчик события click для кнопок "назад" и "вперед"
+        let _controlClick = function (e) {
+            if (e.target.classList.contains('slider__control')) {
+                e.preventDefault();
+                let direction = e.target.classList.contains('slider__control_right') ? 'right' : 'left';
+                _transformItem(direction);
+            }
+        };
+
+        let _setUpListeners = function () {
+            // добавление к кнопкам "назад" и "вперед" обрботчика _controlClick для событя click
+            _sliderControls.forEach(function (item) {
+                item.addEventListener('click', _controlClick);
+            });
+        };
+
+        // инициализация
+        _setUpListeners();
+
+        return {
+            right: function () { // метод right
+                _transformItem('right');
+            },
+            left: function () { // метод left
+                _transformItem('left');
+            }
         }
-    }());
+    }
 </script>
 
 <!--Reduce bandwidth-->
@@ -1031,8 +1028,8 @@
 
 <!--WordSet-->
 <script>
-    const selectedWSDiv = document.createElement("div");
-    selectedWSDiv.classList.add("selectedWS");
+    const shadowWS_onSelection = document.createElement("div");
+    shadowWS_onSelection.classList.add("shadowWS_onSelection");
 
     async function getWordSets(){
         let response = await fetch(PATH +"dictionary/getWordSets");
@@ -1054,15 +1051,13 @@
                 await new Promise(resolve => setTimeout(resolve, 1000));
         }while (response.headers.get("ready") === "false");
 
-        let wordSets;
         if (response.ok)
-            wordSets = await response.json();
-        else {
+            return await response.json();
+        else
             alert("Smt wrong");
-            return;
-        }
+    }
 
-
+    function addWSToSlider(wordSets){
         for (let wordSet of wordSets){
             wordSets_idMap.set(+wordSet["wordSetId"], wordSet);
             console.log(wordSet["wordSetId"] + " "  + wordSet["name"] + " "  + wordSet["main"]);
@@ -1071,7 +1066,7 @@
 
             if (wordSet["main"] === true) {
                 document.getElementById("addWsDiv").after(sliderItem);
-                sliderItem.firstElementChild.prepend(selectedWSDiv);
+                sliderItem.firstElementChild.prepend(shadowWS_onSelection);
             }
             else
                 wsWrapper.append(sliderItem);
@@ -1081,7 +1076,7 @@
         }
     }
 
-    async function openWS(event) {
+    async function OnWSSelection(event) {
         let target = event.currentTarget;
         currentWordSet = wordSets_idMap.get(+target.getAttribute("wordSetId"));
 
@@ -1089,6 +1084,7 @@
         createLoader();
         DBIndex = 1;
         word_idMap.clear();
+        hideOptions();
 
         let words = await getWordsFromWS(event.currentTarget.getAttribute("wordSetId"));
 
@@ -1137,36 +1133,50 @@
         return null;
     }
 
-
-    function addWSHandler() {
-        createWordSetPopUp();
-        setAddWSListeners();
+    function addWordToWordSet(wordId){
+        fetch(PATH + "dictionary/addWordsToWordSet?wordId="+wordId +"&wordSetId=" + currentWordSet["wordSetId"],{
+            method:'POST'
+        });
     }
-    function editWSHandler(event) {
+
+    function removeWordFromWS(wordIds) {
+        fetch(PATH + "dictionary/removeWordsFromWordSet?wordId=" + wordIds.join(",") + "&wordSetId=" + currentWordSet["wordSetId"],{
+            method:'POST',
+        });
+    }
+
+
+    function addWSListener() {
+        createWordSetPopup();
+        setAddWSPopupListeners();
+    }
+    function editWSListener(event) {
         event.stopPropagation();
         let parentDiv = event.target.closest(".ws__item");
-        createWordSetPopUp();
-        setEditWSListeners(+parentDiv.getAttribute("wordSetId"), parentDiv);
+        createWordSetPopup();
+        setEditWSPopupListeners(+parentDiv.getAttribute("wordSetId"), parentDiv);
 
         document.querySelector(".ws-popup > button").textContent = "Сохранить";
         document.querySelector(".ws-popup > input").value = parentDiv.querySelector(".si-num-name > div").textContent;
     }
-    function removeWSHandler(event) {
+    function removeWSListener(event) {
         event.stopPropagation();
-        let parentDiv = event.target.parentElement.parentElement;
+        let parentDiv = event.target.closest(".ws__item");
         parentDiv.parentElement.remove();
+
         sendRemoveWSData(parentDiv.getAttribute("wordSetId"));
         wordSets_idMap.delete(+parentDiv.getAttribute("wordSetId"));
-        addWSToOptions();
+        updateWSOptions();
+
     }
 
 
-    function setAddWSListeners() {
+    function setAddWSPopupListeners() {
         let wsUploadBtn = document.querySelector(".ws-popup > button");
         let wsPopupContainer = document.querySelector(".ws-popup-container");
         let wsPopup = document.querySelector(".ws-popup");
 
-        wsPopupContainer.addEventListener("click", () => removePopup());
+        wsPopupContainer.addEventListener("click", () => removeWSPopup());
         wsPopup.addEventListener("click", (event) => event.stopPropagation());
         wsUploadBtn.addEventListener("click", async function () {
             if (!checkWSName() || !(await checkWSImg())) {
@@ -1175,16 +1185,17 @@
 
             addNewSliderItem();
             await sendAddWSData();
-            removePopup();
-            addWSToOptions();
+            removeWSPopup();
+            updateWSOptions();
+            createSlider();
         });
     }
-    function setEditWSListeners(wordSetId, parentDiv) {
+    function setEditWSPopupListeners(wordSetId, parentDiv) {
         let wsUploadBtn = document.querySelector(".ws-popup > button");
         let wsPopupContainer = document.querySelector(".ws-popup-container");
         let wsPopup = document.querySelector(".ws-popup");
 
-        wsPopupContainer.addEventListener("click", () => removePopup());
+        wsPopupContainer.addEventListener("click", () => removeWSPopup());
         wsPopup.addEventListener("click", (event) => event.stopPropagation());
         wsUploadBtn.addEventListener("click", function () {
             if (!checkWSName() || !checkWSImg())
@@ -1192,14 +1203,14 @@
 
             replaceSliderItem(parentDiv, wordSetId);
             sendEditWSData(wordSetId);
-            removePopup();
-            addWSToOptions();
+            removeWSPopup();
+            updateWSOptions();
         });
     }
 
 
-    async function addNewSliderItem() {
-        let mainWordSet = document.querySelector(".slider__item").nextElementSibling;
+    function addNewSliderItem() {
+        let mainWordSet = document.querySelector(".main-ws");
 
         let wordSet = {};
         wordSet["wordSetId"] = -1;
@@ -1234,7 +1245,10 @@
         ws["name"] = document.querySelector(".ws-name-input").value.trim();
     }
 
-
+    /**
+     * Отправляет данные на сервер
+     * Добавляет в wordSets_idMap новый ws
+     */
     async function sendAddWSData() {
         let img = document.getElementById("input__file").files[0];
         let name = document.querySelector(".ws-name-input").value;
@@ -1245,10 +1259,8 @@
         wordSet["isMain"] = false;
         wordSet["image"] = img === undefined? null : img;
 
-
         let formData = new FormData();
         formData.append("file", img);
-
 
         let response = await fetch(PATH + "dictionary/addWordSet", {
             method: "POST",
@@ -1257,7 +1269,6 @@
             },
             body: formData
         });
-
 
         if (response.status === 401 || response.status === 400){
             alert("U're not authorized or bad request");
@@ -1292,8 +1303,7 @@
             }catch (e) {}
         }
     }
-    async function sendEditWSData(wordSetId) {
-        console.log("sending: wordSetId " + wordSetId);
+    function sendEditWSData(wordSetId) {
         let img = document.getElementById("input__file").files[0];
         let name = document.querySelector(".ws-name-input").value.trim();
         let formData = new FormData();
@@ -1301,7 +1311,7 @@
         if (img !== null)
             formData.append("file", img);
 
-        let response = await fetch(PATH + "dictionary/updateWordSet", {
+        fetch(PATH + "dictionary/updateWordSet", {
             method: "POST",
             headers: {
                 "name": name,
@@ -1309,34 +1319,15 @@
             },
             body: formData
         });
-
-
-        if (response.status === 401 || response.status === 400){
-            alert("U're not authorized or bad request");
-            return;
-        }
-
-        if (!response.ok)
-            alert("Some strange mistake");
     }
-    async function sendRemoveWSData(wordSetId) {
-        let response = await fetch(PATH + "dictionary/removeWordSet", {
+    function sendRemoveWSData(wordSetId) {
+        fetch(PATH + "dictionary/removeWordSet", {
             method: "POST",
             headers: {
                 "wordSetId": wordSetId
             },
         });
-
-
-        if (response.status === 401 || response.status === 400){
-            alert("U're not authorized or bad request");
-            return;
-        }
-
-        if (!response.ok)
-            alert("Some strange mistake");
     }
-
 
     function checkWSName() {
         let name = document.querySelector(".ws-popup > input").value.trim();
@@ -1392,12 +1383,12 @@
     }
 
 
-    function removePopup(){
+    function removeWSPopup(){
         document.getElementById("shadow").remove();
         document.getElementById("wsPopupContainer").remove();
         document.body.style.overflow = "";
     }
-    function createWordSetPopUp() {
+    function createWordSetPopup() {
         document.body.style.overflow = "hidden";
 
         let shadowDiv = document.createElement("div");
@@ -1435,7 +1426,7 @@
 
         let uploadImg = document.createElement("img");
         uploadImg.classList.add("input__file-icon");
-        uploadImg.setAttribute("src","../images/download.png");
+        uploadImg.setAttribute("src",DOWNLOAD_PIC);
         uploadImg.setAttribute("alt","Выбрать файл");
         uploadImg.setAttribute("width","35px");
 
@@ -1467,7 +1458,9 @@
         wordSets_idMap.set(wordSet["wordSetId"], wordSet);
 
         let sliderItem = document.createElement("div");
-        sliderItem.setAttribute("class", "slider__item");
+        sliderItem.classList.add("slider__item");
+        if(wordSet["main"] === true)
+            sliderItem.classList.add("main-ws");
 
         let backgroundImgDiv = document.createElement("div");
         if (urlCreated)
@@ -1477,7 +1470,7 @@
         backgroundImgDiv.setAttribute("wordSetId",wordSet["wordSetId"]);
         backgroundImgDiv.addEventListener("mouseover", ()=> backgroundImgDiv.querySelector(".si-edit-delete").classList.remove("si-edit-delete-hide"));
         backgroundImgDiv.addEventListener("mouseout", ()=> backgroundImgDiv.querySelector(".si-edit-delete").classList.add("si-edit-delete-hide"));
-        backgroundImgDiv.addEventListener("click", openWS);
+        backgroundImgDiv.addEventListener("click", OnWSSelection);
         backgroundImgDiv.classList.add("ws__item");
 
         let edit_deleteDiv = document.createElement("div");
@@ -1485,21 +1478,20 @@
         edit_deleteDiv.classList.add("si-edit-delete-hide");
         if(wordSet["main"] === false) {
             let penImgDiv = document.createElement("div");
-            penImgDiv.style.backgroundImage = "url('../images/pencil.png')";
+            penImgDiv.style.backgroundImage = "url('"+ PENCIL_PIC +"')";
             penImgDiv.style.backgroundColor = "#D4E3F2";
             penImgDiv.style.borderRadius = "30px";
-            penImgDiv.addEventListener("click", editWSHandler);
+            penImgDiv.addEventListener("click", editWSListener);
 
             let deleteImgDiv = document.createElement("div");
-            deleteImgDiv.style.backgroundImage = "url('../images/delete-sign.png')";
+            deleteImgDiv.style.backgroundImage = "url('" + DELETE_SIGN + "')";
             deleteImgDiv.style.backgroundColor = "#D4E3F2";
             deleteImgDiv.style.borderRadius = "30px";
-            deleteImgDiv.addEventListener("click", removeWSHandler);
+            deleteImgDiv.addEventListener("click", removeWSListener);
 
             edit_deleteDiv.append(penImgDiv);
             edit_deleteDiv.append(deleteImgDiv);
         }
-
 
         let numNameDiv = document.createElement("div");
         numNameDiv.classList.add("si-num-name");
@@ -1512,9 +1504,7 @@
 
 
         sliderItem.append(backgroundImgDiv);
-
         backgroundImgDiv.append(edit_deleteDiv);
-
         backgroundImgDiv.append(numNameDiv);
         numNameDiv.append(nameDiv);
         numNameDiv.append(numDiv);
@@ -1523,16 +1513,16 @@
     }
 
     function toggleSelectedWS(target) {
-        target.prepend(selectedWSDiv);
+        target.prepend(shadowWS_onSelection);
     }
 </script>
 
 <!--Word Popup-->
 <script>
-    function popup(event){
-        let rowTarget = event.currentTarget;
-        while (rowTarget.tagName !== "TR")
-            rowTarget = rowTarget.parentElement;
+    function CreateWordPopup(event){
+        document.body.style.overflow = "hidden";
+
+        let rowTarget = event.currentTarget.closest(".words-table-row");
 
         let targetWord = word_idMap.get(+rowTarget.getAttribute("word-id"));
         let word = targetWord["word"];
@@ -1540,7 +1530,6 @@
         let translations = targetWord["translations"];
         let example = targetWord["example"];
 
-        document.body.style.overflow = "hidden";
 
         let shadowDiv = document.createElement("div");
         shadowDiv.classList.add("shadow");
@@ -1548,15 +1537,15 @@
 
 
         let popupContainer = document.createElement("div");
-        popupContainer.setAttribute("class","popup-container");
+        popupContainer.classList.add("popup-container");
 
 
         let popup = document.createElement("div");
-        popup.setAttribute("class","popup");
+        popup.classList.add("popup");
         popupContainer.append(popup);
 
         let popupWord = document.createElement("div");
-        popupWord.setAttribute("class", "popup-word");
+        popupWord.classList.add("popup-word");
         let wordSpan = document.createElement("span");
         wordSpan.innerText = word;
 
@@ -1565,7 +1554,7 @@
 
 
         let translationWrapper = document.createElement("div");
-        translationWrapper.setAttribute("class", "popup-translation-wrapper");
+        translationWrapper.classList.add("popup-translation-wrapper");
         popup.append(translationWrapper);
 
         let addTranslationDiv = createAddTranslationDiv();
@@ -1574,15 +1563,15 @@
             let translation = translations[i];
 
             let translationDiv = document.createElement("div");
-            translationDiv.setAttribute("class", "popup-translation");
+            translationDiv.classList.add("popup-translation");
 
             let translationSpan = document.createElement("span");
-            translationSpan.innerText = translation;
+            translationSpan.textContent = translation;
 
             let deleteTranslationSign = document.createElement("img");
             deleteTranslationSign.setAttribute("height", "25px");
             deleteTranslationSign.setAttribute("width", "25px");
-            deleteTranslationSign.setAttribute("src", "../images/delete-sign.png");
+            deleteTranslationSign.setAttribute("src", DELETE_SIGN);
 
             translationSpan.append(deleteTranslationSign);
             translationWrapper.append(translationDiv);
@@ -1593,11 +1582,6 @@
                 fetch(PATH + "dictionary/removeTranslation",{
                     method:"POST",
                     body: JSON.stringify({"id":wordId, "translations":[translation]})
-                }).then(function (response) {
-                    if(!response.ok){
-                        alert("Smt wrong");
-                        document.location.reload(true);
-                    }
                 });
 
                 translationDiv.remove();
@@ -1608,13 +1592,12 @@
             });
         }
 
-        if (translations.length < 4){
+        if (translations.length < 4)
             translationWrapper.append(addTranslationDiv);
-        }
 
 
         let exampleDivWrapper = document.createElement("div");
-        exampleDivWrapper.setAttribute("class", "popup-example-wrapper");
+        exampleDivWrapper.classList.add("popup-example-wrapper");
 
         if (example === null || example === "")
             exampleDivWrapper.append(createAddExampleDiv());
@@ -1623,31 +1606,32 @@
 
         function createAddTranslationDiv() {
             let addTranslationDiv = document.createElement("div");
-            addTranslationDiv.setAttribute("class", "popup-translation popup-add-translation-wrapper");
+            addTranslationDiv.classList.add("popup-translation");
+            addTranslationDiv.classList.add("popup-add-translation-wrapper");
             addTranslationDiv.setAttribute("id", "addTranslationDiv");
 
             let addTranslationSpan = document.createElement("span");
-            addTranslationSpan.innerText = "Добавить преревод";
+            addTranslationSpan.textContent = "Добавить преревод";
 
             addTranslationDiv.append(addTranslationSpan);
 
             addTranslationSpan.addEventListener("click", function () {
                 let inputTranslationDiv = document.createElement("div");
-                inputTranslationDiv.setAttribute("class", "popup-translation-input");
+                inputTranslationDiv.classList.add("popup-translation-input");
+
                 let translationInput = document.createElement("input");
                 translationInput.setAttribute("type", "text");
                 translationInput.setAttribute("placeholder", "Перевод");
 
-
                 let addTranslationBtn = document.createElement("button");
-                addTranslationBtn.innerText = "Добавить";
+                addTranslationBtn.textContent = "Добавить";
 
                 addTranslationDiv.replaceWith(inputTranslationDiv);
                 inputTranslationDiv.append(translationInput);
                 inputTranslationDiv.append(addTranslationBtn);
 
                 addTranslationBtn.addEventListener("click", function () {
-                    let newTranslation = translationInput.value;
+                    let newTranslation = translationInput.value.trim();
                     translationInput.value = "";
                     if (newTranslation === ""){
                         inputTranslationDiv.replaceWith(addTranslationDiv);
@@ -1658,26 +1642,21 @@
                     fetch(PATH + "dictionary/addTranslation",{
                         method:"POST",
                         body: JSON.stringify({"id":wordId, "translations":[newTranslation]})
-                    }).then(function (response) {
-                        if(!response.ok){
-                            alert("Smt wrong");
-                            document.location.reload(true);
-                        }
                     });
 
 
                     translations.push(newTranslation);
 
                     let translationDiv = document.createElement("div");
-                    translationDiv.setAttribute("class", "popup-translation");
+                    translationDiv.classList.add("popup-translation");
 
                     let translationSpan = document.createElement("span");
-                    translationSpan.innerText = newTranslation;
+                    translationSpan.textContent = newTranslation;
 
                     let deleteTranslationSign = document.createElement("img");
                     deleteTranslationSign.setAttribute("height", "25px");
                     deleteTranslationSign.setAttribute("width", "25px");
-                    deleteTranslationSign.setAttribute("src", "../images/delete-sign.png");
+                    deleteTranslationSign.setAttribute("src", DELETE_SIGN);
 
                     translationSpan.append(deleteTranslationSign);
                     translationDiv.append(translationSpan);
@@ -1687,11 +1666,6 @@
                         fetch(PATH + "dictionary/removeTranslation",{
                             method:"POST",
                             body: JSON.stringify({"id":wordId, "translations":[newTranslation]})
-                        }).then(function (response) {
-                            if(!response.ok){
-                                alert("Smt wrong");
-                                document.location.reload(true);
-                            }
                         });
 
                         translationDiv.remove();
@@ -1714,15 +1688,15 @@
 
         function createAddExampleDiv() {
             let addExampleDiv = document.createElement("div");
-            addExampleDiv.setAttribute("class", "popup-example");
+            addExampleDiv.classList.add("popup-example");
 
             let addExampleSpan = document.createElement("span");
-            addExampleSpan.innerText = "Добавить пример";
+            addExampleSpan.textContent = "Добавить пример";
             addExampleDiv.append(addExampleSpan);
 
             addExampleSpan.addEventListener("click", function () {
                 let inputExampleDiv = document.createElement("div");
-                inputExampleDiv.setAttribute("class", "popup-translation-input");
+                inputExampleDiv.classList.add("popup-translation-input");
 
                 let exampleInput = document.createElement("input");
                 exampleInput.setAttribute("type", "text");
@@ -1730,7 +1704,7 @@
                 exampleInput.focus();
 
                 let addExampleBtn = document.createElement("button");
-                addExampleBtn.innerText = "Добавить";
+                addExampleBtn.textContent = "Добавить";
 
                 addExampleDiv.replaceWith(inputExampleDiv);
                 inputExampleDiv.append(exampleInput);
@@ -1744,20 +1718,16 @@
                         return;
                     }else
                         inputExampleDiv.remove();
+                    targetWord["example"] = newExample;
 
                     fetch(PATH + "dictionary/addExample",{
                         method:"POST",
                         body: JSON.stringify({"id":wordId, "example":newExample})
-                    }).then(function (response) {
-                        if(!response.ok){
-                            alert("Smt wrong");
-                            document.location.reload(true);
-                        }
                     });
 
 
                     let exampleDiv = document.createElement("div");
-                    exampleDiv.setAttribute("class", "popup-example");
+                    exampleDiv.classList.add("popup-example");
 
                     let exampleSpan = document.createElement("span");
                     exampleSpan.innerText = newExample;
@@ -1765,22 +1735,18 @@
                     let deleteExampleSign = document.createElement("img");
                     deleteExampleSign.setAttribute("height", "25px");
                     deleteExampleSign.setAttribute("width", "25px");
-                    deleteExampleSign.setAttribute("src", "../images/delete-sign.png");
+                    deleteExampleSign.setAttribute("src", DELETE_SIGN);
 
                     exampleSpan.append(deleteExampleSign);
                     exampleDiv.append(exampleSpan);
                     exampleDivWrapper.append(exampleDiv);
 
-                    deleteExampleSign.addEventListener("click", function (event) {
+                    deleteExampleSign.addEventListener("click", function () {
                         fetch(PATH + "dictionary/addExample",{
                             method:"POST",
                             body: JSON.stringify({"id":wordId, "example":""})
-                        }).then(function (response) {
-                            if(!response.ok){
-                                alert("Smt wrong");
-                                document.location.reload(true);
-                            }
                         });
+                        targetWord["example"] = "";
 
                         exampleDiv.remove();
                         exampleDivWrapper.append(addExampleDiv);
@@ -1793,16 +1759,16 @@
 
         function createExampleDiv() {
             let exampleDiv = document.createElement("div");
-            exampleDiv.setAttribute("class", "popup-example");
+            exampleDiv.classList.add("popup-example");
 
             let exampleSpan = document.createElement("span");
-            exampleSpan.innerText = example;
-            exampleSpan.setAttribute("class","example-span");
+            exampleSpan.textContent = example;
+            exampleSpan.classList.add("example-span");
 
             let deleteExampleSign = document.createElement("img");
             deleteExampleSign.setAttribute("height", "25px");
             deleteExampleSign.setAttribute("width", "25px");
-            deleteExampleSign.setAttribute("src", "../images/delete-sign.png");
+            deleteExampleSign.setAttribute("src", DELETE_SIGN);
 
             exampleSpan.append(deleteExampleSign);
             exampleDiv.append(exampleSpan);
@@ -1812,13 +1778,10 @@
                 fetch(PATH + "dictionary/addExample",{
                     method:"POST",
                     body: JSON.stringify({"id":wordId, "example":""})
-                }).then(function (response) {
-                    if(!response.ok){
-                        alert("Smt wrong");
-                        document.location.reload(true);
-                    }
                 });
 
+                targetWord["example"] = "";
+                
                 exampleDiv.remove();
                 exampleDivWrapper.append(createAddExampleDiv());
             });
@@ -1834,8 +1797,7 @@
                 document.body.style.overflow = "";
 
                 rowTarget.children[3].firstElementChild.innerText = targetWord["translations"].join(", ");
-            }
-        );
+            });
 
         popup.addEventListener("click", (event) => event.stopPropagation());
     }
@@ -1844,22 +1806,24 @@
 <!--MAIN JS-->
 <script>
     let currentWordSet;
+    // Актуальные слова (Отображаемые)
     const word_idMap = new Map();
+    // Актуальные наборы слов (Отображаемые)
     const wordSets_idMap = new Map();
     let index = 1;
     let DBIndex = 0;
     const PATH = "http://localhost:8080/";
+    const DELETE_SIGN = "../images/delete-sign.png";
+    const PENCIL_PIC = "../images/pencil.png";
+    const DOWNLOAD_PIC = "../images/download.png";
 
-
-    /** ------------------------------------------------NET WORK--------------------------------------------------------------------------*/
     async function init() {
         addWordsToTable(await getWordsForUser());
-        await getWordSets();
+        addWSToSlider(await getWordSets());
         initCurrentWS();
-        let slider = multiItemSlider('.slider');
+        createSlider();
         setListeners();
-        addWSToOptions();
-
+        updateWSOptions();
     }
 
     async function addWord() {
@@ -1867,7 +1831,47 @@
         if (currentWordSet["main"] !== true)
             addWordToWordSet(wordId);
     }
+    function removeWords(wordIds){
+        if (currentWordSet["main"] === true)
+            removeWordForUser(wordIds);
+        else
+            removeWordFromWS(wordIds);
+    }
 
+    async function getWordsForUser() {
+        let response = await fetch(PATH + "dictionary/getWordsForUser?index=" + DBIndex);
+
+        if (response.status === 401){
+            alert("U're not authorized");
+            return;
+        }
+
+        if (response.status === 400){
+            alert("Wrong index");
+            return;
+        }
+
+        do{
+            response = await fetch(PATH + "dictionary/getWordsForUser",{
+                method: 'GET',
+                headers:{
+                    'handling':"true"
+                }
+            });
+
+            if (response.headers.get("ready") === "false")
+                await new Promise(resolve => setTimeout(resolve, 10));
+        }while (response.headers.get("ready") === "false");
+
+        if (response.ok){
+            try{
+                return await response.json();
+            }catch (e) {}
+        }
+        else
+            alert("Smt wrong");
+        return null;
+    }
     async function addWordForUser(){
         let word = {};
         word["word"] = document.getElementById("word-input").value.trim();
@@ -1914,66 +1918,18 @@
         addWordsToTable([word], true);
         return word["id"];
     }
-
-    function addWordToWordSet(wordId){
-        fetch(PATH + "dictionary/addWordsToWordSet?wordId="+wordId +"&wordSetId=" + currentWordSet["wordSetId"],{
-            method:'POST'
+    function removeWordForUser(wordIds) {
+        fetch(PATH + "dictionary/removeWordForUser?wordId=" + wordIds.join(","),{
+            method:'POST',
         });
     }
 
-    async function getWordsForUser() {
-        let response = await fetch(PATH + "dictionary/getWordsForUser?index=" + DBIndex);
-
-        if (response.status === 401){
-            alert("U're not authorized");
-            return;
-        }
-
-        if (response.status === 400){
-            alert("Wrong index");
-            return;
-        }
-
-        do{
-            response = await fetch(PATH + "dictionary/getWordsForUser",{
-                method: 'GET',
-                headers:{
-                    'handling':"true"
-                }
-            });
-
-            if (response.headers.get("ready") === "false")
-                await new Promise(resolve => setTimeout(resolve, 10));
-        }while (response.headers.get("ready") === "false");
-
-        if (response.ok){
-            try{
-                return await response.json();
-            }catch (e) {
-                return null;
-            }
-        }
-        else
-            alert("Smt wrong");
-    }
-    function removeWords(wordIds){
-        if (currentWordSet["main"] === true)
-            fetch(PATH + "dictionary/removeWordForUser?wordId=" + wordIds.join(","),{
-                method:'POST',
-            });
-        else
-            fetch(PATH + "dictionary/removeWordsFromWordSet?wordId=" + wordIds.join(",") + "&wordSetId=" + currentWordSet["wordSetId"],{
-                method:'POST',
-            });
-    }
-
-    /** ----------------------------------------------LISTENERS------------------------------------------------------------------------*/
-    function removeListener(event){
+    function removeWordsListener(event){
         let checkedRows = getSelectedRows();
 
         if (checkedRows.length === 0) {
-            removeWords([event.currentTarget.parentElement.parentElement.getAttribute("word-id")]);
-            event.currentTarget.parentElement.parentElement.remove();
+            removeWords([event.currentTarget.closest(".words-table-row").getAttribute("word-id")]);
+            event.currentTarget.closest(".words-table-row").remove();
         }
         else {
             removeWords(checkedRows.map(item => item.getAttribute("word-id")));
@@ -1991,10 +1947,10 @@
             addWordsToTable(await getWordsForUser());
         });
 
-        document.querySelectorAll(".cursor-pointer").forEach(elem => elem.addEventListener("click", popup));
+        document.querySelectorAll(".cursor-pointer").forEach(elem => elem.addEventListener("click", CreateWordPopup));
     }
 
-    /** ------------------------------------------------UTILS--------------------------------------------------------------------------*/
+
     function addWordsToTable(words, alone) {
         if (words === null)
             return;
@@ -2051,9 +2007,9 @@
 
             tdImg = document.createElement("td");
             img = document.createElement("img");
-            img.setAttribute("src", "../images/delete-sign.png");
+            img.setAttribute("src", DELETE_SIGN);
             img.setAttribute("height", "30px");
-            img.addEventListener("click", removeListener);
+            img.addEventListener("click", removeWordsListener);
 
             tdCheckBox.append(inpCheckBox);
             tdWord.append(strongWord);
@@ -2074,6 +2030,7 @@
                 tbody.append(row);
         }
     }
+
     function removeWordsFromTable(){
         document.querySelector("#words-table > tbody").replaceWith(document.createElement("tbody"));
     }
@@ -2103,13 +2060,13 @@
 <!--Loader-->
 <script>
     function createLoader() {
-    // <div class="shadow"></div>
-    //
-    //         <div class="loader">
-    //         <canvas id="canvas" width="105px" height="105px">
-    //         </canvas>
-    //         <p title="Loading, please wait."></p>
-    //         </div>
+        // <div class="shadow"></div>
+        //
+        //         <div class="loader">
+        //         <canvas id="canvas" width="105px" height="105px">
+        //         </canvas>
+        //         <p title="Loading, please wait."></p>
+        //         </div>
 
         let shadowDiv = document.createElement("div");
         shadowDiv.classList.add("shadow");

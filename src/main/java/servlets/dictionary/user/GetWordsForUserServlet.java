@@ -61,8 +61,6 @@ public class GetWordsForUserServlet extends HttpServlet implements BaseServlet {
     }
 
     public void handle(Collection<Word> words) {
-        System.out.println(words);
-
         response.setStatus(HttpServletResponse.SC_OK);
         response.setHeader(READY, "true");
 

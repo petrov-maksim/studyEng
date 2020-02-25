@@ -1,0 +1,287 @@
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="..\common\dropDef.css">
+    <link rel="stylesheet" type="text/css" href="..\common\header.css">
+    <title>trainings</title>
+    <title>trainings</title>
+
+    <style>
+        body{
+            background-color: #2D2E2F;
+        }
+
+        img{
+            cursor: pointer;
+            height: 30px;
+        }
+
+        button:active, button:focus {
+            outline: none;
+        }
+
+        .training-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            width: 100%;
+            height: 100%;
+        }
+
+        .training-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            position: absolute;
+            top: 21%;
+
+            width: 60%;
+            max-width: 600px;
+            min-width: 450px;
+
+            min-height: 350px;
+        }
+
+        .translation-container{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            width: 100%;
+            min-height: 250px;
+
+            background-color:#1b2b37;
+        }
+
+        #translation {
+            font-family: JosefinSans-Bold;
+            font-size: 30px;
+            color: chocolate;
+            line-height: 1.2;
+        }
+
+        #answer {
+            font-family: JosefinSans-Bold;
+            font-size: 30px;
+            color: green;
+            line-height: 1.2;
+        }
+
+        .input-container{
+            width: 100%;
+            min-height: 70px;
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .input-container > input {
+            display: block;
+            background-color: #BED2E6;
+            align-self: center;
+            width: 75%;
+            height: 50px;
+
+            font-family: JosefinSans-Bold;
+            font-size: 27px;
+            outline:none;
+            padding: 0 35px 0 35px;
+
+            border-radius: 27px;
+            border: none;
+        }
+
+        .input-container > input::placeholder{
+            color: black;
+        }
+
+        .input-container > input:focus{
+            width: 76%;
+            transition: 0.2s;
+        }
+
+        .input-container > button{
+            width: 20%;
+            min-width: 100px;
+            height: 50px;
+            background-color: #BED2E6;
+            border: none;
+            border-radius: 20px;
+            font-size: 17px;
+            align-self: center;
+        }
+
+        .input-container > button:hover{
+            cursor: pointer;
+        }
+
+        .input-container > button:active{
+            outline: none;
+            border: none;
+            background-color: #9FC3E8;
+            width: 20.5%;
+
+        }
+    </style>
+
+    <script>
+        const PATH = "http://localhost:8080/";
+        const TRAINING_URL = PATH + "trainings/trainings.html";
+        const TRAINING_ID = 3;
+        const learnedWordIds = [];
+        let currentWord;
+        let isFirstClick;
+        let words;
+
+        async function init(){
+            isFirstClick = true;
+            learnedWordIds.length = 0;
+            words = await getUnlearnedWords();
+            if (words === null || words.length === 0) {
+                noUnlearnedWords();
+                return;
+            }
+
+            setListener();
+            setWordAndTranslation();
+        }
+
+        async function getUnlearnedWords() {
+            let response = await fetch(PATH + "trainings/getUnlearnedWords?trainingId=" + TRAINING_ID);
+
+            if (response.status === 401 || response.status === 400){
+                alert("U're not authorized or smt wrong");
+                return;
+            }
+
+
+            do{
+                response = await fetch(PATH + "trainings/getUnlearnedWords",{
+                    method: 'GET',
+                    headers:{
+                        'handling':"true"
+                    }
+                });
+
+                if (response.headers.get("ready") === "false")
+                    await new Promise(resolve => setTimeout(resolve, 10));
+            }while (response.headers.get("ready") === "false");
+
+            if (response.ok){
+                try{
+                    return await response.json();
+                }catch (e) {}
+            }
+            else
+                alert("Smt wrong");
+            return null;
+        }
+
+        async function moveWordsToLearned() {
+            await fetch(PATH + "trainings/moveWordsToLearned?trainingId=" + TRAINING_ID + "&wordId=" + learnedWordIds.join(","),{
+                method: "POST"
+            });
+        }
+
+        function setWordAndTranslation() {
+            dropWord();
+
+            if (words.length === 0) {
+                onWordsEnd();
+                return;
+            }
+
+            currentWord = words.pop();
+            document.getElementById("translation").textContent = currentWord["translations"];
+        }
+
+        function setListener() {
+            document.getElementById("enter").addEventListener("click", checkWord);
+        }
+
+        function checkWord() {
+            if (isFirstClick){
+                let word = document.getElementById("word-input").value;
+                isFirstClick = false;
+
+                if (word.trim().toLowerCase() === currentWord["word"].toLowerCase()){
+                    learnedWordIds.push(currentWord["id"]);
+                    paintWord(true);
+                }
+                else
+                    paintWord(false);
+            }else {
+                setWordAndTranslation();
+                isFirstClick = true;
+            }
+        }
+
+        async function onWordsEnd() {
+            if (learnedWordIds.length > 0)
+                await moveWordsToLearned();
+
+            if (confirm("Продолжить тренировку?"))
+                init();
+            else
+                window.location.href = TRAINING_URL;
+        }
+
+        function noUnlearnedWords() {
+            alert("Поздравляем, вы изучили все слова!");
+            window.location.href = TRAINING_URL;
+        }
+
+        function paintWord(answerCorrect) {
+            if (answerCorrect)
+                document.getElementById("word-input").style.color = "green";
+            else {
+                document.getElementById("word-input").style.color = "red";
+                document.getElementById("answer").textContent = currentWord["word"];
+            }
+            document.getElementById("enter").textContent = "Дальше";
+        }
+
+        function dropWord() {
+            document.getElementById("word-input").style.color = "";
+            document.getElementById("word-input").value = "";
+            document.getElementById("enter").textContent = "Проверить";
+            document.getElementById("answer").textContent = "";
+        }
+    </script>
+
+</head>
+<body onload="init();">
+<header>
+    <div class="header">
+        <ul class="header-ul">
+            <a class="header-a" href="#"><li>Грамматика</li></a>
+            <a class="header-a" href="../dictionary/dictionary.html"><li>Словарь</li></a>
+            <a class="header-a" href="../trainings/trainings.html"><li>Тренировки</li></a>
+            <a class="header-a" href="#"><li>Контент</li></a>
+        </ul>
+
+        <img class="profile-pic" src="..\images\user_pic.png">
+    </div>
+</header>
+
+<div class = "training-container" >
+    <div class="training-wrapper">
+        <div class="translation-container">
+            <span id = "translation">Перевод</span>
+            <span id = "answer"></span>
+
+
+        </div>
+        <div class="input-container">
+            <input id="word-input" type="text" placeholder="Слово" autofocus>
+            <button id="enter">Проверить</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

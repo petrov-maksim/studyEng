@@ -114,3 +114,7 @@ INSERT INTO words(word) values ('apple');
 INSERT INTO translations(translation) values ('яблоко');
 INSERT INTO user_word_translation(user_id, word_id, translation_id) values(1, 1, 1);
 INSERT INTO wordSet_word(wordSet_id, word_id) values(1, 1);
+INSERT INTO trainings (name) VALUES ('rus-eng');
+INSERT INTO trainings (name) VALUES ('eng-rus');
+INSERT INTO trainings (name) VALUES ('writing');
+INSERT INTO trainings (name) VALUES ('cards');

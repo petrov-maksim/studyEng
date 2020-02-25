@@ -9,7 +9,7 @@ import servlets.dictionary.wordSet.GetWordSetsServlet;
 import java.util.List;
 
 public class MessageToGetWordSetsServlet extends Message {
-    private List<WordSet> wordSets ;
+    private List<WordSet> wordSets;
     public MessageToGetWordSetsServlet(Address from, Address to, List<WordSet> wordSets) {
         super(from, to);
         this.wordSets = wordSets;

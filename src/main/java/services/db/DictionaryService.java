@@ -24,6 +24,11 @@ public class DictionaryService implements Abonent, Runnable {
     private static final int BASE_USER_ID = 1;
     private static final String UPLOAD_PATH = "C:\\dev\\pr\\static\\images\\";
     private static final String DEFAULT_WORDSET_IMAGE = "C:\\dev\\pr\\static\\images\\defaultWordSet.png";
+
+    private static final int eng_rusId = 1;
+    private static final int rus_engId = 2;
+    private static final int writingId = 3;
+    private static final int cardsId = 4;
     public DictionaryService(QueryExecutor queryExecutor) {
         this.queryExecutor = queryExecutor;
     }
@@ -62,6 +67,11 @@ public class DictionaryService implements Abonent, Runnable {
                     userId, wordId, translationId));
             queryExecutor.execUpdate(String.format("INSERT INTO wordSet_word (wordSet_id, word_id) VALUES ('%d', '%d');",
                     wordSetId, wordId));
+
+            queryExecutor.execUpdate(String.format("INSERT INTO user_word_training (user_id, word_id, training_id) VALUES('%d', '%d', '%d')," +
+                    "('%d', '%d', '%d')," +
+                    "('%d', '%d', '%d')," +
+                    "('%d', '%d', '%d');", userId, wordId, eng_rusId, userId, wordId, rus_engId, userId, wordId, writingId, userId, wordId, cardsId));
         }catch (SQLException e){
             e.printStackTrace();
             return 0;
@@ -74,7 +84,23 @@ public class DictionaryService implements Abonent, Runnable {
      * Добавляем записи в wordSet_word
      * На фронтенде будет определенно максимальное количество слов, в сервлете, будет проверенно
      */
-    public void addWordsToWordSet(Integer wordIds[], int wordSetId){
+    public void addWordsToWordSet(List<Integer> wordIds, int wordSetId){
+        String str = wordIds.toString();
+        List<Integer> alreadyStoredIds = new ArrayList<>();
+        try {
+            queryExecutor.execQuery(String.format("SELECT word_id FROM wordSet_word WHERE wordSet_id = %d AND word_id IN ("
+                    + str.substring(1,str.length() -1) +");", wordSetId), resultSet -> {
+
+                    if (resultSet.next())
+                        alreadyStoredIds.add(resultSet.getInt("word_id"));
+                    return alreadyStoredIds;
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        wordIds.removeAll(alreadyStoredIds);
+
         Connection con = queryExecutor.getConnection();
 
         try {
@@ -115,21 +141,19 @@ public class DictionaryService implements Abonent, Runnable {
         try {
             return queryExecutor.execQuery(String.format(testQuery, wordSetId, index, num, userId, userId), (resultSet) -> {
                 Map<Integer, Word> words = new HashMap<>();
-                int count = 1;
                 while (resultSet.next()){
                     Word word;
                     if (words.containsKey(resultSet.getInt("word_id")))
                         word = words.get(resultSet.getInt("word_id"));
                     else {
                         word = new Word();
-                        words.put(resultSet.getInt("word_id"), word);
-
                         word.setId(resultSet.getInt("word_id"));
                         word.setWord(resultSet.getString("word"));
                         word.setExample(resultSet.getString("example"));
                         word.setIndex(resultSet.getInt("index"));
+
+                        words.put(word.getId(), word);
                     }
-//                    System.out.println(count++ + " " + resultSet.getString("translation"));
                     word.getTranslations().add(resultSet.getString("translation"));
                 }
 
@@ -161,9 +185,11 @@ public class DictionaryService implements Abonent, Runnable {
         Connection con = queryExecutor.getConnection();
         String query1 = "DELETE FROM wordSet_word WHERE word_id = ? AND wordSet_id IN (SELECT id FROM wordSets WHERE user_id = ?);";
         String query2 = "DELETE FROM user_word_translation WHERE user_id = ? AND word_id = ?;";
+        String query3 = "DELETE FROM user_word_training WHERE user_id = ? AND word_id = ?;";
         try {
             PreparedStatement stmt1 = con.prepareStatement(query1);
             PreparedStatement stmt2 = con.prepareStatement(query2);
+            PreparedStatement stmt3 = con.prepareStatement(query3);
             for (Integer wordId : wordIds) {
                 stmt1.setInt(1, wordId);
                 stmt1.setInt(2, userId);
@@ -172,9 +198,14 @@ public class DictionaryService implements Abonent, Runnable {
                 stmt2.setInt(1, userId);
                 stmt2.setInt(2, wordId);
                 stmt2.addBatch();
+
+                stmt3.setInt(1, userId);
+                stmt3.setInt(2, wordId);
+                stmt3.addBatch();
             }
             stmt1.executeBatch();
             stmt2.executeBatch();
+            stmt3.executeBatch();
         } catch (SQLException e) {
             e.printStackTrace();
         }

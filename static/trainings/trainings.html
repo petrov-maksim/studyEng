@@ -1,0 +1,176 @@
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="..\common\dropDef.css">
+	<link rel="stylesheet" type="text/css" href="..\common\header.css">
+	<title>trainings</title>
+</head>
+
+<style>
+	body{
+		background-color: #2D2E2F;
+	}
+
+	img{
+		cursor: pointer;
+		height: 30px;
+	}
+
+	a:hover {
+		cursor: pointer;
+	}
+
+	.trainings-container {
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		width: 100%;
+		height: 100%;
+	}
+
+	.trainings-container > div {
+		width: 40%;
+		max-width: 500px;
+	}
+
+	.training-wrapper {
+		height: 300px;
+		background-color: rgba(160,230,256,.1);
+
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+
+		font-family: JosefinSans-Bold;
+		font-size:20px;
+		font-weight: 300;
+		color:#BED2E6;
+	}
+
+	.training-wrapper:hover{
+		background-color: #2D3742;
+		transition-delay: 0.05s;
+	}
+
+
+	.first-column {
+		margin-right: 15px;
+
+	}
+
+	.second-column {
+		margin-left: 15px;
+	}
+
+	.eng-rus-wrapper, .cards-wrapper{
+		margin-top: 30px;
+	}
+
+	.first-column > a, .second-column > a{
+		width: 	100%;
+		height: 300px;
+
+		display: block;
+
+		text-decoration: none;
+
+	}
+</style>
+
+<script>
+	const PATH = "http://localhost:8080/";
+	async function init(){
+		let trainings = await getAmountOfUnlearnedWords();
+
+		for (let training of trainings){
+			let trainingWrapper = document.getElementById(training["id"]);
+
+			trainingWrapper.children[1].textContent = training["numOfUnlearnedWords"];
+		}
+	}
+
+	async function getAmountOfUnlearnedWords(){
+		let response = await fetch(PATH + "trainings/getAmountOfUnlearnedWords");
+
+		if (response.status === 401){
+			alert("U're not authorized");
+			return;
+		}
+
+		do{
+			response = await fetch(PATH + "trainings/getAmountOfUnlearnedWords",{
+				method: 'GET',
+				headers:{
+					'handling':"true"
+				}
+			});
+
+			if (response.headers.get("ready") === "false")
+				await new Promise(resolve => setTimeout(resolve, 10));
+		}while (response.headers.get("ready") === "false");
+
+		if (response.ok){
+			try{
+				return await response.json();
+			}catch (e) {}
+		}
+		else
+			alert("Smt wrong");
+		return null;
+	}
+
+	async function exitListener() {
+		await fetch(PATH + "signOut");
+		window.location.href = PATH;
+	}
+</script>
+<body onload="init()">
+	<header>
+	<div class="header">
+		<ul class="header-ul">
+			<a class="header-a" href="#"><li>Грамматика</li></a>
+			<a class="header-a" href="../dictionary/dictionary.html"><li>Словарь</li></a>
+			<a class="header-a" href="../trainings/trainings.html"><li>Тренировки</li></a>
+			<a class="header-a" href="#"><li>Контент</li></a>
+		</ul>
+
+		<img class="profile-pic" src="..\images\user_pic.png">
+	</div>
+</header>
+
+	<div class="trainings-container">
+		<div class="first-column">
+			<a href="rus_eng.html">
+				<div id="1" class="rus-eng-wrapper training-wrapper">
+					<span>Русский - Английский</span>
+					<span></span>
+				</div>
+			</a>
+			<a href="eng_rus.html">
+				<div id="2" class="eng-rus-wrapper training-wrapper">
+					<span>Английский - Русский</span>
+					<span></span>
+				</div>
+			</a>
+		</div>
+
+		<div class="second-column">
+			<a href="writing.html">
+				<div id="3" class="writing-wrapper training-wrapper">
+					<span>Правописание</span>
+					<span></span>
+				</div>
+			</a>
+			<a href="know_dunno.html">
+				<div id="4" class="cards-wrapper training-wrapper">
+					<span>Знаю - Не знаю</span>
+					<span></span>
+				</div>
+			</a>
+		</div>
+	</div>
+	<button onclick="exitListener()" style="margin-left: 30%; width: 100px; height: 100px; background-color: #5CA10C">
+		Exit
+	</button>
+</body>

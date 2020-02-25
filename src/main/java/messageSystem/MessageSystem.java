@@ -30,6 +30,7 @@ public enum MessageSystem {
         serviceMessages.put(AddressService.INSTANCE.getAccountServiceAddress(), new ConcurrentLinkedQueue<>());
         serviceMessages.put(AddressService.INSTANCE.getContentServiceAddress(), new ConcurrentLinkedQueue<>());
         serviceMessages.put(AddressService.INSTANCE.getDictionaryServiceAddress(), new ConcurrentLinkedQueue<>());
+        serviceMessages.put(AddressService.INSTANCE.getTrainingServiceAddress(), new ConcurrentLinkedQueue<>());
 
 
         servletMessages.put(AddressService.INSTANCE.getSignInServletAddress(), new ConcurrentHashMap<>());
@@ -47,6 +48,11 @@ public enum MessageSystem {
         servletMessages.put(AddressService.INSTANCE.getAddWordSetServletAddress(), new ConcurrentHashMap<>());
 
         servletMessages.put(AddressService.INSTANCE.getGetTranslationsForWordServletAddress(), new ConcurrentHashMap<>());
+
+        servletMessages.put(AddressService.INSTANCE.getGetAmountOfUnlearnedWordsServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getGetRandomTranslationsServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getGetRandomWordsServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getGetUnlearnedWordsServletAddress(), new ConcurrentHashMap<>());
     }
 
     public void sendMessageForService(Message message){
