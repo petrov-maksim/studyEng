@@ -75,13 +75,13 @@ public class UpdateWordSetServlet extends HttpServlet implements NonAbonentServl
 
     private void initParams(HttpServletRequest request) throws Exception {
         img = getImg(request);
-        name = request.getHeader("name");
+        name = request.getParameter("name");
         wordSetId = Integer.parseInt(request.getHeader("wordSetId"));
-
-        System.out.println(wordSetId + " " + name + " " + img);
     }
 
     private FileItem getImg(HttpServletRequest request){
+        if(request.getHeader("img").equalsIgnoreCase("false"))
+            return null;
         DiskFileItemFactory factory = new DiskFileItemFactory();
         factory.setSizeThreshold(MEMORY_THRESHOLD);
         factory.setRepository(new File(System.getProperty("catalina.base"), "temp"));

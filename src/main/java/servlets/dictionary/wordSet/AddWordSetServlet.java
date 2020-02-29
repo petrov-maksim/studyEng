@@ -87,10 +87,12 @@ public class AddWordSetServlet extends HttpServlet implements BaseServlet {
     private void initParams(HttpServletRequest request) throws Exception {
         img = getImg(request);
         userId = SessionCache.INSTANCE.getUserIdBySessionId(sessionId);
-        name = request.getHeader("name");
+        name = request.getParameter("name");
     }
 
     private FileItem getImg(HttpServletRequest request){
+        if(request.getHeader("img").equalsIgnoreCase("false"))
+            return null;
         DiskFileItemFactory factory = new DiskFileItemFactory();
         factory.setSizeThreshold(MEMORY_THRESHOLD);
         factory.setRepository(new File(System.getProperty("catalina.base"), "temp"));

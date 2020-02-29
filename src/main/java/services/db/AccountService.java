@@ -82,7 +82,7 @@ public class AccountService implements Abonent, Runnable {
     private int createMainWordSet(int userId) {
         try {
             return queryExecutor.execQuery(String.format("INSERT INTO wordSets (user_id, name, isMain) VALUES ('%d', '%s', '%b') RETURNING id;",
-                    userId, "All Words", true), resultSet -> {
+                    userId, "Все слова", true), resultSet -> {
                 if (resultSet.next())
                     return resultSet.getInt("id");
                 return -1;

@@ -72,7 +72,7 @@ public class AddWordForUserServlet extends HttpServlet implements BaseServlet {
         try{
             response.setStatus(sc);
             response.setHeader(READY, "true");
-            if (wordId != 0 && wordId != -1)
+            if (wordId > 0)
                 response.getWriter().write(String.valueOf(wordId));
             response.flushBuffer();
         }catch (IOException e){
@@ -97,7 +97,6 @@ public class AddWordForUserServlet extends HttpServlet implements BaseServlet {
         Word obj = mapper.readValue(request.getReader().readLine(), Word.class);
         word = obj.getWord();
         translation = obj.getTranslations().get(0);
-        System.out.println(word + "\n" + translation);
 
         if (word == null || word.isBlank() || translation == null || translation.isBlank())
             throw new Exception();

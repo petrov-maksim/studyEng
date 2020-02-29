@@ -22,8 +22,8 @@ public class DictionaryService implements Abonent, Runnable {
     private final QueryExecutor queryExecutor;
     //Пользователь, которому будут принадлежать init слова и переводы
     private static final int BASE_USER_ID = 1;
-    private static final String UPLOAD_PATH = "C:\\dev\\pr\\static\\images\\";
-    private static final String DEFAULT_WORDSET_IMAGE = "C:\\dev\\pr\\static\\images\\defaultWordSet.png";
+    private static final String UPLOAD_PATH = "C:/dev/pr/static/images/";
+    private static final String DEFAULT_WORDSET_IMAGE = "C:/dev/pr/static/images/defaultWordSet.png";
 
     private static final int eng_rusId = 1;
     private static final int rus_engId = 2;
@@ -63,18 +63,26 @@ public class DictionaryService implements Abonent, Runnable {
         int wordSetId = getMainWordSetIdForUser(userId);
 
         try{
-            queryExecutor.execUpdate(String.format("INSERT INTO user_word_translation (user_id, word_id, translation_id) VALUES ('%d', '%d', '%d');",
-                    userId, wordId, translationId));
+            boolean wordAlreadyExists = queryExecutor.execQuery(String.format("SELECT COUNT(*) FROM wordSet_word WHERE wordSet_id = %d AND word_id = %d;",
+                    wordSetId, wordId), resultSet -> {
+                if (resultSet.next())
+                    return resultSet.getInt("COUNT") > 0;
+                return false;
+            });
+
+            if (wordAlreadyExists)
+                return 0;
             queryExecutor.execUpdate(String.format("INSERT INTO wordSet_word (wordSet_id, word_id) VALUES ('%d', '%d');",
                     wordSetId, wordId));
-
+            queryExecutor.execUpdate(String.format("INSERT INTO user_word_translation (user_id, word_id, translation_id) VALUES ('%d', '%d', '%d');",
+                    userId, wordId, translationId));
             queryExecutor.execUpdate(String.format("INSERT INTO user_word_training (user_id, word_id, training_id) VALUES('%d', '%d', '%d')," +
                     "('%d', '%d', '%d')," +
                     "('%d', '%d', '%d')," +
                     "('%d', '%d', '%d');", userId, wordId, eng_rusId, userId, wordId, rus_engId, userId, wordId, writingId, userId, wordId, cardsId));
         }catch (SQLException e){
             e.printStackTrace();
-            return 0;
+            return -1;
         }
 
         return wordId;
@@ -364,7 +372,7 @@ public class DictionaryService implements Abonent, Runnable {
                     wordSet.setMain(resultSet.getBoolean("isMain"));
                     wordSet.setSize(resultSet.getInt("size"));
                     try{
-                        String path = resultSet.getString("img_path") == null? DEFAULT_WORDSET_IMAGE : resultSet.getString("img_path");
+                        String path = resultSet.getString("img_path");
                         wordSet.setImage(Files.readAllBytes(Paths.get(path)));
                     }catch (IOException e){
                         e.printStackTrace();

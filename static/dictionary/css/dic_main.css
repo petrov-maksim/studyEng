@@ -1,0 +1,67 @@
+.dic-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.add-word-show{
+    display: flex;
+    width: 50%;
+    min-width: 442px;
+    justify-content: flex-start;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.add-word-hide{
+    display: none;
+}
+
+.aw-input{
+    width: 80%;
+    min-width: 180px;
+    background-color: #2D3742;
+    height: 35px;
+    border: none;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+
+    font-family: JosefinSans-Bold;
+    font-size:20px;
+    font-weight: 300;
+    color:#BED2E6;
+
+    padding-left: 10px;
+    outline:none;
+
+    margin-right: 10px;
+}
+
+#aw-btn{
+    width: 160px;
+    height: 35px;
+    background-color: #BED2E6;
+
+    border: none;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+
+    font-size: 17px;
+}
+
+#aw-btn:hover{
+    cursor: pointer;
+}
+
+#aw-btn:active{
+    background-color: #7097D5;
+    transition: 0.1s;
+}
+
+#aw-btn:active, #aw-btn:focus{
+    outline: none;
+}

@@ -1,0 +1,131 @@
+.slider {
+    max-width: 750px;
+    min-width: 500px;
+    position: relative;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.slider__wrapper {
+    display: flex;
+    transition: transform 0.2s ease;
+    justify-content: space-between;
+}
+
+.slider__item {
+    flex: 0 0 auto;
+
+    width: 250px;
+    height: 250px;
+}
+
+.slider__control {
+    position: absolute;
+    top: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    color: #fff;
+    text-align: center;
+    opacity: 0.5;
+    height: 50px;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, .5);
+
+    z-index: 3;
+}
+
+.slider__control_show {
+    display: flex;
+}
+
+.slider__control:hover,
+.slider__control:focus {
+    color: #fff;
+    text-decoration: none;
+    outline: 0;
+    opacity: .9;
+}
+
+.slider__control_left {
+    left: 1px;
+}
+
+.slider__control_right {
+    right: 11px;
+}
+
+.slider__control::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: transparent no-repeat center center;
+    background-size: 100% 100%;
+}
+
+.slider__control_left::before {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E");
+}
+
+.slider__control_right::before {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E");
+}
+
+.ws__item{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    justify-items: center;
+    height: 250px;
+
+    border-radius: 22px;
+
+    margin-right: 10px;
+    background-repeat: no-repeat;
+}
+
+.shadowWS_onSelection{
+    position: absolute;
+    background-color: #081439;
+    z-index: 2; opacity: 0.4;
+    height: 250px;
+    width:240px;
+
+    border-radius: 22px;
+}
+
+.ws__item:hover{
+    cursor: pointer;
+}
+
+.si-edit-delete {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+
+    z-index: 3;
+}
+
+.si-edit-delete > div {
+    height: 50px;
+    width: 50px;
+}
+
+.si-num-name {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    font-size: 19px;
+    color: black;
+    background-color: #2D3742;
+    opacity: 0.95;
+
+    border-radius: 0 0 20px 20px;
+}
+
+.si-num-name-hide, .si-edit-delete-hide {
+    visibility: hidden;
+}

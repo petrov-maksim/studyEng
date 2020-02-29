@@ -18,7 +18,7 @@ import java.util.Collection;
 
 public class GetWordsForUserServlet extends HttpServlet implements BaseServlet {
     private static final Address address = new Address();
-    private static final int N_WORDS = 15; //максимальное количество слов в response
+    private static final int N_WORDS = 10; //максимальное количество слов в response
     private String sessionId;
     private int userId;
     private HttpServletResponse response;
@@ -36,6 +36,7 @@ public class GetWordsForUserServlet extends HttpServlet implements BaseServlet {
 
         //First request
         if (req.getHeader("handling") == null) {
+            System.out.println();
             try{
                 initParams(req);
             }catch (Exception e){

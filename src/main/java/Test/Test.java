@@ -7,6 +7,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import services.db.*;
+import servlets.account.IsUserAuthorisedServlet;
 import servlets.account.SignInServlet;
 import servlets.account.SignOutServlet;
 import servlets.account.SignUpServlet;
@@ -64,6 +65,7 @@ public class Test {
         servletHandler.addServlet(SignUpServlet.class, "/signUp");
         servletHandler.addServlet(SignInServlet.class, "/signIn");
         servletHandler.addServlet(SignOutServlet.class, "/signOut");
+        servletHandler.addServlet(IsUserAuthorisedServlet.class, "/authorised");
 
         servletHandler.addServlet(GrammarServlet.class, "/grammar/*");
 

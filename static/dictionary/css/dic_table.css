@@ -1,0 +1,54 @@
+#words-table {
+    width: 65%;
+}
+
+.words-table-row {
+    border-bottom: #919191 solid 1px;
+    text-align: left;
+}
+
+.words-table-row > td {
+    padding: 15px 7px;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.word {
+    color: #7298C9;
+}
+
+.translation {
+    color: #72C981;
+}
+
+.cursor-pointer:hover{
+    cursor: pointer;
+}
+
+.index{
+    color: chocolate;
+}
+
+.index:hover{
+    cursor: default;
+}
+
+.select-word-checkbox{
+    width: 20px;
+    height: 20px;
+}
+
+.select-word-checkbox:hover{
+    cursor: pointer;
+}
+
+.show-more{
+    display: inline-block;
+    width: 60%;
+    padding-left: 40%;
+    cursor: pointer;
+    margin-top: 30px;
+    color: #5CA10C;
+    font-size: 150%;
+}

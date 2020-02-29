@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../common/dropDef.css">
+    <link rel="stylesheet" href="../common/header.css">
+    <link rel="stylesheet" href="../common/main.css">
+    <title>in development</title>
+
+
+    <style>
+        @import url("https://fonts.googleapis.com/css?family=Orbitron");
+        .clock-container {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: 300;
+            line-height: 1.5;
+            color: #444;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 400px;
+        }
+        .alarm-clock{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .alarm-clock .date {
+            color: white;
+            font-size: 20px;
+            text-transform: uppercase;
+        }
+
+        .alarm-clock .time {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 40px 15px;
+            background-color: #333;
+            border-radius: 10px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 52px;
+        }
+
+        .alarm-clock > span {
+            font-family: JosefinSans-Bold;
+            font-size: 30px;
+            color: white;
+            line-height: 1.2;
+            text-transform: uppercase;
+        }
+
+        .alarm-clock .time span {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            color: #e74c3c;
+            text-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
+            line-height: 1.75;
+        }
+
+        .alarm-clock .time span:nth-of-type(5) {
+            width: 90px;
+        }
+
+        .alarm-clock .time span.colon {
+            width: 12px;
+            text-align: center;
+            animation: blink 2s infinite;
+        }
+
+    </style>
+
+    <script>
+        function initClock() {
+            'use strict';
+
+            const hours = document.querySelector('.hours');
+            const minutes = document.querySelector('.minutes');
+            const seconds = document.querySelector('.seconds');
+
+            const month = document.querySelector('.month');
+            const day = document.querySelector('.day');
+            const year = document.querySelector('.year');
+            setDate();
+
+            function setDate() {
+                let now = new Date();
+                let mm = now.getMonth();
+                let dd = now.getDate();
+                let yyyy = now.getFullYear();
+                let secs = now.getSeconds();
+                let mins = now.getMinutes();
+                let hrs = now.getHours();
+                let monthName = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+                if (hrs > 12) {
+                    hours.textContent = hrs - 12;
+                } else {
+                    hours.textContent = hrs;
+                }
+
+                if (secs < 10) {
+                    seconds.textContent = '0' + secs;
+                } else {
+                    seconds.textContent = secs;
+                }
+
+                if (mins < 10) {
+                    minutes.textContent = '0' + mins;
+                } else {
+                    minutes.textContent = mins;
+                }
+
+                month.textContent = monthName[mm];
+                day.textContent = dd;
+                year.textContent = yyyy;
+            }
+
+            setInterval(setDate, 1000);
+        }
+    </script>
+</head>
+<body onload="initClock()">
+    <header >
+    <div class="header">
+        <ul class="header-ul">
+            <a class="header-a" href="../common/inDevelopment.html"><li>Грамматика</li></a>
+            <a class="header-a" href="../dictionary/dictionary.html"><li>Словарь</li></a>
+            <a class="header-a" href="../trainings/trainings.html"><li>Тренировки</li></a>
+            <a class="header-a" href="../common/inDevelopment.html"><li>Контент</li></a>
+        </ul>
+
+        <a href="../profile/profile.html"><img class="profile-pic" src="..\images\user_pic.png"></a>
+    </div>
+</header>
+
+    <div class="clock-container">
+        <div class="alarm-clock">
+            <span>Раздел находится в разработке</span>
+            <div class="time">
+                <span class="hours"></span>
+                <span class="colon">:</span>
+                <span class="minutes"></span>
+                <span class="colon">:</span>
+                <span class="seconds"></span>
+            </div>
+
+            <div class="date">
+                <span class="month"></span>
+                <span class="day"></span>,
+                <span class="year"></span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

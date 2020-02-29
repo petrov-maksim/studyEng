@@ -1,0 +1,72 @@
+.options-show {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6.5px;
+    margin-top: 4.5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background-color: #E1E1E2;
+    width: 483px;
+}
+
+.options-hide {
+    display: none;
+}
+
+.options-show ul {
+    font-size: 0;
+    list-style-type: none;
+}
+
+.options-show ul li {
+    font-family: "Open Sans", sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #333;
+    display: inline-block;
+    padding: 15px;
+    position: relative;
+}
+
+.options-show ul li ul {
+    display: none;
+}
+
+.options-show ul li:hover {
+    cursor: pointer;
+    background-color: #f2f2f2;
+}
+
+.options-show ul li:hover ul {
+    display: block;
+    margin-top: 15px;
+    width: 200px;
+    left: 0;
+    position: absolute;
+}
+
+.options-show ul li:hover ul li {
+    display: block;
+    background-color: #e7e7e7;
+}
+
+.options-show ul li:hover ul li span {
+    float: right;
+    color: #f9f9f9;
+    background-color: #F03861;
+    padding: 2px 5px;
+    text-align: center;
+    font-size: .8rem;
+    border-radius: 3px;
+}
+
+.options-show ul li:hover ul li:hover {
+    background-color: #e0e0e0;
+}
+
+.options-show ul li:hover ul li:hover span {
+    background-color: #ee204e;
+}
+
+.options-main-ul > li {
+    z-index: 3;
+}

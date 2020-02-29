@@ -1,10 +1,10 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="..\common\dropDef.css">
-    <link rel="stylesheet" type="text/css" href="..\common\header.css">
-    <title>trainings</title>
-    <title>trainings</title>
+    <link rel="stylesheet" href="../common/dropDef.css">
+    <link rel="stylesheet" href="../common/header.css">
+    <link rel="stylesheet" href="../common/main.css">
+    <title>eng-rus</title>
 
     <style>
         body{
@@ -36,13 +36,11 @@
             max-width: 850px;
             min-width: 600px;
 
-            max-height: 600px;
             min-height: 350px;
-
         }
 
         #word {
-            width: 65%;
+            width: 60%;
             background-color:#1b2b37;
 
             display: flex;
@@ -57,7 +55,7 @@
         }
 
         .translations {
-            width: 35%;
+            width: 40%;
             background-color: rgba(160,230,256,.1);
             /*background-color: #BED2E6;*/
 
@@ -84,8 +82,8 @@
             text-align: center;
 
             width: 100%;
-            min-height: 30px;
-            height: 11%;
+            min-height: 40px;
+            margin: 1px;
         }
 
         .translations-ul > li:hover{
@@ -261,34 +259,34 @@
 
 </head>
 <body onload="init();">
-<header>
-    <div class="header">
-        <ul class="header-ul">
-            <a class="header-a" href="#"><li>Грамматика</li></a>
-            <a class="header-a" href="../dictionary/dictionary.html"><li>Словарь</li></a>
-            <a class="header-a" href="../trainings/trainings.html"><li>Тренировки</li></a>
-            <a class="header-a" href="#"><li>Контент</li></a>
-        </ul>
-
-        <img class="profile-pic" src="..\images\user_pic.png">
-    </div>
-</header>
-
-<div class = "training-container" >
-    <div class="training-wrapper">
-        <span id = "word"></span>
-        <div class="translations">
-            <ul class="translations-ul">
-                <li index = "0"><span class="translation"></span></li>
-                <li index = "1"><span class="translation"></span></li>
-                <li index = "2"><span class="translation"></span></li>
-                <li index = "3"><span class="translation"></span></li>
-                <li index = "4"><span class="translation"></span></li>
-
-                <li><span id="enter">Проверить</span></li>
+    <header>
+        <div class="header">
+            <ul class="header-ul">
+                <a class="header-a" href="../common/inDevelopment.html"><li>Грамматика</li></a>
+                <a class="header-a" href="../dictionary/dictionary.html"><li>Словарь</li></a>
+                <a class="header-a" href="../trainings/trainings.html"><li>Тренировки</li></a>
+                <a class="header-a" href="../common/inDevelopment.html"><li>Контент</li></a>
             </ul>
+
+            <a href="../profile/profile.html"><img class="profile-pic" src="../images/user_pic.png"></a>
+        </div>
+    </header>
+
+    <div class = "training-container" >
+        <div class="training-wrapper">
+            <span id = "word"></span>
+            <div class="translations">
+                <ul class="translations-ul">
+                    <li index = "0"><span class="translation"></span></li>
+                    <li index = "1"><span class="translation"></span></li>
+                    <li index = "2"><span class="translation"></span></li>
+                    <li index = "3"><span class="translation"></span></li>
+                    <li index = "4"><span class="translation"></span></li>
+
+                    <li><span id="enter">Проверить</span></li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 </body>
 </html>

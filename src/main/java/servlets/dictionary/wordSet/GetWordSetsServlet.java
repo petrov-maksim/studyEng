@@ -57,7 +57,6 @@ public class GetWordSetsServlet extends HttpServlet implements BaseServlet {
     }
 
     public void handle(List<WordSet> wordSets) {
-        System.out.println(wordSets);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setHeader(READY, "true");
 

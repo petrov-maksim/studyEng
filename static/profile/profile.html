@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../common/dropDef.css">
+    <link rel="stylesheet" href="../common/header.css">
+    <link rel="stylesheet" href="../common/main.css">
+
+    <title>Profile</title>
+</head>
+<style>
+    .profile-container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        width: 100%;
+        height:100%;
+        min-height: 500px;
+    }
+
+    #exit {
+        height: 100px;
+        width: 100px;
+
+        background-color: #2D3742;
+        color: black;
+        font-size: 25px;
+
+        border: none;
+    }
+
+    #exit:hover{
+        cursor: pointer;
+    }
+
+    #exit:active{
+        background-color: #293942;
+    }
+</style>
+<script>
+    const ROOT_URL = "http://localhost:8080/";
+    async function exitListener() {
+        await fetch(ROOT_URL + "signOut");
+        window.location.href = ROOT_URL;
+    }
+</script>
+<body>
+    <header>
+        <div class="header">
+            <ul class="header-ul">
+                <a class="header-a" href="../common/inDevelopment.html"><li>Грамматика</li></a>
+                <a class="header-a" href="../dictionary/dictionary.html"><li>Словарь</li></a>
+                <a class="header-a" href="../trainings/trainings.html"><li>Тренировки</li></a>
+                <a class="header-a" href="../common/inDevelopment.html"><li>Контент</li></a>
+            </ul>
+
+            <a href="../profile/profile.html"><img class="profile-pic" src="../images/user_pic.png"></a>
+        </div>
+    </header>
+
+    <div class="profile-container">
+        <button id="exit" onclick="exitListener()">Выйти</button>
+    </div>
+</body>
+</html>
