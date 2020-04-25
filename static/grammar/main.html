@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../common/dropDef.css">
+    <link rel="stylesheet" href="../common/header.css">
+    <link rel="stylesheet" href="../common/main.css">
+
+    <title>grammar</title>
+
+    <style>
+        body{
+            background-color: #252627;
+        }
+
+        .blocks-container{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            width: 100%;
+            height: 100%;
+        }
+        .block-wrapper{
+            display: flex;
+            justify-content: space-between;
+            width: 750px;
+        }
+
+        .block{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            width: 350px;
+            height: 400px;
+            border-radius: 3px;
+
+            background-color: rgba(200,227,255,.15);
+
+            /*background-color: hsl(212, 3%, 24%);*/
+
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none;   /* Chrome/Safari/Opera */
+            -moz-user-select: none;      /* Firefox */
+            -ms-user-select: none;       /* Internet Explorer/Edge */
+            user-select: none;
+
+            -webkit-box-shadow: -.01em -.01em 0 rgba(255, 255, 255, 1), .01em .01em 0 rgba(255, 255, 255, 1);
+            -moz-box-shadow: -.01em -.01em 0 rgba(255, 255, 255, 1), .01em .01em 0 rgba(255, 255, 255, 1);
+            box-shadow:
+
+            -.01em -.01em 0 rgba(255, 255, 255, 1),
+            .01em .01em 0 rgba(255, 255, 255, 1);
+        }
+
+        .block:hover {
+            cursor: pointer;
+            /*background-color: rgba(170,227,255,.16);*/
+            background-color: rgba(200,227,255,.18);
+        }
+
+        .lvl{
+            font-size: 150px;
+            color: rgba(255, 255, 255, 1);
+            font-family: Times, Times New Roman, serif;
+        }
+
+        .desc{
+            font-size: 18px;
+            padding-left:  8px;
+            padding-right: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            font-family: Times, Times New Roman, serif;
+        }
+
+
+        .arrow {
+            width: 60px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header">
+        <ul class="header-ul">
+            <a class="header-a" href="../grammar/main.html"><li>Грамматика</li></a>
+            <a class="header-a" href="../dictionary/dictionary.html"><li>Словарь</li></a>
+            <a class="header-a" href="../trainings/trainings.html"><li>Тренировки</li></a>
+            <a class="header-a" href="../common/inDevelopment.html"><li>Контент</li></a>
+        </ul>
+
+        <a href="../profile/profile.html"><img class="profile-pic" src="../images/user_pic.png"></a>
+    </div>
+</header>
+
+
+<div class="blocks-container">
+    <div class="block-wrapper">
+        <a href="A1/allLessons.html">
+            <div class="block">
+
+                    <span class="lvl">A1</span>
+                    <p class="desc">
+                        А1 — первый уровень знания языка в Общеевропейско системе CEFR, системе определения различных языковых уровней,
+                        составленной Советом Европы. В повседневной речи этот уровень можно назвать начальным.
+                        Студент, который только начинает изучать английский язык, или пока не имеет знаний английского языка, находится на уровне ниже А1.
+                    </p>
+            </div>
+        </a>
+
+        <div class="block">
+            <span class="lvl">A2</span>
+            <p class="desc">
+                A2 - второй уровень знания языка в Общеевропейской системе CEFR, системе определения различных языковых уровней, составленной Советом Европы.
+                В повседневной речи этот уровень можно назвать базовым.
+                Учащийся, который овладел базовым уровнем английского языка, может удовлетворить свои базовые коммуникативные потребности.
+            </p>
+        </div>
+    </div>
+
+<!--    <div class="arrow"></div>-->
+    <img class="arrow" src="../images/arrow.jpg">
+
+    <div class="block-wrapper">
+        <div class="block">
+            <span class="lvl">B1</span>
+            <p class="desc">
+                В1 — третий уровень знания языка в Общеевропейской системе CEFR, системе определения различных языковых уровней, составленной Советом Европы.
+                В повседневной речи этот уровень можно назвать средним.
+                На этом уровне учащиеся выходят за рамки базового английского, но пока не готовы общаться по работе или учёбе исключительно на английском языке.
+            </p>
+        </div>
+
+        <div class="block">
+            <span class="lvl">B2</span>
+            <p class="desc">
+                В2 — третий уровень знания языка в Общеевропейской системе CEFR, системе определения различных языковых уровней, составленной Советом Европы.
+                В повседневной речи этот уровень можно назвать средним.
+                На этом уровне учащиеся выходят за рамки базового английского, но пока не готовы общаться по работе или учёбе исключительно на английском языке.
+            </p>
+        </div>
+    </div>
+
+    <img class="arrow" src="../images/arrow.jpg">
+
+    <div class="block-wrapper">
+        <div class="block">
+            <span class="lvl">C1</span>
+        </div>
+
+        <div class="block">
+            <span class="lvl">C2</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

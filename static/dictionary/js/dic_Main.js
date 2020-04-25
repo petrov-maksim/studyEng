@@ -136,7 +136,7 @@ function removeWordsListener(event){
 function setListeners(){
     window.addEventListener('scroll', loadWordsOnScroll);
     document.querySelectorAll(".cursor-pointer").forEach(elem => elem.addEventListener("click", CreateWordPopup));
-    document.querySelector(".profile-pic").addEventListener("click", onProfileClick);
+//    document.querySelector(".profile-pic").addEventListener("click", onProfileClick);
 }
 
 
@@ -261,8 +261,4 @@ async function isUserAuthorised() {
         userAuthorised = response.headers.get("auth");
     }
     return userAuthorised;
-}
-
-function onProfileClick() {
-
 }

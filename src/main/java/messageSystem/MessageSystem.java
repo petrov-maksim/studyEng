@@ -1,9 +1,7 @@
 package messageSystem;
 
-
-import servlets.BaseServlet;
+import servlets.ServletAbonent;
 import util.AddressService;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -12,69 +10,72 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Та самая система, которю будут шарить между собой потоки
+ * Класс обеспечивающий обмен сообщениями между абонентами
  */
 public enum MessageSystem {
     INSTANCE;
+
     /**
-     * Message container
-     * Сама мапа заполняется до запуска потоков, поэтому можно использовать не потокобузопасную.
-     * Создаем объекты потоков, берем у них адрес, складываем их в эту карту и только после этого запускаем
-     * и только после этого, они начинают обмениваться сообщениями, это будет происходить в main
+     * У каждого сервиса, вне зависимости от колличества тредов, есть 1 уникальный статичный адрес,
+     * этому адресу соответствует очередь сообщений
      */
     private static final Map<Address, ConcurrentLinkedQueue<Message>> serviceMessages = new HashMap<>();
 
+    /**
+     * У каждого сервлета, ожидающего результат, есть уникальный статический адрес,
+     * этому адресу соответствует мапа с sessionId-message
+     */
     private static final Map<Address, ConcurrentHashMap<String, Message>> servletMessages = new HashMap<>();
 
     static {
         serviceMessages.put(AddressService.INSTANCE.getAccountServiceAddress(), new ConcurrentLinkedQueue<>());
-        serviceMessages.put(AddressService.INSTANCE.getContentServiceAddress(), new ConcurrentLinkedQueue<>());
         serviceMessages.put(AddressService.INSTANCE.getDictionaryServiceAddress(), new ConcurrentLinkedQueue<>());
         serviceMessages.put(AddressService.INSTANCE.getTrainingServiceAddress(), new ConcurrentLinkedQueue<>());
-
+        serviceMessages.put(AddressService.INSTANCE.getGrammarServiceAddress(), new ConcurrentLinkedQueue<>());
 
         servletMessages.put(AddressService.INSTANCE.getSignInServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getSignUpServletAddress(), new ConcurrentHashMap<>());
-
-        servletMessages.put(AddressService.INSTANCE.getAllContentVideosServletAddress(), new ConcurrentHashMap<>());
-        servletMessages.put(AddressService.INSTANCE.getContentByIdServletAddress(), new ConcurrentHashMap<>());
-
-        servletMessages.put(AddressService.INSTANCE.getGetWordForUserServletAddress(), new ConcurrentHashMap<>());
-        servletMessages.put(AddressService.INSTANCE.getGetWordFromWordSetServletAddress(), new ConcurrentHashMap<>());
-
-        servletMessages.put(AddressService.INSTANCE.getAddWordForUserServletAddress(), new ConcurrentHashMap<>());
-
         servletMessages.put(AddressService.INSTANCE.getGetWordSetsServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getAddWordSetServletAddress(), new ConcurrentHashMap<>());
-
-        servletMessages.put(AddressService.INSTANCE.getGetTranslationsForWordServletAddress(), new ConcurrentHashMap<>());
-
+        servletMessages.put(AddressService.INSTANCE.getGetWordForUserServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getGetWordFromWordSetServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getAddWordForUserServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getGetAmountOfUnlearnedWordsServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getGetRandomTranslationsServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getGetRandomWordsServletAddress(), new ConcurrentHashMap<>());
         servletMessages.put(AddressService.INSTANCE.getGetUnlearnedWordsServletAddress(), new ConcurrentHashMap<>());
+        servletMessages.put(AddressService.INSTANCE.getGetCurrentLvlServletAddress(), new ConcurrentHashMap<>());
     }
 
+    /**
+     * Отправка сообщения сервису
+     */
     public void sendMessageForService(Message message){
         serviceMessages.get(message.getTo()).add(message);
     }
 
+    /**
+     * Отправка сообщения сервлету
+     */
     public void sendMessageForServlet(Message message, String sessionId){
         servletMessages.get(message.getTo()).put(sessionId, message);
     }
 
-
+    /**
+     * Выполнение сообщения сервисом
+     */
     public void execForService(Abonent abonent){
         Queue<Message> messageQueue = serviceMessages.get(abonent.getAddress());
-
-        while(!messageQueue.isEmpty()){
-            Message msg = messageQueue.poll();
+        Message msg;
+        for (msg = messageQueue.poll(); msg != null; msg = messageQueue.poll())
             msg.exec(abonent);
-        }
     }
 
+    /**
+     * Выполнение сообщения сервлетом
+     */
     public void execForServlet(Abonent abonent){
-        BaseServlet servlet = (BaseServlet) abonent;
+        ServletAbonent servlet = (ServletAbonent) abonent;
         ConcurrentHashMap<String, Message> messages = servletMessages.get(abonent.getAddress());
 
         if(messages.containsKey(servlet.getSessionId()))

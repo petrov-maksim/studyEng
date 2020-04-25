@@ -1,29 +1,30 @@
 package servlets.trainings;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import entities.Training;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.trainings.toService.MessageToGetRandomWords;
-import servlets.BaseServlet;
+import messageSystem.messages.trainings.toService.MsgToGetRandomWords;
+import servlets.ServletAbonent;
 import util.AddressService;
 import util.SessionCache;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class GetRandomWordsServlet extends HttpServlet implements BaseServlet {
+/**
+ * Сервлет, обрабатывающий запрос на получение случайных слов
+ */
+public class GetRandomWordsServlet extends ServletAbonent {
     private static final Address address = new Address();
     private HttpServletResponse response;
     private String sessionId;
-    private int userId;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         sessionId = req.getSession().getId();
 
         if (!SessionCache.INSTANCE.isAuthorized(sessionId)) {
@@ -32,7 +33,6 @@ public class GetRandomWordsServlet extends HttpServlet implements BaseServlet {
             return;
         }
 
-        userId = SessionCache.INSTANCE.getUserIdBySessionId(sessionId);
         response = resp;
 
         //First request
@@ -48,7 +48,7 @@ public class GetRandomWordsServlet extends HttpServlet implements BaseServlet {
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageToGetRandomWords(getAddress(), AddressService.INSTANCE.getTrainingServiceAddress(),
+        MessageSystem.INSTANCE.sendMessageForService(new MsgToGetRandomWords(getAddress(), AddressService.INSTANCE.getTrainingServiceAddress(),
                 sessionId));
     }
 
@@ -66,7 +66,7 @@ public class GetRandomWordsServlet extends HttpServlet implements BaseServlet {
                 response.getWriter().write(objectMapper.writeValueAsString(words));
             }
         }catch (Exception e){
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
     }
 
@@ -77,7 +77,7 @@ public class GetRandomWordsServlet extends HttpServlet implements BaseServlet {
             response.setHeader(READY, "false");
             response.flushBuffer();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
     }
 

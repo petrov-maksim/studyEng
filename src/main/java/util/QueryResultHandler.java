@@ -4,8 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- *
- * @param <T>
+ * Функциональный интерфейс, имплементации которого (лямбда выражения), будут обрабатывать ResultSet,
+ * возвращаемый после исполнения Statement
  */
 @FunctionalInterface
 public interface QueryResultHandler<T> {

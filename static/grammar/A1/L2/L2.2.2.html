@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../../common/dropDef.css">
+    <link rel="stylesheet" href="../../../common/header.css">
+    <link rel="stylesheet" href="../../../common/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Muli&display=swap" rel="stylesheet">
+    <title>Части речи</title>
+</head>
+
+<style>
+    body{
+        background-color: #252627;
+    }
+
+    .hide{
+        display: none;
+    }
+
+    .lesson-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        font-family: Arial,Helvetica,sans-serif;
+
+        font-weight: 400;
+        text-align: left;
+        color: #ddd;
+        line-height: 1.62;
+        font-size: 17px;
+
+        margin-bottom: 25px;
+
+        /*font-family:'Muli', "Times New Roman", Times, serif;*/
+
+        /*color: white;*/
+        /*font-size: 21px;*/
+
+        /*letter-spacing: 0.06em;*/
+        /*word-spacing: 0.1em;*/
+    }
+
+    .grammar {
+        width: 70%;
+    }
+
+    .title{
+        margin-left: 70px;
+        margin-bottom: 20px;
+    }
+
+    .title > span{
+        font-size: 26px;
+        color: chocolate;
+        border-bottom: 2px solid #72C981;
+    }
+
+    .ul-examples{
+        list-style-type: disc;
+        padding-left: 40px;
+    }
+
+    .word {
+        color: #7298C9;
+        padding-left: 0;
+    }
+
+    .translation{
+        color: #72C981;
+    }
+
+    .paragraph{
+        margin-bottom: 20px;
+    }
+
+    .words-on-learn{
+        width: 70%;
+    }
+
+    .select-word-checkbox{
+        width: 17px;
+        height: 17px;
+    }
+
+    .select-word-checkbox:hover{
+        cursor: pointer;
+    }
+
+    tr{
+        border-bottom: #919191 solid 1px;
+        text-align: left;
+    }
+
+    th{
+        text-align: left;
+        border-bottom: #919191 solid 1px;
+        padding-left: 20px;
+        color: #E84141;
+    }
+
+    td {
+        padding-left: 20px;
+    }
+
+    .V1{
+        color: #7298C9;
+    }
+
+    .V2{
+        color: #7772C9;
+    }
+
+    .V3{
+        color: #72C4C9;
+    }
+
+    .btn-wrapper{
+        width: 99%;
+    }
+
+
+    .btn-wrapper  > button{
+        font-family:'Muli', "Times New Roman", Times, serif;
+
+        color: black;
+        width: 130px;
+        height: 40px;
+        background-color: #BED2E6;
+        border: none;
+        border-radius: 20px;
+        font-size: 20px;
+
+        margin-bottom: 30px;
+
+    }
+
+    .btn-wrapper  > button:hover{
+        cursor: pointer;
+    }
+
+    .btn-next{
+        position: absolute;
+        left: 85%;
+    }
+</style>
+<body onload="init()">
+<header>
+    <div class="header">
+        <ul class="header-ul">
+            <a class="header-a" href="../../../grammar/main.html"><li>Грамматика</li></a>
+            <a class="header-a" href="../../../dictionary/dictionary.html"><li>Словарь</li></a>
+            <a class="header-a" href="../../../trainings/trainings.html"><li>Тренировки</li></a>
+            <a class="header-a" href="../../../common/inDevelopment.html"><li>Контент</li></a>
+        </ul>
+
+        <a href="../../../profile/profile.html"><img class="profile-pic" src="../../../images/user_pic.png"></a>
+    </div>
+</header>
+<div class="lesson-container">
+    <div class="grammar">
+        <div name = "adverb">
+            <p class="title"><span>5. ADVERB</span></p>
+            
+            <div class="paragraph">
+                <p>Аналог в русском языке – наречие. Наречие – это часть речи, обозначающая признак действия. Иными словами, наречие указывает, как, где, когда или в какой степени что-либо произошло.
+                    Основными вопросами наречия являются следующие: «как?» – «how?», «где?» – «where?», «почему? – «why?», «когда?» – «when?».
+                </p>  
+            </div>
+            
+            
+            <div class="paragraph">
+                <p>Образование наречий</p> 
+                <ul>
+                    <li>
+                        <div class="paragraph">
+                            <p> 1.	Большинство наречий в английском языке образованы от прилагательных с помощью суффикса <span style="color: chocolate">“ly“</span>:</p>
+                            <ul class="ul-examples">
+                                <li><span class="word">slow (медленный) –> <span class="translation">slow<span style="color: chocolate">ly</span> (медленно)</span></li>
+                                <li><span class="word">usual (обычный) –> <span class="translation">usual<span style="color: chocolate">ly</span> (обычно)</span></li>
+                                <li><span class="word">nice (приятный) –> <span class="translation">nice<span style="color: chocolate">ly</span> (приятно)</span></li>
+
+                            </ul>
+
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="paragraph">
+                            <p>2.	Если, прилагательное заканчивается на <span style="color: chocolate">le</span>достаточно заменить e на y:</p>
+                            <ul class="ul-examples">
+                                <li><span class="word">simple (простой)</span> – <span class="translation">simpl<span style="color: chocolate">y</span> (просто)</span></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="paragraph">
+                            <p>3.	Слова-исключения.
+                                Конечно, есть слова-исключения, которые не образуются по правилам. Обычно это наречия, которые отвечают на вопросы: «когда?», «где?», «сколько?».
+                            </p>
+                            <ul class="ul-examples">
+                                <li><span class="word">late</span> – <span class="translation">поздно</span></li>
+                                <li><span class="word">little</span> – <span class="translation">немного</span></li>
+                                <li><span class="word">well</span> – <span class="translation">хорошо</span></li>
+                                <li><span class="word">far</span> – <span class="translation">далеко</span></li>
+                                <li><span class="word">fast</span> – <span class="translation">быстро</span></li>
+
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="paragraph">
+                <p>Наречия на изучение:</p>
+                <table class="words-on-learn">
+                    <tbody>
+                    <tr><td><input class="select-word-checkbox main-checkbox-adv" type="checkbox"></td><td></td>    <td></td>    <td ></td> <td ></td>   <td></td></tr>
+                    <tr><td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">yesterday</td>    <td class="translation">вчера</td>      <td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">less	    </td>    <td class="translation">  меньше</td></tr>
+                    <tr><td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">today</td>    <td class="translation">сегодня</td>        <td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">more	    </td>     <td class="translation"> больше</td></tr>
+                    <tr><td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">tomorrow</td>  <td class="translation">завтра</td>        <td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">very	    </td>   <td class="translation">   очень    </td></tr>
+                    <tr><td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">early</td>     <td class="translation">рано</td>          <td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">quickly	</td>      <td class="translation">быстро</td></tr>
+                    <tr><td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">soon</td>   <td class="translation">скоро</td>            <td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">often	    </td> <td class="translation">     часто</td></tr>
+                    <tr><td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">late</td>   <td class="translation">поздно</td>           <td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">always	</td>    <td class="translation">  всегда</td></tr>
+                    <tr><td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">here</td>   <td class="translation">здесь</td>            <td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">again	    </td>    <td class="translation">  снова</td></tr>
+                    <tr><td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">there</td>   <td class="translation">там</td>             <td><input class="select-word-checkbox adv" type="checkbox"></td><td class="word">never	    </td>    <td class="translation">  никогда</td></tr>
+
+                    </tbody>
+                </table>
+
+                <button class="add-word-btn">Добавить в словарь</button>
+            </div>
+        </div>
+
+        <div name = "CONJUNCTION">
+            <p class="title"><span>6. CONJUNCTION</span></p>
+            
+            <div class="paragraph">
+                <p>Аналог в русском языке – союзы.</p>  
+            </div>
+
+            <div class="paragraph">
+                <p>Союзы на изучение:</p>
+                <table class="words-on-learn">
+                    <tbody>
+                    <tr><th><input class="select-word-checkbox main-checkbox-con" type="checkbox"></th><th>Простые</th>    <th> </th>     <th> </th> <th>Сложные</th>   <th></th></tr>
+                    <tr><td><input class="select-word-checkbox con" type="checkbox"></td><td class="word">and</td>  <td class="translation">и</td>            <td><input class="select-word-checkbox con" type="checkbox"></td><td class="word">because    </td>      <td class="translation">потому что</td></tr>
+                    <tr><td><input class="select-word-checkbox con" type="checkbox"></td><td class="word">but</td>  <td class="translation">но</td>           <td><input class="select-word-checkbox con" type="checkbox"></td><td class="word">however    </td>      <td class="translation">однако, тем не менее</td></tr>
+                    <tr><td><input class="select-word-checkbox con" type="checkbox"></td><td class="word">if</td>   <td class="translation">если</td>         <td><input class="select-word-checkbox con" type="checkbox"></td><td class="word">in case    </td>      <td class="translation">в случае   </td></tr>
+                    <tr><td><input class="select-word-checkbox con" type="checkbox"></td><td class="word">as</td>   <td class="translation">как</td>          <td><input class="select-word-checkbox con" type="checkbox"></td><td class="word">in order to</td>      <td class="translation">для того, чтобы</td></tr>
+                    <tr><td><input class="select-word-checkbox con" type="checkbox"></td><td class="word">or</td>   <td class="translation">или</td>          <td><input class="select-word-checkbox con" type="checkbox"></td><td class="word">as well as </td>      <td class="translation">так же как/td></tr>
+                    </tbody>
+                </table>
+
+                <button class="add-word-btn">Добавить в словарь</button>
+            </div>
+        </div>
+
+
+</div>
+
+<div class="btn-wrapper">
+    <button class="btn-prev" onclick="prev()">Предыдущий</button>
+    <button class="btn-next" onclick="finish()">Закончить</button>
+</div>
+</body>
+
+<script>
+    const ROOT_URL = "http://localhost:8080/";
+    const ALL_LESSONS_URL = "http://localhost:8080/grammar/A1/allLessons.html";
+    const PREV_PAGE = "http://localhost:8080/grammar/A1/L2/L2.2.1.html";
+    const CURRENT_LVL = "A1L2.3";
+
+    function init() {
+        setListeners();
+    }
+
+    function finish() {
+        sendCurrentLvl();
+        window.location.href = ALL_LESSONS_URL;
+    }
+
+    function sendCurrentLvl(){
+        fetch(ROOT_URL + "grammar/updateCurLvl?lvl=" + CURRENT_LVL,{
+            method: "POSt"
+        });
+    }
+
+    function prev() {
+        window.location.href = PREV_PAGE;
+    }
+
+    function setListeners() {
+        document.querySelector(".main-checkbox-adv").addEventListener("click",
+            () => document.querySelectorAll(".adv").forEach(function(checkBox){
+                checkBox.checked = document.querySelector(".main-checkbox-adv").checked;
+            }));
+
+            document.querySelector(".main-checkbox-con").addEventListener("click",
+            () => document.querySelectorAll(".con").forEach(function(checkBox){
+                checkBox.checked = document.querySelector(".main-checkbox-con").checked;
+            }));
+
+        document.querySelector(".add-word-btn").addEventListener("click", addWords);
+    }
+
+    function addWords(){
+        sendWordsForUser();
+
+        document.querySelectorAll(".select-word-checkbox").forEach(
+            checkBox => checkBox.checked = false);
+    }
+
+    async function sendWordsForUser() {
+        let words = getSelectedWords();
+        if (words.length === 0)
+            return;
+
+        fetch(ROOT_URL + "grammar/addWordsForUser",{
+            method:'POST',
+            body: JSON.stringify(words)
+        });
+    }
+
+    function getSelectedWords() {
+        let words = [];
+        getSelectedCheckBoxes().forEach(function (checkBox) {
+            let word = {};
+            word["word"] = checkBox.parentElement.nextElementSibling.textContent.trim();
+            word["translations"] = checkBox.parentElement.nextElementSibling.nextElementSibling.textContent.trim().split(",");
+
+            words.push(word);
+        });
+
+        return words;
+    }
+
+    function getSelectedCheckBoxes() {
+        let selected = [];
+        for (let checkBox of document.getElementsByClassName("select-word-checkbox"))
+            if (checkBox.checked && !(checkBox.classList.contains("main-checkbox-adv") || checkBox.classList.contains("main-checkbox-con")))
+                selected.push(checkBox);
+
+        return selected;
+    }
+</script>
+</html>

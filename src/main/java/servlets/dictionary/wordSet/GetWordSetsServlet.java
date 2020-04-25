@@ -1,34 +1,33 @@
 package servlets.dictionary.wordSet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import entities.Word;
 import entities.WordSet;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toService.MessageGetWordSets;
-import servlets.BaseServlet;
+import messageSystem.messages.dictionary.toService.MsgGetWordSets;
+import servlets.ServletAbonent;
 import util.AddressService;
 import util.SessionCache;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class GetWordSetsServlet extends HttpServlet implements BaseServlet {
+/**
+ * Сервлет, обрабатывающий запрос на получение наборов
+ */
+public class GetWordSetsServlet extends ServletAbonent {
     private static final Address address = new Address();
     private HttpServletResponse response;
     private String sessionId;
     private int userId;
 
-
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         response = resp;
         sessionId = req.getSession().getId();
         if (!SessionCache.INSTANCE.isAuthorized(sessionId)) {
@@ -52,7 +51,7 @@ public class GetWordSetsServlet extends HttpServlet implements BaseServlet {
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageGetWordSets(getAdr(), AddressService.INSTANCE.getDictionaryServiceAddress(),
+        MessageSystem.INSTANCE.sendMessageForService(new MsgGetWordSets(getAdr(), AddressService.INSTANCE.getDictionaryServiceAddress(),
                 userId, sessionId));
     }
 
@@ -71,7 +70,7 @@ public class GetWordSetsServlet extends HttpServlet implements BaseServlet {
                 response.flushBuffer();
             }
         }catch (Exception e){
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
     }
 
@@ -82,7 +81,7 @@ public class GetWordSetsServlet extends HttpServlet implements BaseServlet {
             response.setHeader(READY, "false");
             response.flushBuffer();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
     }
 

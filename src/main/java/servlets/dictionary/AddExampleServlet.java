@@ -3,7 +3,7 @@ package servlets.dictionary;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.Word;
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toService.MessageAddExample;
+import messageSystem.messages.dictionary.toService.MsgAddExample;
 import servlets.NonAbonentServlet;
 import util.AddressService;
 import util.SessionCache;
@@ -13,9 +13,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Используется для добавления, удаления и перезаписи примера
+ * Сервлет, обрабатывающий запрос на добавление, удаление и изменение примера
  */
 public class AddExampleServlet extends HttpServlet implements NonAbonentServlet {
     private String sessionId;
@@ -23,9 +25,8 @@ public class AddExampleServlet extends HttpServlet implements NonAbonentServlet 
     private int userId;
     private int wordId;
 
-
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         sessionId = req.getSession().getId();
         if (!SessionCache.INSTANCE.isAuthorized(sessionId)) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -36,7 +37,7 @@ public class AddExampleServlet extends HttpServlet implements NonAbonentServlet 
         try{
             initParams(req);
         }catch (Exception e){
-            System.out.println("Wrong parameters in AddExampleServlet");
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.flushBuffer();
             return;
@@ -49,7 +50,7 @@ public class AddExampleServlet extends HttpServlet implements NonAbonentServlet 
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageAddExample(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
+        MessageSystem.INSTANCE.sendMessageForService(new MsgAddExample(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
                 example, userId, wordId));
     }
 
@@ -61,9 +62,7 @@ public class AddExampleServlet extends HttpServlet implements NonAbonentServlet 
         wordId = obj.getId();
         example = obj.getExample();
 
-        System.out.println(wordId + " " + example);
-
         if (example == null || wordId <= 0)
-            throw new Exception();
+            throw new Exception("invalid data");
     }
 }

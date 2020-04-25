@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../../common/dropDef.css">
+    <link rel="stylesheet" href="../../../common/header.css">
+    <link rel="stylesheet" href="../../../common/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Muli&display=swap" rel="stylesheet">
+    <title>Части речи</title>
+</head>
+
+<style>
+    body{
+        background-color: #252627;
+    }
+
+    .hide{
+        display: none;
+    }
+
+    .lesson-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        font-family: Arial,Helvetica,sans-serif;
+
+        font-weight: 400;
+        text-align: left;
+        color: #ddd;
+        line-height: 1.62;
+        font-size: 17px;
+
+        margin-bottom: 25px;
+
+        /*font-family:'Muli', "Times New Roman", Times, serif;*/
+
+        /*color: white;*/
+        /*font-size: 21px;*/
+
+        /*letter-spacing: 0.06em;*/
+        /*word-spacing: 0.1em;*/
+    }
+
+    .grammar {
+        width: 70%;
+    }
+
+    .title{
+        margin-left: 70px;
+        margin-bottom: 20px;
+    }
+
+    .title > span{
+        font-size: 26px;
+        color: chocolate;
+        border-bottom: 2px solid #72C981;
+    }
+
+    .ul-examples{
+        list-style-type: disc;
+        padding-left: 40px;
+    }
+
+    .word {
+        color: #7298C9;
+        padding-left: 0;
+    }
+
+    .translation{
+        color: #72C981;
+    }
+
+    .paragraph{
+        margin-bottom: 20px;
+    }
+
+    .words-on-learn{
+        width: 70%;
+    }
+
+    .select-word-checkbox{
+        width: 17px;
+        height: 17px;
+    }
+
+    .select-word-checkbox:hover{
+        cursor: pointer;
+    }
+
+    tr{
+        border-bottom: #919191 solid 1px;
+        text-align: left;
+    }
+
+    th{
+        text-align: left;
+        border-bottom: #919191 solid 1px;
+        padding-left: 20px;
+        color: #E84141;
+    }
+
+    td {
+        padding-left: 20px;
+    }
+
+    .V1{
+        color: #7298C9;
+    }
+
+    .V2{
+        color: #7772C9;
+    }
+
+    .V3{
+        color: #72C4C9;
+    }
+
+    .btn-wrapper{
+        width: 99%;
+    }
+
+
+    .btn-wrapper  > button{
+        font-family:'Muli', "Times New Roman", Times, serif;
+
+        color: black;
+        width: 130px;
+        height: 40px;
+        background-color: #BED2E6;
+        border: none;
+        border-radius: 20px;
+        font-size: 20px;
+
+        margin-bottom: 30px;
+
+    }
+
+    .btn-wrapper  > button:hover{
+        cursor: pointer;
+    }
+
+    .btn-next{
+        position: absolute;
+        left: 85%;
+    }
+</style>
+<body onload="init()">
+<header>
+    <div class="header">
+        <ul class="header-ul">
+            <a class="header-a" href="../../../grammar/main.html"><li>Грамматика</li></a>
+            <a class="header-a" href="../../../dictionary/dictionary.html"><li>Словарь</li></a>
+            <a class="header-a" href="../../../trainings/trainings.html"><li>Тренировки</li></a>
+            <a class="header-a" href="../../../common/inDevelopment.html"><li>Контент</li></a>
+        </ul>
+
+        <a href="../../../profile/profile.html"><img class="profile-pic" src="../../../images/user_pic.png"></a>
+    </div>
+</header>
+<div class="lesson-container">
+    <div class="grammar">
+            <div class="noun">
+            <p>Существует 6 основных частей речи в английском языке:</p>
+            <p class="title"><span>1. NOUN</span></p>
+
+            <div class="paragraph">
+                <p>Аналог в русском языке – существительное. Определяет имена, места, вещи, идеи, животных и т.д.</p>
+                <h2>Примеры:</h2>
+                <ul class="ul-examples">
+                    <li><span class="word">Boy</span>  – <span class="translation">мальчик</span></li>
+                    <li><span class="word">Girl</span> – <span class="translation">девочка</span></li>
+                    <li><span class="word">Dog</span>  – <span class="translation">собака</span></li>
+                </ul>
+            </div>
+
+            <div class="paragraph">
+                <p>Существительные в английском языке бывают 2 видов: исчисляемые и неисчисляемые.</p>
+                <p>Исчисляемые существительные имеют множественную и единичную форму. Чтобы показать множественность, к существительному необходимо добавить окончание </span><span style="color: chocolate">s</span>.</p>
+
+                <ul class="ul-examples">
+                    <li><span class="word">Boy</span><span style="color: chocolate">s</span> –  <span class="translation">мальчик</span></li>
+                    <li><span class="word">Girl</span><span style="color:chocolate">s</span> – <span class="translation">девочка</span></li>
+                    <li><span class="word">Dog</span><span style="color: chocolate">s</span> –  <span class="translation">собака</span></li>
+                </ul>
+            </div>
+
+            <div class="paragraph">
+                <p>Неисчисляемые существительные имеют только одну форму записи.</p>
+                <p>К неисчисляемым можно отнести:</p>
+                <ul class="ul-examples">
+                    <li>
+                        <ul><span style="color: chocolate">Жидкости и газы:</span>
+                            <li style="list-style-type: none; padding-left: 10px;">– <span class="word">Water</span> –  <span class="translation">вода</span></li>
+                            <li style="list-style-type: none; padding-left: 10px;">– <span class="word">Milk</span> –  <span class="translation">молоко</span></li>
+                            <li style="list-style-type: none; padding-left: 10px;">– <span class="word">Air</span> –  <span class="translation">воздух</span></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <ul><span style="color: chocolate">Абстрактные понятия:</span>
+                            <li style="list-style-type: none; padding-left: 10px;">– <span class="word">Love</span> –  <span class="translation">любовь</span></li>
+                            <li style="list-style-type: none; padding-left: 10px;">– <span class="word">Music</span> –  <span class="translation">музыка</span></li>
+                            <li style="list-style-type: none; padding-left: 10px;">– <span class="word">Time</span> –  <span class="translation">время</span></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <ul><span style="color: chocolate">Порошки или что либо рассыпчатое:</span>
+                            <li style="list-style-type: none; padding-left: 10px;">– <span class="word">Sugar</span> –  <span class="translation">сахар</span></li>
+                            <li style="list-style-type: none; padding-left: 10px;">– <span class="word">Salt</span> –  <span class="translation">соль</span></li>
+                            <li style="list-style-type: none; padding-left: 10px;">– <span class="word">Rice</span> –  <span class="translation">рис</span></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <ul><span style="color: chocolate">Энергия:</span>
+                            <li style="list-style-type: none; padding-left: 10px;">– <span class="word">Heat</span> –  <span class="translation">тепло</span></li>
+                            <li style="list-style-type: none; padding-left: 10px;">– <span class="word">Cold</span> –  <span class="translation">холод</span></li>
+                            <li style="list-style-type: none; padding-left: 10px;">– <span class="word">Light</span> –  <span class="translation">свет</span></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <ul><span style="color: chocolate">Предметы:</span>
+                            <li style="list-style-type: none; padding-left: 10px;">– <span class="word">English</span> –  <span class="translation">английский</span></li>
+                            <li style="list-style-type: none; padding-left: 10px;">– <span class="word">Maths</span> –  <span class="translation">метематика</span></li>
+                            <li style="list-style-type: none; padding-left: 10px;">– <span class="word">Science</span> –  <span class="translation">наука</span></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="paragraph">
+                <p>На изучение:</p>
+                <table class="words-on-learn">
+                    <tbody>
+                    <tr><td><input class="select-word-checkbox main-checkbox" type="checkbox"></td><td></td>    <td></td>    <td ></td> <td ></td>   <td></td></tr>
+                    <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">time</td>    <td class="translation">время</td>    <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">number</td>    <td class="translation">число</td></tr>
+                    <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">year</td>    <td class="translation">год</td>      <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">world</td>     <td class="translation">мир</td></tr>
+                    <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">people</td>  <td class="translation">люди</td>     <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">problem</td>   <td class="translation">проблема</td></tr>
+                    <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">day</td>     <td class="translation">день</td>     <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">hand</td>      <td class="translation">рука</td></tr>
+                    <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">thing</td>   <td class="translation">вещь</td>     <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">something</td> <td class="translation">что-то</td></tr>
+                    <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">child</td>   <td class="translation">ребенок</td>  <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">school</td>    <td class="translation">школа</td></tr>
+                    <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">work</td>    <td class="translation">работа</td>   <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">place</td>     <td class="translation">место</td></tr>
+                    <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">part</td>    <td class="translation">часть</td>    <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">house</td>     <td class="translation">дом</td></tr>
+                    <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">life</td>    <td class="translation">жизнь</td>    <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">country</td>   <td class="translation">страна</td></tr>
+                    <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">woman</td>   <td class="translation">женщина</td>  <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">word</td>      <td class="translation">слово</td></tr>
+                    </tbody>
+                </table>
+
+                <button class="add-word-btn">Добавить в словарь</button>
+            </div>
+            </div>
+        </div>
+</div>
+
+<div class="btn-wrapper">
+    <button class="btn-next" onclick="next()">Следующий</button>
+</div>
+
+</body>
+
+<script>
+    const ROOT_URL = "http://localhost:8080/";
+    const NEXT_PAGE = "http://localhost:8080/grammar/A1/L2/L2.1.2.html";
+
+    function init() {
+        setListeners();
+    }
+
+    function next() {
+        window.location.href = NEXT_PAGE;
+    }
+
+    function setListeners() {
+        document.querySelector(".main-checkbox").addEventListener("click",
+            () => document.querySelectorAll(".select-word-checkbox").forEach(function(checkBox){
+                checkBox.checked = document.querySelector(".main-checkbox").checked;
+            }));
+
+        document.querySelector(".add-word-btn").addEventListener("click", addWords);
+    }
+
+    function addWords(){
+        sendWordsForUser();
+
+        document.querySelectorAll(".select-word-checkbox").forEach(
+            checkBox => checkBox.checked = false);
+    }
+
+    async function sendWordsForUser() {
+        let words = getSelectedWords();
+        if (words.length === 0)
+            return;
+
+        fetch(ROOT_URL + "grammar/addWordsForUser",{
+            method:'POST',
+            body: JSON.stringify(getSelectedWords())
+        });
+    }
+
+    function getSelectedWords() {
+        let words = [];
+        getSelectedCheckBoxes().forEach(function (checkBox) {
+            let word = {};
+            word["word"] = checkBox.parentElement.nextElementSibling.textContent.trim();
+            word["translations"] = checkBox.parentElement.nextElementSibling.nextElementSibling.textContent.trim().split(",");
+
+            words.push(word);
+        });
+
+        return words;
+    }
+
+    function getSelectedCheckBoxes() {
+        let selected = [];
+        for (let checkBox of document.getElementsByClassName("select-word-checkbox"))
+            if (checkBox.checked && !checkBox.classList.contains("main-checkbox"))
+                selected.push(checkBox);
+
+        return selected;
+    }
+</script>
+</html>

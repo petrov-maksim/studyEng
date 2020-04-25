@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../../common/dropDef.css">
+    <link rel="stylesheet" href="../../../common/header.css">
+    <link rel="stylesheet" href="../../../common/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Muli&display=swap" rel="stylesheet">
+    <title>Части речи</title>
+</head>
+
+<style>
+    body{
+        background-color: #252627;
+    }
+
+    .hide{
+        display: none;
+    }
+
+    .lesson-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        font-family: Arial,Helvetica,sans-serif;
+
+        font-weight: 400;
+        text-align: left;
+        color: #ddd;
+        line-height: 1.62;
+        font-size: 17px;
+
+        margin-bottom: 25px;
+
+        /*font-family:'Muli', "Times New Roman", Times, serif;*/
+
+        /*color: white;*/
+        /*font-size: 21px;*/
+
+        /*letter-spacing: 0.06em;*/
+        /*word-spacing: 0.1em;*/
+    }
+
+    .grammar {
+        width: 70%;
+    }
+
+    .title{
+        margin-left: 70px;
+        margin-bottom: 20px;
+    }
+
+    .title > span{
+        font-size: 26px;
+        color: chocolate;
+        border-bottom: 2px solid #72C981;
+    }
+
+    .ul-examples{
+        list-style-type: disc;
+        padding-left: 40px;
+    }
+
+    .word {
+        color: #7298C9;
+        padding-left: 0;
+    }
+
+    .translation{
+        color: #72C981;
+    }
+
+    .paragraph{
+        margin-bottom: 20px;
+    }
+
+    .words-on-learn{
+        width: 70%;
+    }
+
+    .select-word-checkbox{
+        width: 17px;
+        height: 17px;
+    }
+
+    .select-word-checkbox:hover{
+        cursor: pointer;
+    }
+
+    tr{
+        border-bottom: #919191 solid 1px;
+        text-align: left;
+    }
+
+    th{
+        text-align: left;
+        border-bottom: #919191 solid 1px;
+        padding-left: 20px;
+        color: #E84141;
+    }
+
+    td {
+        padding-left: 20px;
+    }
+
+    .V1{
+        color: #7298C9;
+    }
+
+    .V2{
+        color: #7772C9;
+    }
+
+    .V3{
+        color: #72C4C9;
+    }
+
+    .btn-wrapper{
+        width: 99%;
+    }
+
+
+    .btn-wrapper  > button{
+        font-family:'Muli', "Times New Roman", Times, serif;
+
+        color: black;
+        width: 130px;
+        height: 40px;
+        background-color: #BED2E6;
+        border: none;
+        border-radius: 20px;
+        font-size: 20px;
+
+        margin-bottom: 30px;
+
+    }
+
+    .btn-wrapper  > button:hover{
+        cursor: pointer;
+    }
+
+    .btn-prev{
+        position: absolute;
+        left: 5%;
+    }
+
+    .btn-next{
+        position: absolute;
+        left: 85%;
+    }
+</style>
+<body onload="init()">
+<header>
+    <div class="header">
+        <ul class="header-ul">
+            <a class="header-a" href="../../../grammar/main.html"><li>Грамматика</li></a>
+            <a class="header-a" href="../../../dictionary/dictionary.html"><li>Словарь</li></a>
+            <a class="header-a" href="../../../trainings/trainings.html"><li>Тренировки</li></a>
+            <a class="header-a" href="../../../common/inDevelopment.html"><li>Контент</li></a>
+        </ul>
+
+        <a href="../../../profile/profile.html"><img class="profile-pic" src="../../../images/user_pic.png"></a>
+    </div>
+</header>
+<div class="lesson-container">
+    <div class="grammar">
+        <div class="verb">
+                <p class="title"><span>2. VERB</span></p>
+                <p>Аналог в русском языке – глагол. Выражает действие. Глаголы в английском языке бывают правильные (regular) и неправильные (Irregular).</p>
+                <div class="paragraph" name ="Regular">
+                    <div class="paragraph">
+                        <p style="font-size: 18px; color: rgba(184,84,175,0.95); margin: 10px 0">Правильные глаголы</p>
+                        <p>Правильными являются глаголы, у которых форма прошедшего времени образуется путем прибавления окончания -<span style="color: chocolate">ed</span> к основе.</p>
+                        <ul class="ul-examples">
+                            <li><span class="word">look (смотреть)</span>  – <span class="translation">look<span style="color: chocolate">ed</span> (смотрел)</span></li>
+                            <li><span class="word">paint (рисовать)</span> – <span class="translation">paint<span style="color: chocolate">ed</span> (рисовал)</span></li>
+                            <li><span class="word">call (звонить)</span>  – <span class="translation">call<span style="color: chocolate">ed</span> (звонил)</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="paragraph">
+                        <p>Чтобы правильно добавить окончание -<span style="color: chocolate">ed</span> к глаголу, нужно учитывать несколько правил.</p>
+                        <ul>
+                            <li>
+                                <div class="paragraph">
+                                    <p>1.	Если глагол заканчивается на -<span style="color: chocolate">e</span>, тогда прибавляем только букву -<span style="color: chocolate">d</span>:</p>
+                                    <ul class="ul-examples">
+                                        <li><span class="word">improv<span style="color: chocolate">e</span> (улучшать)</span> – <span class="translation">improv<span style="color: chocolate">ed</span> (улучшал)</span></li>
+                                        <li><span class="word">lik<span style="color: chocolate">e</span> (нравиться)</span> – <span class="translation">lik<span style="color: chocolate">ed</span> (нравился)</span></li>
+                                    </ul>
+
+                                </div>
+                            </li>
+
+                            <li>
+                                <div class="paragraph">
+                                    <p>2.	Если глагол заканчивается на гласную букву, но не на <span style="color: #E84141">e</span>, то добавляем –<span style="color: chocolate">ed</span>:</p>
+                                    <ul class="ul-examples">
+                                        <li><span class="word">ski (кататься на лыжах)</span> – <span class="translation">ski<span style="color: chocolate">ed</span> (катался на лыжах)</span></li>
+                                        <li><span class="word">echo (отдаваться эхом)</span> – <span class="translation">echo<span style="color: chocolate">ed</span> (отдавался эхом)</span></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li>
+                                <div class="paragraph">
+                                    <p>3.	Если глагол заканчивается на <span style="color: #E84141">гласную + y</span>, добавляем –<span style="color: chocolate">ed</span>:</p>
+                                    <ul class="ul-examples">
+                                        <li><span class="word">play (играть)</span> – <span class="translation">play<span style="color: chocolate">ed</span> (играл)</span></li>
+                                        <li><span class="word">enjoy (наслаждаться)</span> – <span class="translation">enjoy<span style="color: chocolate">ed</span> (наслаждался)</span></li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li>
+                                <div class="paragraph">
+                                    <p>4.	Если глагол заканчивается на <span style="color: #E84141">согласную + y</span>, то меняем <span style="color: #E84141">y</span> на <span style="color: chocolate">i</span> и добавляем –<span style="color: chocolate">ed</span></p>
+                                    <ul class="ul-examples">
+                                        <li><span class="word">cr<span style="color: #E84141">y</span> (плакать)</span> – <span class="translation">cr<span style="color: chocolate">ied</span> (плакал)</span></li>
+                                        <li><span class="word">satisf<span style="color: #E84141">y</span> (удовлетворять)</span> – <span class="translation">satisf<span style="color: chocolate">ied</span> (удовлетворил)</span></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="paragraph">
+                        <p>Список правильных глаголов на изучение:</p>
+                        <table class="words-on-learn">
+                            <tbody>
+                            <tr><td><input class="select-word-checkbox main-checkbox" type="checkbox"></td><td></td>    <td></td>    <td ></td> <td ></td>   <td></td></tr>
+                            <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">look</td>    <td class="translation">смотреть	  </td>      <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">show  </td>    <td class="translation">показывать</td></tr>
+                            <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">like</td>    <td class="translation">нравится	  </td>      <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">call</td>      <td class="translation">звонить, называть</td></tr>
+                            <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">use </td>    <td class="translation">использовать</td>     <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">follow</td>    <td class="translation">следовать</td></tr>
+                            <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">want</td>    <td class="translation">хотеть	  </td>      <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">start</td>     <td class="translation">начинать</td></tr>
+                            <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">need</td>    <td class="translation">нуждаться	  </td>  <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">help</td>      <td class="translation">помогать</td></tr>
+                            <tr><td><input class="select-word-checkbox" type="checkbox"></td><td class="word">work</td>    <td class="translation">работать	  </td>      <td><input class="select-word-checkbox" type="checkbox"></td><td class="word">cook</td>      <td class="translation">готовить</td></tr>
+                            </tbody>
+                        </table>
+                        <button class="add-word-btn">Добавить в словарь</button>
+                    </div>
+                </div>
+
+                <div class="paragraph" name = "Irregular">
+                    <p style="font-size: 18px; color: rgba(184,84,175,0.95); margin: 10px 0">Неправильные глаголы</p>
+                    <div class="paragraph">
+                        <p>
+                            Неправильные глаголы в английском языке <span style="color: chocolate">(irregular verbs)</span>, отличаются тем, что они не по правилу образуют формы прошедшего времени.
+                            То есть не путем добавления к основе глагола окончания -<span style="color: chocolate">ed</span>. Они просто меняют свою форму (do – did – done).
+                        </p>
+                    </div>
+
+                    <div class="paragraph">
+                        <p>В английском языке довольно много неправильных глаголов, вот небольшой список:</p>
+                        <table class="words-on-learn">
+                            <tbody class="irregular">
+                            <tr><th>Первая форма V1</th><th>Вторая форма V2</th><th>Третья форма V3</th><th>Перевод</th></tr>
+                            <tr><td class="V1">to be (is/am/are)</td>    <td class="V2">was/were</td>     <td class="V3">been	    </td>    <td class="translation">быть, являться</td></tr>
+                            <tr><td class="V1">have	            </td>    <td class="V2">had	    </td>     <td class="V3">had	        </td>    <td class="translation">иметь, владеть</td></tr>
+                            <tr><td class="V1">do	            </td>    <td class="V2">did	    </td>     <td class="V3">done	    </td>    <td class="translation">делать</td></tr>
+                            <tr><td class="V1">say	            </td>    <td class="V2">said	</td>     <td class="V3">said	    </td>    <td class="translation">говорить </td></tr>
+                            <tr><td class="V1">can	            </td>    <td class="V2">could	</td>     <td class="V3">could	    </td>    <td class="translation">мочь, иметь возможность</td></tr>
+                            <tr><td class="V1">go	            </td>    <td class="V2">went 	</td>     <td class="V3">gone	    </td>    <td class="translation">идти, ехать</td></tr>
+                            <tr><td class="V1">get	            </td>    <td class="V2">got	    </td>     <td class="V3">got (gotten)</td>    <td class="translation">получить</td></tr>
+                            <tr><td class="V1">make	            </td>    <td class="V2">made	</td>     <td class="V3">made	    </td>    <td class="translation">делать</td></tr>
+                            <tr><td class="V1">see	            </td>    <td class="V2">saw	    </td>     <td class="V3">seen	    </td>    <td class="translation">видеть</td></tr>
+                            <tr><td class="V1">know	            </td>    <td class="V2">knew	</td>     <td class="V3">known	    </td>    <td class="translation">знать</td></tr>
+                            <tr><td class="V1">take	            </td>    <td class="V2">took	</td>     <td class="V3">taken	    </td>    <td class="translation">брать</td></tr>
+                            <tr><td class="V1">think	        </td>    <td class="V2">thought </td>     <td class="V3">thought	    </td>    <td class="translation">думать</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+<div class="btn-wrapper">
+    <button class="btn-prev" onclick="prev()">Предыдущий</button>
+    <button class="btn-next" onclick="finish()">Закончить</button>
+</div>
+
+</body>
+
+<script>
+    const ROOT_URL = "http://localhost:8080/";
+    const ALL_LESSONS_URL = "http://localhost:8080/grammar/A1/allLessons.html";
+    const PREV_PAGE = "http://localhost:8080/grammar/A1/L2/L2.1.1.html";
+    const CURRENT_LVL = "A1L2.2";
+
+
+    function init() {
+        setListeners();
+    }
+
+    function finish() {
+        sendCurrentLvl();
+        window.location.href = ALL_LESSONS_URL;
+    }
+
+    function prev() {
+        window.location.href = PREV_PAGE;
+    }
+
+    function sendCurrentLvl(){
+        fetch(ROOT_URL + "grammar/updateCurLvl?lvl=" + CURRENT_LVL,{
+            method: "POSt"
+        });
+    }
+
+
+    function setListeners() {
+        document.querySelector(".main-checkbox").addEventListener("click",
+            () => document.querySelectorAll(".select-word-checkbox").forEach(function(checkBox){
+                checkBox.checked = document.querySelector(".main-checkbox").checked;
+            }));
+
+        document.querySelector(".add-word-btn").addEventListener("click", addWords);
+    }
+
+    function addWords(){
+        sendWordsForUser();
+
+        document.querySelectorAll(".select-word-checkbox").forEach(
+            checkBox => checkBox.checked = false);
+    }
+
+    async function sendWordsForUser() {
+        console.log("sending");
+        let words = getSelectedWords();
+        if (words.length === 0)
+            return;
+
+        fetch(ROOT_URL + "grammar/addWordsForUser",{
+            method:'POST',
+            body: JSON.stringify(getSelectedWords())
+        });
+    }
+
+    function getSelectedWords() {
+        let words = [];
+        getSelectedCheckBoxes().forEach(function (checkBox) {
+            let word = {};
+            word["word"] = checkBox.parentElement.nextElementSibling.textContent.trim();
+            word["translations"] = checkBox.parentElement.nextElementSibling.nextElementSibling.textContent.trim().split(",");
+
+            words.push(word);
+        });
+
+        return words;
+    }
+
+    function getSelectedCheckBoxes() {
+        let selected = [];
+        for (let checkBox of document.getElementsByClassName("select-word-checkbox"))
+            if (checkBox.checked && !checkBox.classList.contains("main-checkbox"))
+                selected.push(checkBox);
+
+        return selected;
+    }
+</script>
+</html>

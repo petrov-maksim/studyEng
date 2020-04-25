@@ -2,7 +2,7 @@ package servlets.dictionary.wordSet;
 
 
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toService.MessageAddWordsToWordSet;
+import messageSystem.messages.dictionary.toService.MsgAddWordsToWordSet;
 import servlets.NonAbonentServlet;
 import util.AddressService;
 import util.SessionCache;
@@ -12,28 +12,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
- * Не возвращает ничего
- * На фронтенде, если слов больше, чем пороговое значение, то разбить вызовы на сервер, в несколько заходов
+ * Сервлет, обрабатывающий запрос на добавление слов в набор.
  * На данный момент, word's ids лежат в заголовке:
  * wordId: 1,2,3,4,5
  */
 public class AddWordsToWordSetServlet extends HttpServlet implements NonAbonentServlet {
     private HttpServletResponse response;
-    private String sessionId;
     private List<Integer> wordIds;
     private int wordSetId;
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         response = resp;
-        sessionId = req.getSession().getId();
+        String sessionId = req.getSession().getId();
 
         if (!SessionCache.INSTANCE.isAuthorized(sessionId)) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -44,7 +42,9 @@ public class AddWordsToWordSetServlet extends HttpServlet implements NonAbonentS
         try{
             initParams(req);
         }catch (Exception e){
-            System.out.println("Wrong parameters in AddWordsToWordSetServlet");
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE,
+                    "Wrong parameters:\nwordIds: " + wordIds
+                    + "\nwordSetId:" + wordSetId, e);
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.flushBuffer();
             return;
@@ -58,20 +58,21 @@ public class AddWordsToWordSetServlet extends HttpServlet implements NonAbonentS
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageAddWordsToWordSet(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
+        MessageSystem.INSTANCE.sendMessageForService(new MsgAddWordsToWordSet(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
                  wordIds, wordSetId));
     }
 
 
     public void handle(int wordId){
-        int sc = wordId == -1 ? HttpServletResponse.SC_INTERNAL_SERVER_ERROR : HttpServletResponse.SC_OK;
         try{
-            response.setStatus(sc);
+            response.setStatus(wordId == -1 ?
+                    HttpServletResponse.SC_INTERNAL_SERVER_ERROR :
+                    HttpServletResponse.SC_OK);
             response.setHeader("ready", "true");
             response.setHeader("wordId", String.valueOf(wordId));
             response.flushBuffer();
         }catch (IOException e){
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
     }
 

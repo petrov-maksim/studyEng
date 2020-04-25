@@ -1,34 +1,32 @@
 package servlets.dictionary.wordSet;
 
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toService.MessageRemoveWordsFromWordSet;
+import messageSystem.messages.dictionary.toService.MsgRemoveWordsFromWordSet;
 import servlets.NonAbonentServlet;
 import util.AddressService;
 import util.SessionCache;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * На фронтенде, если слов больше, чем пороговое значение, то разбить вызовы на сервер, в несколько заходов
+ * Сервлет, обрабатывающий запрос на удаление слов из набора
  * На данный момент, word's ids лежат в заголовке:
  * wordId: 1,2,3,4,5
- * Если wordSetId не был передан, удаляем для user'a, иначе только из wordSet'a
  */
 
 public class RemoveWordsFromWordSetServlet extends HttpServlet implements NonAbonentServlet {
-    private String sessionId;
     private Integer wordIds[];
     private int wordSetId;
 
-
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        sessionId = req.getSession().getId();
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String sessionId = req.getSession().getId();
 
         if (!SessionCache.INSTANCE.isAuthorized(sessionId)) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -39,8 +37,9 @@ public class RemoveWordsFromWordSetServlet extends HttpServlet implements NonAbo
         try{
             initParams(req);
         }catch (Exception e){
-            //logging
-            System.out.println("Wrong parameters in RemoveWordFromWordSetServlet");
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Wrong parameters\n" +
+                    "wordSetId: " + wordSetId +
+                    "\nwordIds: " + Arrays.toString(wordIds), e);
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.flushBuffer();
             return;
@@ -52,8 +51,8 @@ public class RemoveWordsFromWordSetServlet extends HttpServlet implements NonAbo
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageRemoveWordsFromWordSet(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
-                wordIds,wordSetId, sessionId));
+        MessageSystem.INSTANCE.sendMessageForService(new MsgRemoveWordsFromWordSet(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
+                wordIds,wordSetId));
     }
 
     private void initParams(HttpServletRequest request){

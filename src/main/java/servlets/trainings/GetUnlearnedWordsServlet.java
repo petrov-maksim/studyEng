@@ -4,22 +4,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.Word;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toService.MessageGetWordsForUser;
-
-import messageSystem.messages.trainings.toService.MessageToGetUnlearnedWords;
-import servlets.BaseServlet;
+import messageSystem.messages.trainings.toService.MsgToGetUnlearnedWords;
+import servlets.ServletAbonent;
 import util.AddressService;
 import util.SessionCache;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-
-public class GetUnlearnedWordsServlet extends HttpServlet implements BaseServlet {
+/**
+ * Сервлет, обрабатывающий запрос на получение неизученных слов, для конкретной тренировки
+ */
+public class GetUnlearnedWordsServlet extends ServletAbonent {
     private static final Address address = new Address();
     private String sessionId;
     private int userId;
@@ -27,7 +27,7 @@ public class GetUnlearnedWordsServlet extends HttpServlet implements BaseServlet
     private HttpServletResponse response;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         response = resp;
         sessionId = req.getSession().getId();
         if (!SessionCache.INSTANCE.isAuthorized(sessionId)) {
@@ -40,8 +40,8 @@ public class GetUnlearnedWordsServlet extends HttpServlet implements BaseServlet
         if (req.getHeader("handling") == null) {
             try{
                 initParams(req);
-            }catch (Exception e){
-                e.printStackTrace();
+            }catch (RuntimeException e){
+                Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Wrong trainingId: " + trainingId, e);
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.flushBuffer();
                 return;
@@ -57,12 +57,12 @@ public class GetUnlearnedWordsServlet extends HttpServlet implements BaseServlet
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageToGetUnlearnedWords(getAddress(), AddressService.INSTANCE.getTrainingServiceAddress(),
+        MessageSystem.INSTANCE.sendMessageForService(new MsgToGetUnlearnedWords(getAddress(),
+                AddressService.INSTANCE.getTrainingServiceAddress(),
                 sessionId, trainingId, userId));
     }
 
     public void handle(Collection<Word> words) {
-        System.out.println(words);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setHeader(READY, "true");
 
@@ -76,7 +76,7 @@ public class GetUnlearnedWordsServlet extends HttpServlet implements BaseServlet
                 response.getWriter().write(objectMapper.writeValueAsString(words));
             }
         }catch (Exception e){
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
     }
 
@@ -87,7 +87,7 @@ public class GetUnlearnedWordsServlet extends HttpServlet implements BaseServlet
             response.setHeader(READY, "false");
             response.flushBuffer();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
     }
 

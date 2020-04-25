@@ -4,21 +4,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.Word;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toService.MessageAddWordForUser;
-import servlets.BaseServlet;
+import messageSystem.messages.dictionary.toService.MsgAddWordForUser;
+import servlets.ServletAbonent;
 import util.AddressService;
 import util.SessionCache;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Для первичного добавления слова пользователю (во все слова)
+ * Сервлет обрабатывающий запрос на добавление слова.
  */
-public class AddWordForUserServlet extends HttpServlet implements BaseServlet {
+public class AddWordForUserServlet extends ServletAbonent {
     private static final Address address = new Address();
     private HttpServletResponse response;
     private String word;
@@ -27,7 +28,7 @@ public class AddWordForUserServlet extends HttpServlet implements BaseServlet {
     private int userId;
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         response = resp;
         sessionId = req.getSession().getId();
 
@@ -42,7 +43,7 @@ public class AddWordForUserServlet extends HttpServlet implements BaseServlet {
             try{
                 initParams(req);
             }catch (Exception e){
-                System.out.println("Wrong parameters in AddWordForUserServlet");
+                Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 resp.flushBuffer();
                 return;
@@ -60,7 +61,7 @@ public class AddWordForUserServlet extends HttpServlet implements BaseServlet {
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageAddWordForUser(getAdr(), AddressService.INSTANCE.getDictionaryServiceAddress(),
+        MessageSystem.INSTANCE.sendMessageForService(new MsgAddWordForUser(getAdr(), AddressService.INSTANCE.getDictionaryServiceAddress(),
                 word, translation, userId, sessionId));
     }
 
@@ -76,7 +77,7 @@ public class AddWordForUserServlet extends HttpServlet implements BaseServlet {
                 response.getWriter().write(String.valueOf(wordId));
             response.flushBuffer();
         }catch (IOException e){
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
     }
 
@@ -87,7 +88,7 @@ public class AddWordForUserServlet extends HttpServlet implements BaseServlet {
             response.setHeader(READY, "false");
             response.flushBuffer();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
     }
 
@@ -99,7 +100,7 @@ public class AddWordForUserServlet extends HttpServlet implements BaseServlet {
         translation = obj.getTranslations().get(0);
 
         if (word == null || word.isBlank() || translation == null || translation.isBlank())
-            throw new Exception();
+            throw new Exception("word or translation is blank");
     }
 
     @Override

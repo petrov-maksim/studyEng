@@ -1,21 +1,23 @@
 package servlets.trainings;
 
 import messageSystem.MessageSystem;
-import messageSystem.messages.trainings.toService.MessageToMoveWordsToLearned;
+import messageSystem.messages.trainings.toService.MsgToMoveWordsToLearned;
 import servlets.NonAbonentServlet;
 import util.AddressService;
 import util.SessionCache;
-
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * Сервлет, обрабатывающий запрос на перевод слов в состояние "изученно"
+ */
 public class MoveWordsToLearnedServlet extends HttpServlet implements NonAbonentServlet {
     private String sessionId;
     private int userId;
@@ -23,7 +25,7 @@ public class MoveWordsToLearnedServlet extends HttpServlet implements NonAbonent
     private List<Integer> wordIds;
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         sessionId = req.getSession().getId();
 
         if (!SessionCache.INSTANCE.isAuthorized(sessionId)) {
@@ -34,8 +36,10 @@ public class MoveWordsToLearnedServlet extends HttpServlet implements NonAbonent
 
         try{
             initParams(req);
-        }catch (Exception e){
-            e.printStackTrace();
+        }catch (RuntimeException e){
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE,
+                    "Wrong parameters:\n" + "wordIds: " + wordIds +
+                    "trainingId: " + trainingId, e);
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.flushBuffer();
             return;
@@ -48,7 +52,7 @@ public class MoveWordsToLearnedServlet extends HttpServlet implements NonAbonent
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageToMoveWordsToLearned(null, AddressService.INSTANCE.getTrainingServiceAddress(),
+        MessageSystem.INSTANCE.sendMessageForService(new MsgToMoveWordsToLearned(null, AddressService.INSTANCE.getTrainingServiceAddress(),
                 userId, trainingId, wordIds));
     }
 

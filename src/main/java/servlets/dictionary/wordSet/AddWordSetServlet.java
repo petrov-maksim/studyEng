@@ -2,11 +2,11 @@ package servlets.dictionary.wordSet;
 
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toService.MessageAddWordSet;
+import messageSystem.messages.dictionary.toService.MsgAddWordSet;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import servlets.BaseServlet;
+import servlets.ServletAbonent;
 import util.AddressService;
 import util.SessionCache;
 
@@ -15,9 +15,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-
-public class AddWordSetServlet extends HttpServlet implements BaseServlet {
+/**
+ * Сервлет обрабатывающий запрос на добавление набора слов пользователю
+ */
+public class AddWordSetServlet extends ServletAbonent {
     private static final int MEMORY_THRESHOLD = 1024 * 1024 * 3; // 3MB
     private static final int MAX_FILE_SIZE = 1024 * 1024 * 40; // 40MB
     private static final int MAX_REQUEST_SIZE = 1024 * 1024 * 50; // 50MB
@@ -30,7 +34,7 @@ public class AddWordSetServlet extends HttpServlet implements BaseServlet {
     private FileItem img;
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         response = resp;
         sessionId = req.getSession().getId();
         if (!SessionCache.INSTANCE.isAuthorized(sessionId)) {
@@ -41,16 +45,7 @@ public class AddWordSetServlet extends HttpServlet implements BaseServlet {
 
         //First request
         if (req.getHeader("handling") == null) {
-            try{
-                initParams(req);
-            }catch (Exception e){
-                System.out.println("Wrong parameters in AddWordSetServlet");
-                e.printStackTrace();
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.flushBuffer();
-                return;
-            }
-
+            initParams(req);
             createMessage();
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.flushBuffer();
@@ -62,14 +57,14 @@ public class AddWordSetServlet extends HttpServlet implements BaseServlet {
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageAddWordSet(getAdr(), AddressService.INSTANCE.getDictionaryServiceAddress(),
+        MessageSystem.INSTANCE.sendMessageForService(new MsgAddWordSet(getAdr(), AddressService.INSTANCE.getDictionaryServiceAddress(),
                 img, name, sessionId, userId));
     }
 
     public void handle(int wordSetId){
-        System.out.println(wordSetId);
-        int sc = wordSetId == -1 ? HttpServletResponse.SC_INTERNAL_SERVER_ERROR : HttpServletResponse.SC_OK;
-        response.setStatus(sc);
+        response.setStatus(wordSetId == -1 ?
+                HttpServletResponse.SC_INTERNAL_SERVER_ERROR :
+                HttpServletResponse.SC_OK);
         response.setHeader("wordSetId", String.valueOf(wordSetId));
     }
 
@@ -80,11 +75,11 @@ public class AddWordSetServlet extends HttpServlet implements BaseServlet {
             response.setHeader(READY, "false");
             response.flushBuffer();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
     }
 
-    private void initParams(HttpServletRequest request) throws Exception {
+    private void initParams(HttpServletRequest request) {
         img = getImg(request);
         userId = SessionCache.INSTANCE.getUserIdBySessionId(sessionId);
         name = request.getParameter("name");
@@ -103,8 +98,8 @@ public class AddWordSetServlet extends HttpServlet implements BaseServlet {
 
         try {
             return upload.parseRequest(request).get(0);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
         return null;
     }

@@ -4,26 +4,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.Training;
 import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.trainings.toService.MessageToGetAmountOfUnlearnedWords;
-import servlets.BaseServlet;
+import messageSystem.messages.trainings.toService.MsgToGetAmountOfUnlearnedWords;
+import servlets.ServletAbonent;
 import util.AddressService;
 import util.SessionCache;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class GetAmountOfUnlearnedWordsServlet extends HttpServlet implements BaseServlet{
+/**
+ * Сервлет, обрабатывающий запрос на получение количества неизученных слов
+ */
+public class GetAmountOfUnlearnedWordsServlet extends ServletAbonent {
     private static final Address address = new Address();
     private HttpServletResponse response;
     private String sessionId;
     private int userId;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         sessionId = req.getSession().getId();
 
         if (!SessionCache.INSTANCE.isAuthorized(sessionId)) {
@@ -48,17 +51,16 @@ public class GetAmountOfUnlearnedWordsServlet extends HttpServlet implements Bas
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageToGetAmountOfUnlearnedWords(getAddress(), AddressService.INSTANCE.getTrainingServiceAddress(),
+        MessageSystem.INSTANCE.sendMessageForService(new MsgToGetAmountOfUnlearnedWords(getAddress(), AddressService.INSTANCE.getTrainingServiceAddress(),
                 userId, sessionId));
     }
 
-    public void handle(Training trainings[]){
-        System.out.println(Arrays.toString(trainings));
+    public void handle(Collection<Training> trainings){
         response.setStatus(HttpServletResponse.SC_OK);
         response.setHeader(READY, "true");
 
         try{
-            if (trainings == null || trainings.length == 0)
+            if (trainings == null || trainings.size() == 0)
                 response.flushBuffer();
             else {
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -67,7 +69,7 @@ public class GetAmountOfUnlearnedWordsServlet extends HttpServlet implements Bas
                 response.getWriter().write(objectMapper.writeValueAsString(trainings));
             }
         }catch (Exception e){
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
     }
 
@@ -78,7 +80,7 @@ public class GetAmountOfUnlearnedWordsServlet extends HttpServlet implements Bas
             response.setHeader(READY, "false");
             response.flushBuffer();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
     }
 

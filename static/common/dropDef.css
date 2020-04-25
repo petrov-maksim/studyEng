@@ -45,3 +45,8 @@ table {
 button:active, button:focus {
     outline: none;
 }
+
+a {
+    outline: none;
+    text-decoration: none;
+}

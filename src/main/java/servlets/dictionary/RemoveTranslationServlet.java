@@ -3,19 +3,20 @@ package servlets.dictionary;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import entities.Word;
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toService.MessageRemoveTranslation;
+import messageSystem.messages.dictionary.toService.MsgRemoveTranslation;
 import servlets.NonAbonentServlet;
 import util.AddressService;
 import util.SessionCache;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Операция односторонняя, получили запрос -> создали message для DictionaryService
+ * Сервлет, обрабатывающий запрос на удаление, перевода
  */
 public class RemoveTranslationServlet extends HttpServlet implements NonAbonentServlet {
     private String sessionId;
@@ -24,7 +25,7 @@ public class RemoveTranslationServlet extends HttpServlet implements NonAbonentS
     private String translation;
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         sessionId = req.getSession().getId();
         if (!SessionCache.INSTANCE.isAuthorized(sessionId)) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -35,7 +36,7 @@ public class RemoveTranslationServlet extends HttpServlet implements NonAbonentS
         try{
             initParams(req);
         }catch (Exception e){
-            System.out.println("Wrong parameters in RemoveTranslationServlet");
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.flushBuffer();
             return;
@@ -48,7 +49,7 @@ public class RemoveTranslationServlet extends HttpServlet implements NonAbonentS
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageRemoveTranslation(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
+        MessageSystem.INSTANCE.sendMessageForService(new MsgRemoveTranslation(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
                 userId, wordId, translation));
     }
 
@@ -61,6 +62,6 @@ public class RemoveTranslationServlet extends HttpServlet implements NonAbonentS
         translation = obj.getTranslations().get(0);
 
         if (translation == null || translation.isBlank() || wordId <= 0)
-            throw new Exception();
+            throw new Exception("Invalid data:\n" + "translation: " + translation + "\nwordId:" + wordId);
     }
 }

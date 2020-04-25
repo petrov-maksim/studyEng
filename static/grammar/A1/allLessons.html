@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../common/dropDef.css">
+    <link rel="stylesheet" href="../../common/header.css">
+    <link rel="stylesheet" href="../../common/main.css">
+    <title>Lessons</title>
+</head>
+
+<style>
+    body{
+        background-color: #252627;
+    }
+
+    a{
+        color: white;
+    }
+    .lessons-container{
+        display: flex;
+        flex-direction: column;
+        /*justify-content: center;*/
+        flex-wrap: wrap;
+        align-items: center;
+
+        width: 100%;
+        height: 100%;
+    }
+
+    .lesson-wrapper{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        width: 700px;
+
+        border-radius: 5px;
+        margin: 10px;
+
+        -webkit-touch-callout: none; /* iOS Safari */
+        -webkit-user-select: none;   /* Chrome/Safari/Opera */
+        -moz-user-select: none;      /* Firefox */
+        -ms-user-select: none;       /* Internet Explorer/Edge */
+        user-select: none;
+
+        font-family: Times, Times New Roman, serif;
+        font-size:23px;
+        color: white;
+    }
+
+    .lesson-wrapper:hover{
+        background-color: rgba(159,227,255,.15);
+    }
+
+    .lesson-title{
+        display: flex;
+        justify-content: space-between;
+
+        width: 700px;
+        min-height: 25px;
+        text-align: center;
+        padding-left: 10px;
+    }
+
+    .lesson{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        width: 665px;
+        min-height: 35px;
+        padding-left: 35px;
+
+        border-radius: 5px;
+    }
+
+    .lesson:hover{
+        background-color: rgba(159,227,255,.25);
+        cursor: pointer;
+    }
+
+    .title:hover{
+        cursor: pointer;
+    }
+
+    .index{
+        color: chocolate;
+        margin-right: 10px;
+    }
+
+    .status {
+        color: #CC2929;
+    }
+
+    .learned{
+        color: #2CB22C;
+    }
+
+    .learning{
+        color: #298CCC;
+    }
+</style>
+
+<script>
+    const ROOT_URL = "http://localhost:8080/";
+    const TIMEOUT = 50;
+    async function init(){
+        setLvls(await getCurrentLvl());
+    }
+
+    async function getCurrentLvl(){
+        let response = await fetch(ROOT_URL + "grammar/getCurLvl");
+
+        if (!response.ok)
+            return null;
+
+        do{
+            response = await fetch(ROOT_URL + "grammar/getCurLvl",{
+                method: 'GET',
+                headers:{
+                    'handling':"true"
+                }
+            });
+        
+            if (response.headers.get("ready") === "false" && response.ok)
+                await new Promise(resolve => setTimeout(resolve, TIMEOUT));
+        }while (response.headers.get("ready") === "false" && response.ok);
+
+        if (response.ok){
+            try{
+                return await response.text();
+            }catch (e) {}
+        }
+        return null;
+    }
+
+    function setLvls(lvl){
+        console.log(lvl);
+        if(!lvl)
+            return;
+
+        let curLvl = document.getElementById(lvl);
+
+        curLvl.lastElementChild.classList.add("learning");
+        curLvl.lastElementChild.textContent = "На изучении";
+
+        document.querySelectorAll(".lesson").forEach(function(elem){
+            if(elem.getAttribute("id"))
+                if(elem.getAttribute("id").localeCompare(lvl) < 0){
+                    elem.lastElementChild.classList.add("learned");
+                    elem.lastElementChild.textContent = "Изученно";
+                }
+        });
+
+        document.querySelectorAll(".lesson-title").forEach(function(elem){
+            if(elem.getAttribute("id"))
+                if(elem.getAttribute("id").localeCompare(lvl) < 0){
+                    elem.lastElementChild.classList.add("learned");
+                    elem.lastElementChild.textContent = "Изученно";
+                }
+        });
+
+        // let lvls = document.querySelectorAll(".lesson");
+
+        // for(let i = 0; i < lvls.length; i++){
+        //     let elem = lvls[i];
+        //     if(elem.getAttribute("id")){
+        //         if(elem.getAttribute("id").localeCompare(lvl) <= 0){
+        //             elem.lastElementChild.classList.add("learned");
+        //             elem.lastElementChild.textContent = "Изученно";
+        //         } 
+        //         if(elem.getAttribute("id").localeCompare(lvl) === 0){
+        //             lvls[i+1].lastElementChild.classList.add("learning");
+        //             lvls[i+1].lastElementChild.textContent = "На изучении";
+        //         }
+        //     }    
+        // }
+
+        // let lvls2 = document.querySelectorAll(".lesson-title");
+
+        // for(let i = 0; i < lvls2.length; i++){
+        //     let elem = lvls2[i];
+        //     if(elem.getAttribute("id")){
+        //         if(elem.getAttribute("id").localeCompare(lvl) <= 0){
+        //             elem.lastElementChild.classList.add("learned");
+        //             elem.lastElementChild.textContent = "Изученно";
+        //         }
+        //         if(elem.getAttribute("id").localeCompare(lvl) === 0){
+        //             lvls[i+1].lastElementChild.classList.add("learning");
+        //             lvls[i+1].lastElementChild.textContent = "На изучении";
+        //         }
+        //     }     
+        // }
+    }
+</script>
+
+<body onload="init()">
+<header>
+    <div class="header">
+        <ul class="header-ul">
+            <a class="header-a" href="../../grammar/main.html"><li>Грамматика</li></a>
+            <a class="header-a" href="../../dictionary/dictionary.html"><li>Словарь</li></a>
+            <a class="header-a" href="../../trainings/trainings.html"><li>Тренировки</li></a>
+            <a class="header-a" href="../../common/inDevelopment.html"><li>Контент</li></a>
+        </ul>
+
+        <a href="../../profile/profile.html"><img class="profile-pic" src="../../images/user_pic.png"></a>
+    </div>
+</header>
+
+<div class="lessons-container">
+    <div class="lesson-wrapper">
+        <a>
+            <div id="A1L1" class="lesson-title">
+                <div>
+                    <span class="index">1</span>
+                    <span class="title">Алфавит и звуки</span>
+                </div>
+                <span class="status">Не изучено</span>
+            </div i>
+        </a>
+    </div>
+
+    <div class="lesson-wrapper">
+        <div class="lesson-title">
+            <div>
+                <span class="index">2</span>
+                <span>Части речи</span>
+            </div>
+        </div>
+
+        <a href="L2/L2.1.1.html">
+            <div id = "A1L2.1" class="lesson">
+                <div>
+                    <span class="index">2.1</span>
+                    <span class="title">Существительные и глаголы</span>
+                </div>
+                <span class="status">Не изучено</span>
+            </div>
+        </a>
+
+        <a href="L2/L2.2.1.html">
+            <div id="A1L2.2" class="lesson">
+                <div>
+                    <span class="index">2.2</span>
+                    <span class="title">Местоимения, прилагательные, наречия и союзы</span>
+                </div>
+                <span class="status">Не изучено</span>
+            </div>
+        </a>
+
+        <a>
+            <div id="A1L2.3" class="lesson">
+                <div>
+                    <span class="index">2.3</span>
+                    <span class="title">Практика</span>
+                </div>
+                <span class="status">Не изучено</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="lesson-wrapper">
+        <div class="lesson-title">
+            <div>
+                <span class="index">3</span>
+                <span>Настоящее время</span>
+            </div>
+        </div>
+        <a>
+            <div class="lesson">
+                <div>
+                    <span class="index">3.1</span>
+                    <span class="title">Present Simple</span>
+                </div>
+                <span class="status">Не изучено</span>
+            </div>
+        </a>
+
+        <a>
+            <div class="lesson">
+                <div>
+                    <span class="index">3.2</span>
+                    <span class="title">Present Continuous</span>
+                </div>
+                <span class="status">Не изучено</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="lesson-wrapper">
+        <div class="lesson-title">
+            <div>
+                <span class="index">4</span>
+                <span>Прошедшее время</span>
+            </div>
+        </div>
+
+        <a>
+            <div class="lesson">
+                <div>
+                    <span class="index">4.1</span>
+                    <span class="title">Past Simple</span>
+                </div>
+                <span class="status">Не изучено</span>
+            </div>
+        </a>
+
+        <a>
+            <div class="lesson">
+                <div>
+                    <span class="index">4.2</span>
+                    <span class="title">Past Continuous</span>
+                </div>
+                <span class="status">Не изучено</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="lesson-wrapper">
+        <div class="lesson-title">
+            <div>
+                <span class="index">5</span>
+                <span>Будущее время</span>
+            </div>
+        </div>
+        <a>
+            <div class="lesson">
+                <div>
+                    <span class="index">5.1</span>
+                    <span class="title">Future Simple</span>
+                </div>
+                <span class="status">Не изучено</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="lesson-wrapper">
+        <a>
+            <div class="lesson-title">
+                <div>
+                    <span class="index">6</span>
+                    <span class="title">Местоимения</span>
+                </div>
+                <span class="status">Не изучено</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="lesson-wrapper">
+        <a>
+            <div class="lesson-title">
+                <div>
+                    <span class="index">7</span>
+                    <span class="title">Wh- вопросы</span>
+                </div>
+                <span class="status">Не изучено</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="lesson-wrapper">
+        <a>
+            <div class="lesson-title">
+                <div>
+                    <span class="index">8</span>
+                    <span class="title">Предлоги</span>
+                </div>
+                <span class="status">Не изучено</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="lesson-wrapper">
+        <a>
+            <div class="lesson-title">
+                <div>
+                    <span class="index">9</span>
+                    <span class="title">Овервью</span>
+                </div>
+                <span class="status">Не изучено</span>
+            </div>
+        </a>
+    </div>
+
+    <div class="lesson-wrapper">
+        <a>
+            <div class="lesson-title">
+                <div>
+                    <span class="index">10</span>
+                    <span class="title">Экзамен</span>
+                </div>
+                <span class="status">Не изучено</span>
+            </div>
+        </a>
+    </div>
+</div>
+</body>
+</html>

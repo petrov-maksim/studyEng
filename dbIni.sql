@@ -7,7 +7,7 @@ CREATE TABLE users(
     email VARCHAR(64) NOT NULL UNIQUE,
     password VARCHAR(30) NOT NULL,
     status BOOLEAN DEFAULT 'false',
-    cur_lvl VARCHAR(5) DEFAULT 'A1L1'
+    cur_lvl VARCHAR(6) DEFAULT 'A1L1'
 );
 
 CREATE TABLE translations(

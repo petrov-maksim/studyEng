@@ -1,7 +1,7 @@
 package servlets.dictionary.user;
 
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toService.MessageRemoveWordsForUser;
+import messageSystem.messages.dictionary.toService.MsgRemoveWordsForUser;
 import servlets.NonAbonentServlet;
 import util.AddressService;
 import util.SessionCache;
@@ -12,22 +12,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * TODO: Добавить разбиение на порции
- * На фронтенде, если слов больше, чем пороговое значение, то разбить вызовы на сервер, в несколько заходов
- * На данный момент, word's ids лежат в заголовке:
- * wordId: 1,2,3,4,5
+ * Сервлет обрабатывающий запрос на удаление слов для пользователя.
  */
-
 public class RemoveWordsForUserServlet extends HttpServlet implements NonAbonentServlet {
     private String sessionId;
     private Integer wordIds[];
     private int userId;
 
-
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         sessionId = req.getSession().getId();
 
         if (!SessionCache.INSTANCE.isAuthorized(sessionId)) {
@@ -39,8 +36,8 @@ public class RemoveWordsForUserServlet extends HttpServlet implements NonAbonent
         try{
             initParams(req);
         }catch (Exception e){
-            //logging
-            System.out.println("Wrong parameters in RemoveWordForUserServlet");
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "word ids aren't valid: " +
+                    Arrays.toString(wordIds), e);
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.flushBuffer();
             return;
@@ -52,15 +49,13 @@ public class RemoveWordsForUserServlet extends HttpServlet implements NonAbonent
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageRemoveWordsForUser(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
-                wordIds, userId, sessionId));
+        MessageSystem.INSTANCE.sendMessageForService(new MsgRemoveWordsForUser(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
+                wordIds, userId));
     }
 
     private void initParams(HttpServletRequest request){
         userId = SessionCache.INSTANCE.getUserIdBySessionId(sessionId);
         wordIds = Arrays.stream(request.getParameter("wordId").split(",")).
                 map(Integer::parseInt).toArray(Integer[]::new);
-
-        System.out.println(Arrays.toString(wordIds));
     }
 }

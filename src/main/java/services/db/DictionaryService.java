@@ -12,16 +12,18 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+/**
+ * Сервис, осуществляющий работу, связанную со словарем
+ */
 public class DictionaryService implements Abonent, Runnable {
     private final static Address address = new Address();
     private final QueryExecutor queryExecutor;
-    //Пользователь, которому будут принадлежать init слова и переводы
-    private static final int BASE_USER_ID = 1;
     private static final String UPLOAD_PATH = "C:/dev/pr/static/images/";
     private static final String DEFAULT_WORDSET_IMAGE = "C:/dev/pr/static/images/defaultWordSet.png";
 
@@ -29,9 +31,55 @@ public class DictionaryService implements Abonent, Runnable {
     private static final int rus_engId = 2;
     private static final int writingId = 3;
     private static final int cardsId = 4;
+
     public DictionaryService(QueryExecutor queryExecutor) {
         this.queryExecutor = queryExecutor;
     }
+
+    private static final String WORD_ALREADY_EXISTS_QUERY = "SELECT COUNT(*) FROM wordSet_word WHERE wordSet_id = %d AND word_id = %d;";
+    private static final String ADD_WORD_TO_WORDSET_QUERY = "INSERT INTO wordSet_word (wordSet_id, word_id) VALUES ('%d', '%d');";
+    private static final String ADD_WORD_TO_WORDSET_QUERY_FOR_PREPAREDSTATEMENT = "INSERT INTO wordSet_word (wordSet_id, word_id) VALUES (?, ?);";
+    private static final String ADD_TO_USER_WORD_TRANSLATION_QUERY = "INSERT INTO user_word_translation (user_id, word_id, translation_id) VALUES ('%d', '%d', '%d');";
+    private static final String ADD_EXAMPLE_FOR_WORD_QUERY = "INSERT INTO user_word_example (user_id, word_id, example_id) VALUES ('%d', '%d', '%d');";
+    private static final String ADD_WS_FOR_USER_QUERY = "INSERT INTO wordSets (name, user_id, img_path) VALUES ('%s', '%d', '%s') RETURNING id;";
+    private static final String DELETE_TRANSLATION_FOR_WORD_QUERY = "DELETE FROM user_word_translation WHERE user_id = '%d' AND word_id = '%d' AND translation_id = '%d'";
+    private static final String DELETE_EXAMPLE_FOR_WORD_QUERY = "DELETE FROM user_word_example WHERE user_id = '%d' AND word_id = '%d'";
+    private static final String DELETE_FROM_WORDSET_WORD_BY_WS_ID_QUERY = "DELETE FROM wordSet_Word WHERE wordSet_id = '%d';";
+    private static final String DELETE_FROM_WORDSET_WORD_QUERY = "DELETE FROM wordSet_word WHERE wordSet_id = ? AND word_id = ?;";
+    private static final String DELETE_WORDSET_QUERY = "DELETE FROM wordSets WHERE id = '%d';";
+    private static final String GET_NUMBER_OF_TRANSLATIONS_FOR_WORD_QUERY = "SELECT count(*) FROM user_word_translation WHERE word_id = '%d' AND user_id = '%d';";
+    private static final String GET_WORDSETS_FOR_USER_QUERY = "SELECT id, name, isMain, size, img_path FROM wordSets WHERE user_id = '%d';";
+    private static final String UPDATE_WS_NAME_QUERY = "UPDATE wordSets SET name = '%s' WHERE id = '%d';";
+    private static final String UPDATE_WS_IMG_PATH_QUERY = "UPDATE wordSets SET img_path = '%s' WHERE id = '%d';";
+    private static final String UPDATE_WS_IMG_PATH_AND_NAME_QUERY = "UPDATE wordSets SET name = '%s', img_path = '%s' WHERE id = '%d';";
+    private static final String GET_WORD_ID_BY_WORD_QUERY = "SELECT id FROM words WHERE word = '%s';";
+    private static final String ADD_NEW_WORD_QUERY = "INSERT INTO words (word) VALUES('%s') RETURNING id;";
+    private static final String GET_TRANSLATION_ID_BY_TRANSLATION_QUERY = "SELECT id FROM translations WHERE translation = '%s';";
+    private static final String ADD_NEW_TRANSLATION_QUERY = "INSERT INTO translations (translation) VALUES('%s') RETURNING id;";
+    private static final String GET_EXAMPLE_ID_BY_EXAMPLE_QUERY = "SELECT id FROM examples WHERE example = '%s';";
+    private static final String ADD_NEW_EXAMPLE_QUERY = "INSERT INTO examples (example) VALUES('%s') RETURNING id;";
+    private static final String GET_MAINWS_ID_FOR_USER_QUERY = "SELECT id FROM wordSets WHERE user_id = '%d' AND isMain = true;";
+    private static final String GET_WS_IMG_PATH_QUERY = "SELECT img_path FROM wordSets WHERE id = '%d';";
+    private static final String GET_ALREADY_STORED_WORDS_QUERY = "SELECT word_id FROM wordSet_word WHERE wordSet_id = %d AND word_id IN (%s);";
+
+    private static final String DELETE_WORD_FROM_USER_QUERY = "DELETE FROM user_word_translation WHERE user_id = ? AND word_id = ?;";
+    private static final String DELETE_WORD_FROM_WORDSETS_QUERY = "DELETE FROM wordSet_word WHERE word_id = ? AND wordSet_id IN (SELECT id FROM wordSets WHERE user_id = ?);";
+    private static final String DELETE_WORD_FROM_TRAININGS_QUERY = "DELETE FROM user_word_training WHERE user_id = ? AND word_id = ?;";
+    private static final String GET_N_WORDS_FROM_WS_QUERY = "WITH wordId_index AS(SELECT word_id, index FROM wordSet_word WHERE wordSet_id = %d AND index > %d LIMIT %d),\n" +
+            "wt_ids AS(SELECT word_id, translation_id FROM user_word_translation WHERE user_id = %d AND word_id IN\n" +
+            "(SELECT word_id FROM wordId_index)),\n" +
+            "we_ids AS(SELECT example_id, word_id FROM user_word_example WHERE user_id = %d AND word_id IN\n" +
+            "(SELECT word_id FROM wordId_index))\n" +
+            "SELECT wt_ids.word_id, words.word, wt_ids.translation_id, translations.translation, examples.example, wordId_index.index FROM\n" +
+            "wordId_index INNER JOIN wt_ids ON wordId_index.word_id = wt_ids.word_id\n" +
+            "INNER JOIN words ON words.id = wt_ids.word_id\n" +
+            "INNER JOIN translations ON translations.id = wt_ids.translation_id\n" +
+            "LEFT OUTER JOIN we_ids ON wt_ids.word_id = we_ids.word_id\n" +
+            "LEFT OUTER JOIN examples ON examples.id = we_ids.example_id;";
+    private static final String ADD_TO_USER_WORD_TRAINING_QUERY = "INSERT INTO user_word_training (user_id, word_id, training_id) VALUES('%d', '%d', '%d')," +
+            "('%d', '%d', '%d')," +
+            "('%d', '%d', '%d')," +
+            "('%d', '%d', '%d');";
 
     /**
      * При первичном добавлении слова пользователю
@@ -39,13 +87,8 @@ public class DictionaryService implements Abonent, Runnable {
      * Получаем wordId, если нет - addNewWord(word);
      * Добавляем запись в user_word_translation
      * Добавляем запись в wordSet_word
-     * TODO: Инкрементируем size в таблице wordSets для данного wordSetId (ДОБАВИТЬ ТРИГЕР)
      *
-     * @return :
-     *  id добавленного слова
-     *  0 если слово уже существует
-     *  -1 в противном случае
-     *
+     * @return id добавленного слова: 0 если слово уже существует; -1 в случае ошибки;
      */
     public int addWordForUser(String word, String translation, int userId){
         int translationId;
@@ -57,71 +100,68 @@ public class DictionaryService implements Abonent, Runnable {
         if ((wordId = getWordId(word)) == -1)
             wordId = addNewWord(word);
 
-        if (translationId == -1 || wordId == -1)
+        if (translationId == -1) {
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Didn't get translationId neither added new translation");
             return -1;
+        }
+
+        if (wordId == -1){
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Didn't get wordId neither added new word");
+            return -1;
+        }
 
         int wordSetId = getMainWordSetIdForUser(userId);
 
-        try{
-            boolean wordAlreadyExists = queryExecutor.execQuery(String.format("SELECT COUNT(*) FROM wordSet_word WHERE wordSet_id = %d AND word_id = %d;",
-                    wordSetId, wordId), resultSet -> {
-                if (resultSet.next())
-                    return resultSet.getInt("COUNT") > 0;
-                return false;
-            });
+        boolean wordAlreadyExists = queryExecutor.execQuery(String.format(WORD_ALREADY_EXISTS_QUERY,
+                wordSetId, wordId), resultSet -> {
+            if (resultSet.next())
+                return resultSet.getInt("COUNT") > 0;
+            return false;
+        });
 
-            if (wordAlreadyExists)
-                return 0;
-            queryExecutor.execUpdate(String.format("INSERT INTO wordSet_word (wordSet_id, word_id) VALUES ('%d', '%d');",
-                    wordSetId, wordId));
-            queryExecutor.execUpdate(String.format("INSERT INTO user_word_translation (user_id, word_id, translation_id) VALUES ('%d', '%d', '%d');",
-                    userId, wordId, translationId));
-            queryExecutor.execUpdate(String.format("INSERT INTO user_word_training (user_id, word_id, training_id) VALUES('%d', '%d', '%d')," +
-                    "('%d', '%d', '%d')," +
-                    "('%d', '%d', '%d')," +
-                    "('%d', '%d', '%d');", userId, wordId, eng_rusId, userId, wordId, rus_engId, userId, wordId, writingId, userId, wordId, cardsId));
-        }catch (SQLException e){
-            e.printStackTrace();
-            return -1;
-        }
+        if (wordAlreadyExists)
+            return 0;
+
+        queryExecutor.execUpdate(String.format(ADD_WORD_TO_WORDSET_QUERY,
+                wordSetId, wordId));
+        queryExecutor.execUpdate(String.format(ADD_TO_USER_WORD_TRANSLATION_QUERY,
+                userId, wordId, translationId));
+        queryExecutor.execUpdate(String.format(ADD_TO_USER_WORD_TRAINING_QUERY, userId, wordId,
+                eng_rusId, userId, wordId, rus_engId, userId, wordId, writingId, userId, wordId, cardsId));
 
         return wordId;
     }
 
     /**
-     * Добавляем записи в wordSet_word
-     * На фронтенде будет определенно максимальное количество слов, в сервлете, будет проверенно
+     * Добавляет слова в набор слов
+     * @param wordIds id'ники добавляемых слов
+     * @param wordSetId id набора слов, в который добавляем
      */
     public void addWordsToWordSet(List<Integer> wordIds, int wordSetId){
         String str = wordIds.toString();
         List<Integer> alreadyStoredIds = new ArrayList<>();
-        try {
-            queryExecutor.execQuery(String.format("SELECT word_id FROM wordSet_word WHERE wordSet_id = %d AND word_id IN ("
-                    + str.substring(1,str.length() -1) +");", wordSetId), resultSet -> {
 
-                    if (resultSet.next())
-                        alreadyStoredIds.add(resultSet.getInt("word_id"));
-                    return alreadyStoredIds;
-            });
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        queryExecutor.execQuery(String.format(GET_ALREADY_STORED_WORDS_QUERY , wordSetId, str.substring(1,str.length() -1)),
+                resultSet -> {
+
+            if (resultSet.next())
+                alreadyStoredIds.add(resultSet.getInt("word_id"));
+            return alreadyStoredIds;
+        });
 
         wordIds.removeAll(alreadyStoredIds);
 
-        Connection con = queryExecutor.getConnection();
-
-        try {
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO wordSet_word (wordSet_id, word_id) VALUES (?, ?);");
-            for (Integer wordId : wordIds) {
+        PreparedStatement stmt = queryExecutor.prepareStatement(ADD_WORD_TO_WORDSET_QUERY_FOR_PREPAREDSTATEMENT);
+        for (Integer wordId : wordIds) {
+            try{
                 stmt.setInt(1, wordSetId);
                 stmt.setInt(2, wordId);
                 stmt.addBatch();
+            }catch (SQLException e){
+                Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
             }
-            stmt.executeBatch();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
+        queryExecutor.executeBatch(stmt);
     }
 
     public Collection<Word> getNWordsForUser(int userId, int num, int index){
@@ -134,71 +174,50 @@ public class DictionaryService implements Abonent, Runnable {
     }
 
     public Collection<Word> getNWordsFromWordSet(int userId, int wordSetId, int num, int index) {
-        String testQuery = "WITH wordId_index AS(SELECT word_id, index FROM wordSet_word WHERE wordSet_id = %d AND index > %d LIMIT %d),\n" +
-                "wt_ids AS(SELECT word_id, translation_id FROM user_word_translation WHERE user_id = %d AND word_id IN\n" +
-                "(SELECT word_id FROM wordId_index)),\n" +
-                "we_ids AS(SELECT example_id, word_id FROM user_word_example WHERE user_id = %d AND word_id IN\n" +
-                "(SELECT word_id FROM wordId_index))\n" +
-                "SELECT wt_ids.word_id, words.word, wt_ids.translation_id, translations.translation, examples.example, wordId_index.index FROM\n" +
-                "\n" +
-                "wordId_index INNER JOIN wt_ids ON wordId_index.word_id = wt_ids.word_id\n" +
-                "INNER JOIN words ON words.id = wt_ids.word_id\n" +
-                "INNER JOIN translations ON translations.id = wt_ids.translation_id\n" +
-                "LEFT OUTER JOIN we_ids ON wt_ids.word_id = we_ids.word_id\n" +
-                "LEFT OUTER JOIN examples ON examples.id = we_ids.example_id;";
-        try {
-            return queryExecutor.execQuery(String.format(testQuery, wordSetId, index, num, userId, userId), (resultSet) -> {
-                Map<Integer, Word> words = new HashMap<>();
-                while (resultSet.next()){
-                    Word word;
-                    if (words.containsKey(resultSet.getInt("word_id")))
-                        word = words.get(resultSet.getInt("word_id"));
-                    else {
-                        word = new Word();
-                        word.setId(resultSet.getInt("word_id"));
-                        word.setWord(resultSet.getString("word"));
-                        word.setExample(resultSet.getString("example"));
-                        word.setIndex(resultSet.getInt("index"));
-
-                        words.put(word.getId(), word);
-                    }
-                    word.getTranslations().add(resultSet.getString("translation"));
+        return queryExecutor.execQuery(String.format(GET_N_WORDS_FROM_WS_QUERY, wordSetId, index, num, userId, userId), (resultSet) -> {
+            Map<Integer, Word> words = new HashMap<>();
+            while (resultSet.next()){
+                Word word;
+                if (words.containsKey(resultSet.getInt("word_id")))
+                    word = words.get(resultSet.getInt("word_id"));
+                else {
+                    word = new Word();
+                    word.setId(resultSet.getInt("word_id"));
+                    word.setWord(resultSet.getString("word"));
+                    word.setExample(resultSet.getString("example"));
+                    word.setIndex(resultSet.getInt("index"));
+                    words.put(word.getId(), word);
                 }
-
-                return words.values();
-            });
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+                word.getTranslations().add(resultSet.getString("translation"));
+            }
+            return words.values();
+        });
     }
 
     public void removeWordsFromWordSet(Integer wordIds[], int wordSetId){
-        Connection con = queryExecutor.getConnection();
-        String query = "DELETE FROM wordSet_word WHERE wordSet_id = ? AND word_id = ?;";
-        try {
-            PreparedStatement stmt = con.prepareStatement(query);
-            for (Integer wordId : wordIds) {
+        PreparedStatement stmt = queryExecutor.prepareStatement(DELETE_FROM_WORDSET_WORD_QUERY);
+        for (Integer wordId : wordIds) {
+            try {
                 stmt.setInt(1, wordSetId);
                 stmt.setInt(2, wordId);
                 stmt.addBatch();
+            } catch (SQLException e) {
+                Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
             }
-            stmt.executeBatch();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
+        queryExecutor.executeBatch(stmt);
     }
 
+    /**
+     * Полностью удаляем слова для пользователя (из всех наборов слов)
+     */
     public void removeWordsForUser(Integer wordIds[], int userId) {
-        Connection con = queryExecutor.getConnection();
-        String query1 = "DELETE FROM wordSet_word WHERE word_id = ? AND wordSet_id IN (SELECT id FROM wordSets WHERE user_id = ?);";
-        String query2 = "DELETE FROM user_word_translation WHERE user_id = ? AND word_id = ?;";
-        String query3 = "DELETE FROM user_word_training WHERE user_id = ? AND word_id = ?;";
-        try {
-            PreparedStatement stmt1 = con.prepareStatement(query1);
-            PreparedStatement stmt2 = con.prepareStatement(query2);
-            PreparedStatement stmt3 = con.prepareStatement(query3);
-            for (Integer wordId : wordIds) {
+        PreparedStatement stmt1 = queryExecutor.prepareStatement(DELETE_WORD_FROM_WORDSETS_QUERY);
+        PreparedStatement stmt2 = queryExecutor.prepareStatement(DELETE_WORD_FROM_USER_QUERY);
+        PreparedStatement stmt3 = queryExecutor.prepareStatement(DELETE_WORD_FROM_TRAININGS_QUERY);
+
+        for (Integer wordId : wordIds) {
+            try {
                 stmt1.setInt(1, wordId);
                 stmt1.setInt(2, userId);
                 stmt1.addBatch();
@@ -210,26 +229,25 @@ public class DictionaryService implements Abonent, Runnable {
                 stmt3.setInt(1, userId);
                 stmt3.setInt(2, wordId);
                 stmt3.addBatch();
+            }catch (SQLException e) {
+                Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
             }
-            stmt1.executeBatch();
-            stmt2.executeBatch();
-            stmt3.executeBatch();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            queryExecutor.executeBatch(stmt1);
+            queryExecutor.executeBatch(stmt2);
+            queryExecutor.executeBatch(stmt3);
         }
     }
 
+    /**
+     * Добавление перевода для слова.
+     * Если количество переводов > 4, то не добавляем перевод
+     */
     public void addTranslationForUser(int wordId, String translation, int userId){
-        int count = 0;
-        try {
-            count = queryExecutor.execQuery(String.format("SELECT count(*) FROM user_word_translation WHERE word_id = '%d' AND user_id = '%d';", wordId, userId), resultSet -> {
-                if (resultSet.next())
-                    return resultSet.getInt("count");
-                return -1;
-            });
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        int count = queryExecutor.execQuery(String.format(GET_NUMBER_OF_TRANSLATIONS_FOR_WORD_QUERY, wordId, userId), resultSet -> {
+            if (resultSet.next())
+                return resultSet.getInt("count");
+            return -1;
+        });
 
         if (count == -1 || count >= 4)
             return;
@@ -239,50 +257,22 @@ public class DictionaryService implements Abonent, Runnable {
             translationId = addNewTranslation(translation);
 
         if (translationId != -1) {
-            try {
-                queryExecutor.execUpdate(String.format("INSERT INTO user_word_translation (user_id, word_id, translation_id) VALUES ('%d','%d','%d');",
-                        userId, wordId, translationId));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            queryExecutor.execUpdate(String.format(ADD_TO_USER_WORD_TRANSLATION_QUERY,
+                    userId, wordId, translationId));
         }
     }
 
     public void removeTranslationForUser(int userId, int wordId, String translation){
         int translationId = getTranslationId(translation);
 
-        if (translationId != -1) {
-            try {
-                queryExecutor.execUpdate(String.format("DELETE FROM user_word_translation WHERE user_id = '%d' AND word_id = '%d' AND translation_id = '%d'",
-                        userId, wordId, translationId));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        if (translationId != -1)
+            queryExecutor.execUpdate(String.format(DELETE_TRANSLATION_FOR_WORD_QUERY,
+                    userId, wordId, translationId));
     }
 
     /**
-     * При добавлении слова, пользователю предлагаются возможные переводы
-     * Если переводов > 4, будет содержать null
-     */
-    public String[] getTranslationsForWord(int wordId){
-        try {
-            return queryExecutor.execQuery(String.format("SELECT translation FROM translations WHERE id IN " +
-                    "(SELECT translation_id FROM user_word_translation WHERE word_id = '%d' AND user_id = '%d' LIMIT 4);", wordId, BASE_USER_ID), resultSet -> {
-                        String translations[] = new String[4];
-                        int count = 0;
-                        while (resultSet.next())
-                            translations[count++] = resultSet.getString("translation");
-                        return translations;
-                    });
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * Логика работы = затирание текущего примера и запись пеерданного
+     * Удаляем существующий пример (даже если нет)
+     * Добавляем новый
      */
     public void addExampleForUser(int userId, int wordId, String example){
         int exampleId;
@@ -290,207 +280,153 @@ public class DictionaryService implements Abonent, Runnable {
         if ((exampleId = getExampleId(example)) == -1)
             exampleId = addNewExample(example);
 
-        if (exampleId == -1)
+        if (exampleId == -1){
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "Didn't get exampleId neither added new example");
             return;
-
-        try{
-            queryExecutor.execUpdate(String.format("DELETE FROM user_word_example WHERE user_id = '%d' AND word_id = '%d'", userId, wordId));
-            queryExecutor.execUpdate(String.format("INSERT INTO user_word_example (user_id, word_id, example_id) VALUES ('%d', '%d', '%d');",
-                    userId, wordId, exampleId));
-        }catch (SQLException e){
-            e.printStackTrace();
         }
+
+        queryExecutor.execUpdate(String.format(DELETE_EXAMPLE_FOR_WORD_QUERY, userId, wordId));
+        queryExecutor.execUpdate(String.format(ADD_EXAMPLE_FOR_WORD_QUERY,
+                userId, wordId, exampleId));
     }
 
-
     /**
-     * Добавляем запись в word_sets
+     * Добавялет новый набор слов
      * @return id нового wordSet'a или -1 если ошибка
      */
     public int addWordSetForUser(FileItem img, String name, int userId){
         String imgPath = img == null? DEFAULT_WORDSET_IMAGE : storeImage(img);
-        try {
-            return queryExecutor.execQuery(String.format("INSERT INTO wordSets (name, user_id, img_path) VALUES ('%s', '%d', '%s') RETURNING id;", name, userId, imgPath), resultSet -> {
-                if (resultSet.next())
-                    return resultSet.getInt("id");
-                return -1;
-            });
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
+        return queryExecutor.execQuery(String.format(ADD_WS_FOR_USER_QUERY, name, userId, imgPath), resultSet -> {
+            if (resultSet.next())
+                return resultSet.getInt("id");
+            return -1;
+        });
     }
 
     /**
-     * Удаляем запись из wordSets
      * Удаляем все записи для данного wordSetId из wordSet_word
-     * TODO: Добавить проверку на принадлежность wordSet'a
      */
     public void removeWordSet(int wordSetId){
-        try {
-            queryExecutor.execUpdate(String.format("DELETE FROM wordSet_Word WHERE wordSet_id = '%d';",  wordSetId));
-            queryExecutor.execUpdate(String.format("DELETE FROM wordSets WHERE id = '%d';",  wordSetId));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        queryExecutor.execUpdate(String.format(DELETE_FROM_WORDSET_WORD_BY_WS_ID_QUERY,  wordSetId));
+        queryExecutor.execUpdate(String.format(DELETE_WORDSET_QUERY,  wordSetId));
     }
 
     /**
-     * Изменяем название wordSet'a в word_sets
-     * TODO: Добавить проверку на принадлежность wordSet'a
+     * Обновление набора слов.
+     * Обновлено может быть имя или обложка.
      */
     public void updateWordSet(int wordSetId, FileItem img, String name){
         String sql;
         if ((name == null || name.isBlank()) && img == null)
             return;
         else if (img == null)
-            sql = String.format("UPDATE wordSets SET name = '%s' WHERE id = '%d';", name, wordSetId);
+            sql = String.format(UPDATE_WS_NAME_QUERY, name, wordSetId);
         else if (name == null || name.isBlank()) {
             removeWSImage(wordSetId);
-            sql = String.format("UPDATE wordSets SET img_path = '%s' WHERE id = '%d';", storeImage(img), wordSetId);
+            sql = String.format(UPDATE_WS_IMG_PATH_QUERY, storeImage(img), wordSetId);
         }
         else {
             removeWSImage(wordSetId);
-            sql = String.format("UPDATE wordSets SET name = '%s', img_path = '%s' WHERE id = '%d';",name, storeImage(img), wordSetId);
+            sql = String.format(UPDATE_WS_IMG_PATH_AND_NAME_QUERY, name, storeImage(img), wordSetId);
         }
-        try {
-            queryExecutor.execUpdate(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        queryExecutor.execUpdate(sql);
     }
 
+    /**
+     * Получение всех наборов слов для пользователя
+     */
     public List<WordSet> getWordSetsForUser(int userId){
-        try {
-            return queryExecutor.execQuery(String.format("SELECT id, name, isMain, size, img_path FROM wordSets WHERE user_id = '%d';", userId), resultSet -> {
-                WordSet wordSet;
-                List<WordSet> wordSets = new ArrayList<>();
-                while (resultSet.next()){
-                    wordSet = new WordSet();
-                    wordSet.setWordSetId(resultSet.getInt("id"));
-                    wordSet.setName(resultSet.getString("name"));
-                    wordSet.setMain(resultSet.getBoolean("isMain"));
-                    wordSet.setSize(resultSet.getInt("size"));
-                    try{
-                        String path = resultSet.getString("img_path");
-                        wordSet.setImage(Files.readAllBytes(Paths.get(path)));
-                    }catch (IOException e){
-                        e.printStackTrace();
-                    }
-
-                    wordSets.add(wordSet);
+        return queryExecutor.execQuery(String.format(GET_WORDSETS_FOR_USER_QUERY, userId), resultSet -> {
+            WordSet wordSet;
+            List<WordSet> wordSets = new ArrayList<>();
+            while (resultSet.next()){
+                wordSet = new WordSet();
+                wordSet.setWordSetId(resultSet.getInt("id"));
+                wordSet.setName(resultSet.getString("name"));
+                wordSet.setMain(resultSet.getBoolean("isMain"));
+                wordSet.setSize(resultSet.getInt("size"));
+                try{
+                    String path = resultSet.getString("img_path");
+                    wordSet.setImage(Files.readAllBytes(Paths.get(path)));
+                }catch (IOException e){
+                    Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
                 }
-                return wordSets;
-            });
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+
+                wordSets.add(wordSet);
+            }
+            return wordSets;
+        });
     }
 
     private int getWordId(String word){
-        try {
-            return queryExecutor.execQuery(String.format("SELECT id FROM words WHERE word = '%s';", word), (rs) -> {
-                if (rs.next())
-                    return rs.getInt("id");
-                return -1;
-            });
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
+        return queryExecutor.execQuery(String.format(GET_WORD_ID_BY_WORD_QUERY, word), (rs) -> {
+            if (rs.next())
+                return rs.getInt("id");
+            return -1;
+        });
     }
 
     private int addNewWord(String word) {
-        try {
-            return queryExecutor.execQuery(String.format("INSERT INTO words (word) VALUES('%s') RETURNING id;", word), (resultSet -> {
-                if (resultSet.next())
-                    return resultSet.getInt("id");
-                return -1;
-            }));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
+        return queryExecutor.execQuery(String.format(ADD_NEW_WORD_QUERY, word), (resultSet -> {
+            if (resultSet.next())
+                return resultSet.getInt("id");
+            return -1;
+        }));
     }
 
     private int getTranslationId(String translation){
-        try {
-            return queryExecutor.execQuery(String.format("SELECT id FROM translations WHERE translation = '%s';", translation), (rs) -> {
-                if (rs.next())
-                    return rs.getInt("id");
-                return -1;
-            });
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
+        return queryExecutor.execQuery(String.format(GET_TRANSLATION_ID_BY_TRANSLATION_QUERY, translation), (rs) -> {
+            if (rs.next())
+                return rs.getInt("id");
+            return -1;
+        });
     }
 
     private int addNewTranslation(String translation) {
-        try {
-            return queryExecutor.execQuery(String.format("INSERT INTO translations (translation) VALUES('%s') RETURNING id;", translation), (resultSet -> {
-                if (resultSet.next())
-                    return resultSet.getInt("id");
-                return -1;
-            }));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
+        return queryExecutor.execQuery(String.format(ADD_NEW_TRANSLATION_QUERY, translation), (resultSet -> {
+            if (resultSet.next())
+                return resultSet.getInt("id");
+            return -1;
+        }));
     }
 
     private int getExampleId(String example){
-        try {
-            return queryExecutor.execQuery(String.format("SELECT id FROM examples WHERE example = '%s';", example), (rs) -> {
-                if (rs.next())
-                    return rs.getInt("id");
-                return -1;
-            });
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
+        return queryExecutor.execQuery(String.format(GET_EXAMPLE_ID_BY_EXAMPLE_QUERY, example), (rs) -> {
+            if (rs.next())
+                return rs.getInt("id");
+            return -1;
+        });
     }
 
     private int addNewExample(String example){
-        try {
-            return queryExecutor.execQuery(String.format("INSERT INTO examples (example) VALUES('%s') RETURNING id;", example), (resultSet -> {
-                if (resultSet.next())
-                    return resultSet.getInt("id");
-                return -1;
-            }));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
+        return queryExecutor.execQuery(String.format(ADD_NEW_EXAMPLE_QUERY, example), (resultSet -> {
+            if (resultSet.next())
+                return resultSet.getInt("id");
+            return -1;
+        }));
     }
 
     private int getMainWordSetIdForUser(int userId){
-        try {
-            return queryExecutor.execQuery(String.format("SELECT id FROM wordSets WHERE user_id = '%d' AND isMain = true;", userId), resultSet -> {
-                if (resultSet.next())
-                    return resultSet.getInt("id");
-                return -1;
-            });
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return -1;
+        return queryExecutor.execQuery(String.format(GET_MAINWS_ID_FOR_USER_QUERY, userId), resultSet -> {
+            if (resultSet.next())
+                return resultSet.getInt("id");
+            return -1;
+        });
     }
 
     private void removeWSImage(int wordSetId){
-        try {
-            String path = queryExecutor.execQuery(String.format("SELECT img_path FROM wordSets WHERE id = '%d';",wordSetId), resultSet -> {
-                if (resultSet.next())
-                    return resultSet.getString("img_path");
-                return null;
-            });
+        String path = queryExecutor.execQuery(String.format(GET_WS_IMG_PATH_QUERY, wordSetId), resultSet -> {
+            if (resultSet.next())
+                return resultSet.getString("img_path");
+            return null;
+        });
 
-            if (path != null)
+        if (path != null) {
+            try {
                 Files.delete(Paths.get(path));
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            } catch (IOException e) {
+                Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
+            }
         }
     }
 
@@ -499,13 +435,8 @@ public class DictionaryService implements Abonent, Runnable {
         File storeFile = new File(filePath);
         try{
             img.write(storeFile);
-//            InputStream is = img.getInputStream();
-//            BufferedImage image = ImageIO.read(is);
-//
-//            ImageIO.write(image, "jpg", storeFile);
         }catch (Exception e){
-            e.printStackTrace();
-            return null;
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
         return filePath;
     }
@@ -526,7 +457,7 @@ public class DictionaryService implements Abonent, Runnable {
                 MessageSystem.INSTANCE.execForService(this);
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
             }
         }
     }

@@ -1,8 +1,7 @@
 package servlets.dictionary.wordSet;
 
-import messageSystem.Address;
 import messageSystem.MessageSystem;
-import messageSystem.messages.dictionary.toService.MessageUpdateWordSet;
+import messageSystem.messages.dictionary.toService.MsgUpdateWordSet;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
@@ -10,32 +9,30 @@ import servlets.NonAbonentServlet;
 import util.AddressService;
 import util.SessionCache;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+/**
+ * Сервлет, обрабатывающий запрос на изменение набора
+ */
 public class UpdateWordSetServlet extends HttpServlet implements NonAbonentServlet {
     private static final int MEMORY_THRESHOLD = 1024 * 1024 * 3; // 3MB
     private static final int MAX_FILE_SIZE = 1024 * 1024 * 40; // 40MB
     private static final int MAX_REQUEST_SIZE = 1024 * 1024 * 50; // 50MB
-
-    private static final Address address = new Address();
     private HttpServletResponse response;
-    private String sessionId;
-
     private int wordSetId;
     private String name;
     private FileItem img;
 
-
-
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         response = resp;
-        sessionId = req.getSession().getId();
+        String sessionId = req.getSession().getId();
 
         if (!SessionCache.INSTANCE.isAuthorized(sessionId)) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -43,14 +40,7 @@ public class UpdateWordSetServlet extends HttpServlet implements NonAbonentServl
             return;
         }
 
-        try {
-            initParams(req);
-        } catch (Exception e) {
-            System.out.println("Wrong parameters in UpdateWordSetServlet");
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.flushBuffer();
-            return;
-        }
+        initParams(req);
 
         createMessage();
         resp.setStatus(HttpServletResponse.SC_OK);
@@ -59,21 +49,22 @@ public class UpdateWordSetServlet extends HttpServlet implements NonAbonentServl
 
     @Override
     public void createMessage() {
-        MessageSystem.INSTANCE.sendMessageForService(new MessageUpdateWordSet(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
+        MessageSystem.INSTANCE.sendMessageForService(new MsgUpdateWordSet(null, AddressService.INSTANCE.getDictionaryServiceAddress(),
                 wordSetId, img, name));
     }
 
     public void handle(boolean status){
-        int sc = status ? HttpServletResponse.SC_OK : HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
         try {
-            response.setStatus(sc);
-            response.getWriter().write("Handled anyway");
+            response.setStatus(status ?
+                    HttpServletResponse.SC_OK :
+                    HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.flushBuffer();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
     }
 
-    private void initParams(HttpServletRequest request) throws Exception {
+    private void initParams(HttpServletRequest request) {
         img = getImg(request);
         name = request.getParameter("name");
         wordSetId = Integer.parseInt(request.getHeader("wordSetId"));
@@ -92,8 +83,8 @@ public class UpdateWordSetServlet extends HttpServlet implements NonAbonentServl
 
         try {
             return upload.parseRequest(request).get(0);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass().toString()).log(Level.SEVERE, "", e);
         }
         return null;
     }
