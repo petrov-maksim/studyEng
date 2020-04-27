@@ -18,7 +18,9 @@ studyEng/src/main/java/messageSystem/MessageSystem.java
 studyEng/src/main/java/services/db - Сервисы
 studyEng/src/main/java/util/QueryExecutor.java - QuryExecutor
 
+
 Сервлеты обрабатывающие запросы находятся в:
 studyEng/src/main/java/servlets
+
 
 Фронтед часть находится в пакете studyEng/static
